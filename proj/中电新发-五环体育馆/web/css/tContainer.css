@@ -1,0 +1,174 @@
+div.tContainer{
+    box-sizing: border-box;
+    width: 400px;
+    /* height:300px; */            
+    background: rgba(48,89,111, 0.384);
+    border-radius: 5px;
+    border:1px solid white;
+    position: fixed;
+    z-index:200;
+}
+div.tContainer>div.tContainer-header{
+    height: 60px;
+    padding:13px 10px;
+    background: rgba(60,88,109,0.7);
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    border-bottom: 2px solid  white;
+}
+div.tContainer>div.tContainer-header>div{
+    height: 100%;
+    float: left;
+}
+div.tContainer>div.tContainer-header>div.tContainer-header-icon,div.tContainer>div.tContainer-header>div.tContainer-header-btn{
+    padding-left: 32px;
+    background-repeat: no-repeat;
+}
+div.tContainer>div.tContainer-header>div.tContainer-header-title{
+    max-width: 75%;
+    margin:0 10px;
+    overflow-x: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    color: #fff;
+    font-size: 20px;
+    line-height: 32px;
+}
+div.tContainer>div.tContainer-header>div.tContainer-header-btn{
+    float: right !important;
+}
+/* div.tContainer>div.tContainer-content{
+    padding: 2px;
+} */
+div.tContainer .el-tabs{
+    background: transparent !important;
+    border: none;
+}
+div.tContainer .el-tabs__header{
+    background: transparent !important;
+    /* border: none; */
+}
+div.tContainer .el-tabs__item{
+    color: #fff !important;
+}
+div.tContainer .is-active{            
+    background: rgba(255, 255, 255, 0.6) !important;
+    color: #000 !important;
+}
+div.tContainer .el-input{
+    margin-bottom:5px;
+}
+div.tContainer .el-input__inner{
+    background: rgba(92, 91, 91, 0.6);
+    color: #eee;
+}
+div.tContainer .el-input__inner:focus{
+    border-color:rgb(216, 207, 207);
+}
+div.tContainer .el-table{
+    background: transparent !important;
+}
+div.tContainer .el-table th{
+    background: transparent !important;
+    color: #fff !important;
+}
+div.tContainer .el-table tr{
+    background: transparent !important;
+    color: #fff !important;
+}
+div.tContainer .el-table tr:hover>td{
+    background-color: rgba(97, 93, 93, 0.4);
+}
+div.tContainer .el-table span{
+    color: #fff !important;
+}
+
+.bgImage-activity{
+    background-image: url("../image/activity.png");
+}
+.bgImage-guide{
+    background-image: url("../image/guide.png");
+}
+.bgImage-mode{
+    background-image: url("../image/mode.png");
+}
+.bgImage-monitoring{
+    background-image: url("../image/monitoring.png");
+}
+.bgImage-setting{
+    background-image: url("../image/setting.png");
+}
+.bgImage-warning{
+    background-image: url("../image/warning.png");
+}
+
+.sideNavContainer{
+    width:60px;
+    height: 100%;            
+    position: fixed;
+    right:0;
+    background-color: #33586C;
+}
+div.sideNavContainer>div.sideNavContainer-title{
+    margin-top: 10px;
+    padding: 10px;
+    padding-top:44px;
+    font-size: 26px;
+    text-align: center;
+    color: #fff;
+    background: url("../image/visiontek.png") no-repeat 12px 0;
+}
+div.sideNavContainer>ul.sideNavContainer-nav{
+    width: 100%;
+    position: absolute;
+    bottom:0;
+    cursor: pointer;
+}
+div.sideNavContainer>ul.sideNavContainer-nav>li{
+    padding:12px 10px;
+    padding-top: 40px;
+    background-position: 14px 8px;
+    background-repeat: no-repeat;
+    text-align: center;
+    font-size:16px;
+    color: #fff;
+    user-select:none;
+}
+.sideNav-isActive{
+    background-color: #182D32;
+}
+
+#scenesGuideBox{
+    left:190px;
+    top:20px;
+}
+#monitoringBox{
+    right:190px;
+    top:20px;
+}
+
+
+/*定义滚动条高宽及背景 高宽分别对应横竖滚动条的尺寸*/
+div.tContainer ::-webkit-scrollbar{
+    width: 4px;
+    height: 4px;
+    background-color: #D2E6DD;
+}
+  
+  /*定义滚动条轨道 内阴影+圆角*/
+div.tContainer ::-webkit-scrollbar-track{
+    -webkit-box-shadow: inset 0 0 2px rgba(0,0,0,0.3);
+    border-radius: 4px;
+    background-color: #2B4D5E;
+}
+  
+  /*定义滑块 内阴影+圆角*/
+div.tContainer ::-webkit-scrollbar-thumb{
+    border-radius: 4px;
+    -webkit-box-shadow: inset 0 0 2px rgba(0,0,0,.3);
+    background-color: #D2E6DD;
+}
+
+[v-cloak] {
+    display: none;
+}

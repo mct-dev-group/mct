@@ -1,0 +1,8 @@
+node_modules
+.vscode
+public/test_video
+public/video
+public/hls.min.js
+public/hls.min-back.js
+public/jquery-3.3.1.js
+

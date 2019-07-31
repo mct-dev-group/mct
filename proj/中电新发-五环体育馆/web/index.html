@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>MadCatWebClient ver.Net</title>
+</head>
+<link rel="stylesheet" type="text/css" href="css/element_ui.css"/>
+<link rel="stylesheet" type="text/css" href="css/bt_plug_manager.css"/>
+<link rel="stylesheet" type="text/css" href="css/reset.css"/>
+<link rel="stylesheet" type="text/css" href="css/map_init.css"/>
+<link rel="stylesheet" type="text/css" href="css/iconfont/iconfont.css"/>
+<link rel="stylesheet" type="text/css" href="js/3rd/layui/css/layui.css"/>
+<link rel="stylesheet" type="text/css" href="css/data_table.css"/>
+<link rel="stylesheet" type="text/css" href="css/animate.css"/>
+<link rel="stylesheet" type="text/css" href="css/tContainer.css"/>
+
+<body>
+<div class="plugManager">
+    <!--插件栏-->
+    <ul class="plug_box"></ul>
+</div>
+<div id="bt_container">
+    <canvas id="canvasgl" tabindex="0"></canvas>
+</div>
+<pre id="console"></pre>
+</body>
+
+	<script>
+	var Module = {};
+	Module.TOTAL_MEMORY = 512*1024*1024;
+	</script>
+
+<!-- import Vue before Element -->
+<script type="text/javascript" src="js/3rd/vue.js"></script>
+<script type="text/javascript" src="js/3rd/element_ui.js"></script>
+<script type="text/javascript" src="js/3rd/jquery-3.3.1.js"></script>
+<script type="text/javascript" src="js/3rd/layui/layui.js"></script>
+
+<!--引入必须的js文件-->
+<script type="text/javascript" src="touch.min.js"></script>
+<script type="text/javascript" src="bt_a.js"></script>
+
+<!--引入插件管理器，在bt_a.js之后引入-->
+<script type="text/javascript" src="js/util/bt_plug_manager.js"></script>
+
+<!--引入必须的js文件,在插件管理器之后引入-->
+<script type="text/javascript" src="bt_util.js"></script>
+<script type="text/javascript" src="bt_plug_compass.js"></script>
+<script type="text/javascript" src="bt_plug_annotation.js"></script>
+<!-- 引入其他js文件 -->
+<script type="text/javascript" src="js/util/bt_localDB.js"></script>
+<script type="text/javascript" src="js/util/bt_indexedDB.js"></script>
+<script type="text/javascript" src="js/3rd/FileSaver.js"></script>
+<script type="text/javascript" src="js/util/util_data_connection.js"></script>
+<script type="text/javascript" src="hls.min.js"></script>
+<script type="text/javascript" src="js/util/MonitorConnPool.js"></script>
+<script type="text/javascript" src="js/util/ll_geo.js"></script>
+<script type="text/javascript" src="js/util/commonFunOfVideo.js"></script>
+<script type="text/javascript" src="js/util/camera_list.js"></script>
+
+<!-- 引入插件js -->
+<script type="text/javascript" src="js/plug/bt_plug_mapMeasurement.js"></script>
+<script type="text/javascript" src="js/plug/bt_plug_perspectiveAnalysis.js"></script>
+<script type="text/javascript" src="js/plug/bt_plug_pathRoaming_new.js"></script>
+<script type="text/javascript" src="js/plug/bt_plug_activity.js"></script>
+<script type="text/javascript" src="js/plug/bt_plug_panoramicVideoFusion.js"></script>
+<script type="text/javascript" src="js/plug/bt_plug_warnning.js"></script>
+<script type="text/javascript" src="js/plug/bt_plug_commanding.js"></script>
+<script type="text/javascript" src="js/plug/bt_plug_blockade.js"></script>
+<script type="text/javascript" src="js/plug/bt_plug_intelligentTracking.js"></script>
+<script type="text/javascript" src="js/plug/bt_plug_monitoringList.js"></script>
+<script type="text/javascript" src="js/plug/init.js"></script>
+<script type="text/javascript" src="js/plug/initMonitoringContainer.js"></script>
+
+
+<script>
+
+    let canvas = document.getElementById("canvasgl");
+
+    var bt_UIE_divSetNdx = 0;
+    var bt_UIE_divSets = [];
+    var bt_UIE_divContainerElement = document.getElementById("bt_container");
+    function JS_BT_UIElementClearAll()
+    {
+        for (; bt_UIE_divSetNdx < bt_UIE_divSets.length; ++bt_UIE_divSetNdx) {
+            bt_UIE_divSets[bt_UIE_divSetNdx].style.display = "none";
+        }
+        bt_UIE_divSetNdx = 0;
+    }
+    function JS_BT_UIElementAddText(msg, x, y)
+    {
+        // get the next div
+        var divSet = bt_UIE_divSets[bt_UIE_divSetNdx++];
+        // If it doesn't exist make a new one
+        if (!divSet)
+        {
+            divSet = {};
+            divSet.div = document.createElement("div");
+            divSet.div.addEventListener("mousemove", function(event){
+                var bbox = divSet.div.getBoundingClientRect();
+                event.clientX += bbox.left;
+                event.clientY += bbox.top;
+                bt_canvase_onMouseMove(event);
+            }, false);
+            divSet.div.addEventListener("mousedown", function(event){
+                var bbox = divSet.div.getBoundingClientRect();
+                event.clientX += bbox.left;
+                event.clientY += bbox.top;
+                bt_canvase_onMouseDown(event);
+            }, false);
+            divSet.div.addEventListener("mouseup", function(event){
+                var bbox = divSet.div.getBoundingClientRect();
+                event.clientX += bbox.left;
+                event.clientY += bbox.top;
+                bt_canvase_onMouseUp(event);
+            }, false);
+            if (browser.versions.Firefox)
+                divSet.div.addEventListener("DOMMouseScroll", function(event){
+                    var bbox = divSet.div.getBoundingClientRect();
+                    event.clientX += bbox.left;
+                    event.clientY += bbox.top;
+                    bt_canvase_onMouseWheel(event);
+                }, false);
+            else
+                divSet.div.addEventListener("mousewheel", function(event){
+                    var bbox = divSet.div.getBoundingClientRect();
+                    event.clientX += bbox.left;
+                    event.clientY += bbox.top;
+                    bt_canvase_onMouseWheel(event);
+                }, false);
+
+
+            divSet.style = divSet.div.style;
+            divSet.div.className = "bt_ui_element";
+
+            // add the text node to the div
+            divSet.textNode = document.createElement('div');
+            divSet.div.appendChild(divSet.textNode);
+
+            // add the div to the container
+            bt_UIE_divContainerElement.appendChild(divSet.div);
+
+            // Add it to the set
+            bt_UIE_divSets.push(divSet);
+        }
+
+        // make it display
+        divSet.style.display = "block";
+        divSet.style.left = Math.floor(x - 8) + "px";
+        divSet.style.top = Math.floor(y - 16) + "px";
+
+        divSet.textNode.innerHTML = "<div style='background:url(image/DefaultIcon.png); background-position:center left; background-repeat: no-repeat; height:16px;line-height:10px;'><span style='margin-left:16px; font-size:9px; white-space: nowrap;'>" + Module.Pointer_stringify(msg) + "</span></div>";
+    }
+
+    function BT_RenderFrame() {
+        document.getElementById("bt_container").style.width = $(window).width() + "px";
+        document.getElementById("bt_container").style.height = $(window).height() + "px";
+        if (document.getElementById("canvasgl").width != document.getElementById("bt_container").clientWidth)
+        {
+            document.getElementById("canvasgl").width = document.getElementById("bt_container").clientWidth;
+        }
+        if (document.getElementById("canvasgl").height != document.getElementById("bt_container").clientHeight)
+        {
+            document.getElementById("canvasgl").height = document.getElementById("bt_container").clientHeight;
+        }
+        canvas = document.getElementById("canvasgl");
+        var script = "Render\\OnRender " + canvasgl.width + " " + canvasgl.height + ";";
+        bt_Util.executeScript(script);
+        requestId = window.requestAnimationFrame( BT_RenderFrame );
+    };
+
+        //JS_BT_FireEvent
+        function JS_BT_FireEvent (event) {
+            let that = this
+            bt_PlugManager.on_BTEvent(event);
+            if (event[0] == "Render\\OnFinalBlend")
+            {
+                //渲染结束事件：
+            }
+            else if (event[0] == "Plugin\\ModelInstanceQuery\\OnInstanceSelected")
+            {
+                //实例被选中事件
+            }
+            else if (event[0] == "Plugin\\ModelInstanceQuery\\OnInstanceUnselected")
+            {
+                //实例被取消选中事件
+            }
+            return;
+        }
+		
+		function onCoreLoaded() {
+			
+			//初始化bt_a
+			on_bt_a_post();
+
+			//初始化GUI操作
+			bt_PlugManager.canvasgl_GUI_init();
+			
+			//初始化插件管理器UI
+			bt_PlugManager.plugManager_UI_init();
+			
+            bt_Util.executeScript("Render\\RenderDataContex\\DataPump\\SetClientCacheSize 0 128;");
+            bt_Util.executeScript("Render\\RenderDataContex\\DataPump\\SetMaxClientRequest 5;");
+            //bt_Util.executeScript("Render\\SetAA 2;");
+
+            bt_Util.executeScript("Render\\RenderDataContex\\ModelScene\\OpenModelScene mc://http://"+window.location.host+"/ group1.btm.pb;");
+			bt_Util.executeScript("Render\\RenderDataContex\\ModelScene\\ModelScene\\group1.btm.pb\\SetInstance group1 0 group1 0 1 1 1 0 0 1 0 0 0 -5 0;");
+			bt_Util.executeScript("Render\\RenderDataContex\\ModelScene\\OpenModelScene mc://http://"+window.location.host+"/ group2.btm.pb;");
+			bt_Util.executeScript("Render\\RenderDataContex\\ModelScene\\ModelScene\\group2.btm.pb\\SetInstance group2 0 group2 0 1 1 1 0 0 1 0 0 0 -5 0;");
+            bt_Util.executeScript("Render\\RenderDataContex\\DataPump\\OsgScene\\OpenOsgScene mc://http://"+window.location.host+"/terrain/ terrain.pb;");
+
+            bt_Util.executeScript('Render\\CameraControl\\FlyTo2 512290 3390920 36;');
+
+			BT_RenderFrame();
+		}
+
+		$(function () {
+			if (typeof(bt_a_is_wasm) == "undefined"){
+				onCoreLoaded();
+			}
+		});
+
+    </script>
+
+</html>

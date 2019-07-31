@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>test</title>
+    <script type="text/javascript" src="./jquery-3.3.1.js"></script>
+    <script type="text/javascript" src="./hls.min.js"></script>
+    <script type="text/javascript" src="./MonitorConnPool.js"></script>
+  </head>
+  <body>
+    <!-- <video id="video-${key}"  style="height:200px;" muted></video> -->
+    <video id="video" style="height:500px;" muted></video>
+    <script type="text/javascript">
+      // const video = document.getElementById("video");
+
+      // // const url = `http://${window.location.hostname}:3000/video/rtsp/9.m3u8`;
+      // const url = `http://${window.location.hostname}:3000/rtsp/`;
+      // var hls = {};
+      // var hlsCount = 0;
+      // var live = null;
+      // function run() {
+      //   live = true;
+      //   console.log("run");
+      //   hls[`hls_${hlsCount}`] = new Hls({
+      //     liveBackBufferLength: 0,
+      //     isStayAlive: true
+      //   });
+      //   if (Hls.isSupported()) {
+      //     hls[`hls_${hlsCount}`].loadSource(url);
+      //     hls[`hls_${hlsCount}`].on(Hls.Events.MANIFEST_PARSED, function() {
+      //       hls[`hls_${hlsCount}`].attachMedia(video);
+      //       video.play();
+      //     });
+      //     hls[`hls_${hlsCount}`].on(Hls.Events.LEVEL_UPDATED, liveStopped);
+      //     hls[`hls_${hlsCount}`].on(Hls.Events.DESTROYING, function() {
+      //       rerun();
+      //     });
+      //     // hls[`hls_${hlsCount}`].on(Hls.Events.ERROR, function(event, data) {
+      //     //   if (data.fatal && !live) {
+      //     //     hls[`hls_${hlsCount}`].destroy();
+      //     //   }
+      //     // });
+      //   }
+      // }
+      // function liveStopped(tag, data) {
+      //   if (!data.details.live && live) {
+      //     live = false;
+      //     hls[`hls_${hlsCount}`].off(Hls.Events.LEVEL_UPDATED, liveStopped);
+      //     hls[`hls_${hlsCount}`].on(Hls.Events.LEVEL_UPDATED, reload);
+      //     console.log("liveStopped", data);
+      //     return;
+      //   }
+      // }
+      // function reload(tag, data) {
+      //   if (data.details.live && !live) {
+      //     live = true;
+      //     hls[`hls_${hlsCount}`].off(Hls.Events.LEVEL_UPDATED, reload);
+      //     console.log("reload", data);
+      //     hls[`hls_${hlsCount}`].destroy();
+      //     return;
+      //   }
+      // }
+      // function rerun() {
+      //   delete hls[`hls_${hlsCount}`];
+      //   console.log("delete");
+      //   hlsCount++;
+      //   run();
+      //   return;
+      // }
+      // run();
+      let keys = [
+        // "43000001001321224014",
+        // "43000001001321224016",
+        // "43000001001321224017",
+        "43000001001321224018",
+        "43000001001321224249",
+        "43000001001321224243",
+        "43000001001321224245",
+        "43000001001321224251",
+        // "43000001001321224019",
+        "43000001001321224020"
+        // "43000001001321224021",
+        // "43000001001321224022",
+        // "43000001001321224132",
+        // "43000001001321224133",
+        // "43000001001321224134",
+        // "43000001001321224135",
+        // "43000001001321226071",
+        // "43000001001321226072",
+        // "43000001001321226073",
+        // "43000001001321226074",
+      ];
+      function createVideo(type) {
+        if ($("#videosBox" + type).length === 0) {
+          let html = `<div id="videosBox${type}"></div>`;
+          $("body").append(html);
+        }
+        for (const key of keys) {
+          $("#videosBox" + type).append(
+            `<video id="video-${key}"  style="height:200px;" muted></video>`
+          );
+          MonitorConnPool.play(key, document.getElementById("video-" + key));
+        }
+      }
+      createVideo(3);
+    </script>
+  </body>
+</html>
