@@ -313,7 +313,8 @@ new Vue({
 			let plug_deactivate = Plug.plug_deactivate;
 			
 			//如果引入插件，显示插件栏
-			$('.plugManager').css('display', 'block');
+			//$('.plugManager').css('display', 'block');
+			$('.plugManager').css('display', 'none');
 			//判断插件内是否有功能
 			if (plug_commands.length > 0) {	
 				//如果插件内有功能，添加插件按钮和下拉图标

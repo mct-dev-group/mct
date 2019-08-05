@@ -59,6 +59,7 @@ let MonitorConnPool = {
     }
   },
   checkVisibilityChangeforRerun: () => {
+    //console.log(document.visibilityState);
     if (document.visibilityState === "hidden") return;
     for (let hls in MonitorConnPool.hls_pool) {
       if (MonitorConnPool.hls_pool.hasOwnProperty(hls)) {

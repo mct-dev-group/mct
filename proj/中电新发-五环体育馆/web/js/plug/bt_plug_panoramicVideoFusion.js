@@ -7,10 +7,10 @@ plug_panoramicVideoFusion.plug_commandOnly = true;
 //插件功能集合
 plug_panoramicVideoFusion.plug_commands = [];
 //创建功能对象，参数: new Commands(command_name, command_id, command_isActive, command_isOnce)
-plug_panoramicVideoFusion.plug_commands[0] = new Command("1号场馆", 1, false, true);
-plug_panoramicVideoFusion.plug_commands[1] = new Command("2号场馆", 2, false, true);
-plug_panoramicVideoFusion.plug_commands[2] = new Command("3号场馆", 3, false, true);
-plug_panoramicVideoFusion.plug_commands[3] = new Command("测试", 4, false, true);
+plug_panoramicVideoFusion.plug_commands[0] = new Command("体育场", 1, false, true);
+plug_panoramicVideoFusion.plug_commands[1] = new Command("体育馆", 2, false, true);
+plug_panoramicVideoFusion.plug_commands[2] = new Command("游泳馆", 3, false, true);
+plug_panoramicVideoFusion.plug_commands[3] = new Command("高清体育场", 4, false, true);
 plug_panoramicVideoFusion.plug_commands[4] = new Command("关闭融合", 5, false, true); 
 
 plug_panoramicVideoFusion.command_activate = function(commandID){    

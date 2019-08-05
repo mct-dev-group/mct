@@ -1,8 +1,8 @@
 
 start simple_web_server.exe
 
-cd C:/20190730汇报/NodeVideoServer
+cd C:/20190805汇报/NodeVideoServer
 start node video_server.js
 
-cd C:\20190730汇报\NodeSQLService
+cd C:\20190805汇报\NodeSQLService
 start node sql_service.js

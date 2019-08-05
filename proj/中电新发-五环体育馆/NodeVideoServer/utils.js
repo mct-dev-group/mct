@@ -17,6 +17,7 @@ module.exports = {
   fileMtimeDiff(dirPath) {
     const now = Date.now();
     const mtime = fs.statSync(dirPath).mtimeMs;
+	console.log("\x1B[31m%s\x1B[0m", now - mtime);
     return now - mtime;
   },
   writeLog(filePath, content) {

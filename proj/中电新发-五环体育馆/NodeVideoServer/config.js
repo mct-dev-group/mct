@@ -3,6 +3,7 @@ module.exports = {
   auth_username: "admin",
   auth_password: "admin",
   VMS_userLoginURL: "http://100.85.228.34/VMS2Service.cgi?Cmd=UserLogin",
+  VMS_userLogoutURL: "http://100.85.228.34/VMS2Service.cgi?Cmd=UserLogout",
   VMS_DeviceGetIPCLinkInfoURL:
     "http://100.85.228.34/VMS2Service.cgi?Cmd=DeviceGetIPCLinkInfo",
   command1: ["-rtsp_transport", "tcp", "-i"],
