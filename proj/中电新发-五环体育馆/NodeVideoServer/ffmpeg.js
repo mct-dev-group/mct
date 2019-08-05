@@ -2,7 +2,7 @@ const child_process = require("child_process");
 const path = require("path");
 const fs = require("fs");
 const fse = require("fs-extra");
-const { getTokens, getRtspUrls } = require("./rtsp");
+const { getTokens, getRtspUrls, vmsLogout } = require("./rtsp");
 const { writeLog } = require("./utils");
 const { command1, command2 } = require("./config");
 
@@ -10,6 +10,7 @@ module.exports = {
   async runFfmpeg(ID) {
     const token = await getTokens();
     const rtspUrl = await getRtspUrls(token, ID);
+    vmsLogout(token);
     const directoryPath = path.join(__dirname, `public/video/${ID}`);
     const filePath = path.join(__dirname, `public/video/${ID}/${ID}.m3u8`);
     try {
@@ -39,7 +40,7 @@ module.exports = {
     );
     return {
       id: ID,
-      url: srcUrl,
+      url: rtspUrl,
       handle,
       dirPath: directoryPath,
       filePath: filePath

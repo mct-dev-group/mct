@@ -4,6 +4,7 @@ const {
   auth_username,
   auth_password,
   VMS_userLoginURL,
+  VMS_userLogoutURL,
   VMS_DeviceGetIPCLinkInfoURL
 } = require("./config");
 module.exports = {
@@ -49,6 +50,21 @@ module.exports = {
     } catch (error) {
       console.log(error);
       return [];
+    }
+  },
+  async vmsLogout(token) {
+    try {
+      let state = await fetch(VMS_userLogoutURL, {
+        method: "POST",
+        //body: JSON.stringify({ ipcID: ID }),
+        headers: {
+          "auth-token": token,
+          "Content-Type": "application/json"
+        }
+      });
+      console.log(state)
+    } catch (error) {
+      console.log(error);
     }
   }
 };
