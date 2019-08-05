@@ -11,6 +11,7 @@ plug_intelligentTracking.plug_activate = function(){
     if($("#monitoringBox").is(":hidden")){
         $("#monitoringBox").show();
         $("li[data-type=3]").addClass("sideNav-isActive");
+        initMonitoringContainer.activate(0);
         initMonitoringContainer.setIcon();
     }
 };
@@ -20,6 +21,7 @@ plug_intelligentTracking.plug_deactivate = function () {
     if(!$("#monitoringBox").is(":hidden")){
         $("#monitoringBox").hide();
         $("li[data-type=3]").removeClass("sideNav-isActive");
+        initMonitoringContainer.deactivate(0);
         initMonitoringContainer.removeIcon();
     }
 };

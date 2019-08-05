@@ -6,7 +6,7 @@ const router = require("./router");
 const serve = require("koa-static");
 const { runFfmpeg } = require("./ffmpeg");
 const { getAPES } = require("./rtsp");
-const { fileMtimeDiff } = require("./utils");
+const { fileMtimeDiff, writeLog } = require("./utils");
 const PORT = 3002;
 
 const app = new Koa();
@@ -43,16 +43,20 @@ async function serveVideo() {
   };
   let guids = await getAPES();
   guids = guids.map(g => g.guid);
+  console.log("\x1B[31m%s\x1B[0m",guids)
   guids.forEach(g => (additionalGuids[g] = 1));
   let streamItems = [];
   for (let guid in additionalGuids) {
     if (additionalGuids.hasOwnProperty(guid)) {
+		
       streamItems.push(runFfmpeg(guid));
     }
   }
   streamItems = await Promise.all(streamItems);
+
   const interval = setInterval(async () => {
     streamItems = streamItems.map(async item => {
+		//writeLog(item.dirPath + "/log.txt", item.id + "   " + new Date().toLocaleString() + "\n")
       if (fileMtimeDiff(item.dirPath) > 10000) {
         child_process.spawn("taskkill", ["/pid", item.handle.pid, "/f", "/t"]);
         return await runFfmpeg(item.id);
@@ -70,4 +74,4 @@ app.use(serve("./public"));
 app.use(router.routes()).use(router.allowedMethods());
 app.listen(PORT);
 
-console.log("server running on port " + PORT);
+console.log("\x1B[31m%s\x1B[0m","server running on port " + PORT);

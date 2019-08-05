@@ -9,9 +9,10 @@ let initMonitoringContainer={
         this.appendDOM();
         this.creatVue();
         setTimeout(()=>{            
-            this.activate(0);
+            this.activate(parseInt(this.monitoringContainerVue.activeName));
             //初始化图标
             this.setIcon();
+
         },2000);
          
     },
@@ -388,7 +389,7 @@ let initMonitoringContainer={
     setIcon:function(){
         camera_list.forEach(val=>{
             if($("#camIcon_"+val.guid).length===0){
-                setIcon(val.guid,val.type,val.position);
+                setIcon(val.guid,val.type+"",val.position);
                 this.icons.push("camIcon_"+val.guid);
             }
         });

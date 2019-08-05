@@ -98,7 +98,7 @@ $(function(){
             <li class="bgImage-warning sideNav-isActive" data-type="4">
                 告警
             </li>
-            <li class="bgImage-mode sideNav-isActive" data-type="5">
+            <li class="bgImage-mode" data-type="5">
                 模式
             </li>
         </ul>
@@ -125,7 +125,7 @@ $(function(){
     //线路 按钮事件
     let pathRoaming={
         data:{
-            pathRoamingRate: 0.03,            
+            pathRoamingRate: 0.03,
             pathRoamingLength: 0,
             pathRoamingLHeight: 20,
             pathRoamingLViewHeight: -15,
@@ -233,7 +233,7 @@ $(function(){
                 pathRoaming.data.preDate = new Date().getTime();
                 pathRoaming.addEvents();
             });
-            this.data.preDate = new Date().getTime();                
+            this.data.preDate = new Date().getTime();
             this.addEvents();
         },
         deactivateStartPathRoaming:function(){
@@ -390,6 +390,7 @@ $(function(){
 
     //导航按钮事件
     $("#sideNavContainer-nav").on("click",function(e){
+        if($(e.target).prop("tagName")!=="LI") return;
         $(e.target).hasClass("sideNav-isActive")?$(e.target).removeClass("sideNav-isActive"):$(e.target).addClass("sideNav-isActive");
         switch($(e.target).data("type")){
             case 1://导航
@@ -435,12 +436,16 @@ $(function(){
                 }
             break;
             case 5://模式
-
+				if($('.plugManager').is(":hidden")){
+					$('.plugManager').show();
+				}else{
+					$('.plugManager').hide();
+				}				
             break;
             default:
                 console.error("Can't get type");
         }
     });
     //初始化实时监控和相机列表
-    initMonitoringContainer.init();    
+    initMonitoringContainer.init();	
 })
