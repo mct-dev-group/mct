@@ -16,6 +16,11 @@ app.use(bodyParser());
 
 async function serveVideo() {
   let guids = await getAPES();
+    if (guids.length === 0) {
+    console.log("\x1B[31m%s\x1B[0m", "No test video mp4 files!");
+    process.exit();
+    return;
+  }
   // guids = guids.map(g => g.guid);
   const token = await getTokens();
   const rtspUrls = await getRtspUrls(token, guids);
