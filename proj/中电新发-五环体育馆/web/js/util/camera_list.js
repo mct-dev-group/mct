@@ -30,6 +30,7 @@ function setIcon(id,type,position){
     switch(type){
         //枪机
         case "1" :
+		case "NULL" :
             url="image/1.png";
         break;
         //球机

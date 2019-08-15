@@ -74,9 +74,8 @@
 <script type="text/javascript" src="js/plug/bt_plug_blockade.js"></script>
 <script type="text/javascript" src="js/plug/bt_plug_intelligentTracking.js"></script>
 <script type="text/javascript" src="js/plug/bt_plug_monitoringList.js"></script>
-<script type="text/javascript" src="js/plug/init.js"></script>
 <script type="text/javascript" src="js/plug/initMonitoringContainer.js"></script>
-
+<script type="text/javascript" src="js/plug/init.js"></script>
 
 <script>
 
@@ -209,12 +208,12 @@
             //bt_Util.executeScript("Render\\SetAA 2;");
 
             bt_Util.executeScript("Render\\RenderDataContex\\ModelScene\\OpenModelScene mc://http://"+window.location.host+"/ group1.btm.pb;");
-			bt_Util.executeScript("Render\\RenderDataContex\\ModelScene\\ModelScene\\group1.btm.pb\\SetInstance group1 0 group1 0 1 1 1 0 0 1 0 0 0 -5 0;");
+			bt_Util.executeScript("Render\\RenderDataContex\\ModelScene\\ModelScene\\group1.btm.pb\\SetInstance group1 0 group1 0 1 1 1 0 0 1 0 0 0 -5 1;");
 			bt_Util.executeScript("Render\\RenderDataContex\\ModelScene\\OpenModelScene mc://http://"+window.location.host+"/ group2.btm.pb;");
-			bt_Util.executeScript("Render\\RenderDataContex\\ModelScene\\ModelScene\\group2.btm.pb\\SetInstance group2 0 group2 0 1 1 1 0 0 1 0 0 0 -5 0;");
+			bt_Util.executeScript("Render\\RenderDataContex\\ModelScene\\ModelScene\\group2.btm.pb\\SetInstance group2 0 group2 0 1 1 1 0 0 1 0 0 0 -5 1;");
             bt_Util.executeScript("Render\\RenderDataContex\\DataPump\\OsgScene\\OpenOsgScene mc://http://"+window.location.host+"/terrain/ terrain.pb;");
 
-            bt_Util.executeScript('Render\\CameraControl\\FlyTo2 512290 3390920 36;');
+            bt_Util.executeScript('Render\\CameraControl\\FlyTo2 512290 3390980 36;');
 
 			BT_RenderFrame();
 		}

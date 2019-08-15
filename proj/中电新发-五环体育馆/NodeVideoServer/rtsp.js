@@ -27,12 +27,12 @@ module.exports = {
           "Content-Type": "application/json"
         }
       });
-	  //console.log("getToken",res.headers)
       return res.headers.get("auth-token");
     } catch (error) {
       console.log(error);
       return "getToken error";
     }
+    // return 11;
   },
   async getRtspUrls(token, ID) {
     try {
@@ -45,7 +45,6 @@ module.exports = {
         }
       });
       let serverIP = await ipRes.json();
-	  //console.log(serverIP)
       let rtspUrl =
         "rtsp://" + serverIP.ipcLinkInfo.serverIP + ":10554/guid=" + ID;
       return rtspUrl;
@@ -53,6 +52,7 @@ module.exports = {
       console.log(error);
       return [];
     }
+    // return [];
   },
   async vmsLogout(token) {
     try {
@@ -64,8 +64,7 @@ module.exports = {
           "Content-Type": "application/json"
         }
       });
-	  console.log("vms logOut")
-      console.log(state)
+      console.log(state);
     } catch (error) {
       console.log(error);
     }

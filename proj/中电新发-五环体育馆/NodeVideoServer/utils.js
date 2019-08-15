@@ -17,10 +17,18 @@ module.exports = {
   fileMtimeDiff(dirPath) {
     const now = Date.now();
     const mtime = fs.statSync(dirPath).mtimeMs;
-	console.log("\x1B[31m%s\x1B[0m", now - mtime);
     return now - mtime;
   },
   writeLog(filePath, content) {
     fs.appendFileSync(filePath, content);
+  },
+  getFileCount(id) {
+    const directoryPath = path.join(__dirname, `public/video/${id}`);
+    if (fs.existsSync(directoryPath)) {
+      const files = fs.readdirSync(directoryPath);
+      return files.filter(f => f.includes(".ts")).length;
+    } else {
+      return 0;
+    }
   }
 };

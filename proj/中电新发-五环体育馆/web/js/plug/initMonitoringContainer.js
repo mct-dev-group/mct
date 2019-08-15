@@ -661,6 +661,9 @@ let initMonitoringContainer={
                     <video class="cameraVideo-large" id="cameraVideo-large" poster="image/loading-large.gif"></video>
                 </div>
                 </div>`);
+			$(`#cameraVideo-large`).on('canplay',function(){
+				$(this).attr('poster','');
+			});
         }else{
             $("#videoModal").show();
         }
@@ -671,12 +674,15 @@ let initMonitoringContainer={
         //播放视频
         MonitorConnPool.play(option.guid,document.getElementById("cameraVideo-large"),2);
         this.videoModalId=option.guid;
+		$("#closeVideoModal").off('click');
         $("#closeVideoModal").on("click",function(e){
             closeClick&&closeClick(e);
             $("#cameraVideo-large").attr("src","");
             MonitorConnPool.stopLoadVideo(initMonitoringContainer.videoModalId,2);
             $("#videoModal").hide();
+			$(`#cameraVideo-large`).attr('poster','image/loading-large.gif');
         });
+
     },
     handleMouseDown:function(ep){
         initMonitoringContainer.lastXY.x=ep[1];
@@ -749,7 +755,11 @@ let initMonitoringContainer={
     },
     videoOfListMode:function(option,index){
         let html=`<video id="video-${option.guid}"  poster="image/loading.gif"></video><span>${option.description.slice(0,4)} - ${option.guid.slice(-4)}</span>`;
+		//let html=`<video id="video-${option.guid}"  ></video><span>${option.description.slice(0,4)} - ${option.guid.slice(-4)}</span>`;
         $($("div.videoItemBox")[index]).html(html);
+		$(`#video-${option.guid}`).on('canplay',function(){
+			$(this).attr('poster','');
+		});
         MonitorConnPool.play(option.guid,document.getElementById("video-"+option.guid),1);
         $(`#video-${option.guid}`).parents("div.videoItemBox").off("click").addClass("bgcolor-eee");
         $(`#video-${option.guid}`).parents("div.videoItemBox").on("click",function(){

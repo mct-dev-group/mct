@@ -13,6 +13,7 @@ plug_activity.plug_activate = function() {
       display:none;
       bottom: 20px;
       left: 190px;
+	  z-index:200;
     }
     .box-card {
       color:#111;
