@@ -1,7 +1,7 @@
 module.exports = {
   DBLink: "http://127.0.0.1:8014/sqlservice/v1/executeSql",
   auth_username: "admin",
-  auth_password: "admin",
+  auth_password: "123456",
   VMS_userLoginURL: "http://100.85.228.34/VMS2Service.cgi?Cmd=UserLogin",
   VMS_userLogoutURL: "http://100.85.228.34/VMS2Service.cgi?Cmd=UserLogout",
   VMS_DeviceGetIPCLinkInfoURL:
@@ -39,6 +39,7 @@ module.exports = {
     "10"
   ],
   connWhiteList: [
+    "43000001001321224249",
     "43000001001321224014",
     "43000001001321224016",
     "43000001001321224017",
@@ -58,7 +59,6 @@ module.exports = {
     "43000001001321224018",
     "43000001001321224020",
     "43000001001321223248",
-    "43000001001321224249",
     "43000001001321224243",
     "43000001001321224245",
     "43000001001321224251",

@@ -391,12 +391,16 @@ let initMonitoringContainer={
             if($("#camIcon_"+val.guid).length===0){
                 setIcon(val.guid,val.type+"",val.position);
                 this.icons.push("camIcon_"+val.guid);
+                $("#camIcon_"+val.guid).on('click',function(){
+                    initMonitoringContainer.openVideoModal(val);
+                })
             }
         });
     },
     removeIcon:function(){
         this.icons.forEach(function (elem) {
-            bt_Plug_Annotation.removeAnnotation(elem);
+            $("#"+elem).off('click');
+            bt_Plug_Annotation.removeAnnotation(elem);            
         });
         this.icons=[];
     },

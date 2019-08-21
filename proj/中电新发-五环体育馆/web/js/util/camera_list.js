@@ -25,7 +25,7 @@ function SurveillanceCamera(option){
  * @description: 设置监控相机图标 
  */
 function setIcon(id,type,position){
-    let html=`<img src="`;
+    let html=`<img id="camIcon_${id}" src="`;
     let url="";
     switch(type){
         //枪机

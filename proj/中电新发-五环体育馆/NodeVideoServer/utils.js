@@ -23,12 +23,17 @@ module.exports = {
     fs.appendFileSync(filePath, content);
   },
   getFileCount(id) {
-    const directoryPath = path.join(__dirname, `public/video/${id}`);
-    if (fs.existsSync(directoryPath)) {
-      const files = fs.readdirSync(directoryPath);
-      return files.filter(f => f.includes(".ts")).length;
-    } else {
-      return 0;
-    }
+	  try{
+		const directoryPath = path.join(__dirname, `public/video/${id}`);
+		if (fs.existsSync(directoryPath)) {
+		  const files = fs.readdirSync(directoryPath);
+		  return files.filter(f => f.includes(".ts")).length;
+		} else {
+		  return 0;
+		}  
+	  }catch(err){
+		  console.log(err);
+		  return 0;
+	  }
   }
 };

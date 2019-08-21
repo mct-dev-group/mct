@@ -41,6 +41,7 @@ let MonitorConnPool = {
 				temp_sign++;
 			    if (temp_sign > 50) {
                     clearInterval(tempInterval);
+					MonitorConnPool.shutOffHeartBeatDetection(key, type)
 				}
               },
               success: function(result) {
@@ -53,6 +54,7 @@ let MonitorConnPool = {
                       );
                       return false;
                     }
+					MonitorConnPool.startHeartBeatDetection(key, type);
                     let SEQUENCE = 0;
                     let SNCount = 0;
                     let hls = null;
@@ -71,7 +73,7 @@ let MonitorConnPool = {
                     hls.on(Hls.Events.LEVEL_UPDATED, checkNeedRerun);
                     hls.on(Hls.Events.DESTROYING, rerun);
                     clearInterval(tempInterval);
-                    MonitorConnPool.startHeartBeatDetection(key, type);
+                    
                     function checkNeedRerun(evt, data) {
                       let curentSN = data.details.startSN;
                       if (curentSN < SEQUENCE || SNCount > 20) {
@@ -93,6 +95,7 @@ let MonitorConnPool = {
                 } else {
                   temp_sign++;
                   if (temp_sign > 50) {
+					  MonitorConnPool.shutOffHeartBeatDetection(key, type)
                     clearInterval(tempInterval);
                   }
                 }
@@ -159,7 +162,7 @@ let MonitorConnPool = {
     let hls = MonitorConnPool.hls_pool[list_id];
     if (hls) {
       hls.stopLoad();
-      delete MonitorConnPool.hls_pool[id];
+      delete MonitorConnPool.hls_pool[list_id];
       MonitorConnPool.shutOffHeartBeatDetection(id, type);
     }
   },

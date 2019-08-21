@@ -2,21 +2,25 @@ const Router = require("koa-router");
 const fs = require("fs");
 const path = require("path");
 const router = new Router();
-const { runFfmpeg, updateConnTimestamp, conn_pool } = require("./ffmpeg");
+const { addToTask, updateConnTimestamp, conn_pool } = require("./ffmpeg");
 const { getFileCount } = require("./utils");
 
 /**
  * get .ts file
  */
 router.get("/video/:id/:file", async (ctx, next) => {
-  const id = ctx.params.id;
-  const file = ctx.params.file;
-  const src = fs.createReadStream(
-    path.join(__dirname, `public/video/${id}/${file}`)
-  );
-  ctx.response.set("content-type", "video/mp2t");
-  ctx.set("Cache-Control", "no-cache");
-  ctx.body = src;
+	try{
+	  const id = ctx.params.id;
+	  const file = ctx.params.file;
+	  const src = fs.createReadStream(
+		path.join(__dirname, `public/video/${id}/${file}`)
+	  );
+	  ctx.response.set("content-type", "video/mp2t");
+	  ctx.set("Cache-Control", "no-cache");
+	  ctx.body = src;
+	}catch(err){
+		console.log(err);
+	}
   next();
   return;
 });
@@ -25,13 +29,17 @@ router.get("/video/:id/:file", async (ctx, next) => {
  * get .m3u8 file
  */
 router.get("/video/:id/", async (ctx, next) => {
-  const id = ctx.params.id;
-  const src = fs.createReadStream(
-    path.join(__dirname, `public/video/${id}/${id}.m3u8`)
-  );
-  ctx.response.set("content-type", "application/vnd.apple.mpegurl");
-  ctx.set("Cache-Control", "no-cache");
-  ctx.body = src;
+	try{
+	  const id = ctx.params.id;
+	  const src = fs.createReadStream(
+		path.join(__dirname, `public/video/${id}/${id}.m3u8`)
+	  );
+	  ctx.response.set("content-type", "application/vnd.apple.mpegurl");
+	  ctx.set("Cache-Control", "no-cache");
+	  ctx.body = src;
+	}catch(err){
+		console.log(err);
+	}
   next();
   return;
 });
@@ -51,7 +59,6 @@ router.get("/monitor/ready", async (ctx, next) => {
       data: null
     };
   } else {
-    //ctx.status = 400;
     ctx.body = {
       code: "400",
       msg: "this monitor is not ready.",
@@ -80,19 +87,16 @@ router.get(`/monitor/:id/heartBeatDetection`, async (ctx, next) => {
 });
 
 router.get("/monitor/key", async (ctx, next) => {
-  console.log(1111, conn_pool);
   const ID = ctx.request.query.key;
-  console.log(ID);
+  //console.log(ID);
   ctx.set("Cache-Control", "no-cache");
   const conn = conn_pool.get(ID);
-  console.log(conn)
   if (conn) {
     conn.timeStamp = Date.now();
   } else {
     try {
-      await runFfmpeg(ID);
+      await addToTask(ID);
     } catch (error) {
-      //ctx.status = 400;
       ctx.body = {
         code: "400",
         msg: "run ffmpeg error " + error.toString(),
