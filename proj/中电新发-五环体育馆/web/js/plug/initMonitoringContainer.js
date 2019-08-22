@@ -97,7 +97,8 @@ let initMonitoringContainer={
                 right:1px;
                 bottom:1px;
                 z-index:10;
-                color:#fff;
+                /* color:#fff; */
+                color:#ccc;
             }
             div.monitoringList{
                 width: 100%;
@@ -226,6 +227,9 @@ let initMonitoringContainer={
                 font-size: 20px;
                 color: #1296db;
             }
+            img[id^='camIcon_']{
+                cursor:pointer;
+            }
         </style>`);
         $("body").append(`<div class="tContainer" id="monitoringBox">
             <div class="tContainer-header">
@@ -261,7 +265,7 @@ let initMonitoringContainer={
                                     style="width: 100%;"
                                     height="163"
                                     highlight-current-row
-                                    size="small"
+                                    size="mini"
                                     @row-click="handleItemClick"
                                     :default-sort = "{prop: 'name'}"
                                     >
@@ -389,7 +393,7 @@ let initMonitoringContainer={
     setIcon:function(){
         camera_list.forEach(val=>{
             if($("#camIcon_"+val.guid).length===0){
-                setIcon(val.guid,val.type+"",val.position);
+                setIcon(val.guid,val.type,val.position);
                 this.icons.push("camIcon_"+val.guid);
                 $("#camIcon_"+val.guid).on('click',function(){
                     initMonitoringContainer.openVideoModal(val);
@@ -649,16 +653,17 @@ let initMonitoringContainer={
                             <div class="closeVideoModal" title="关闭"  id="closeVideoModal">
                                 <span class="iconfont ali-icon-guanbi"></span>
                             </div>
-                            <span class="cam_title"></span>
+                            <span class="cam_name"></span>
                         </div>
                         <div class="flexBox">
                             <div>
                                 <img src="image/camera.jpg" />
                             </div>
                             <div>
-                                <p>ID：<span class="cam_id"></span></p>
-                                <p>名称：<span class="cam_name"></span></p>
-                                <p>guid：<span class="cam_guid"></span></p>
+                                <p><b>GUID：</b><span class="cam_guid"></span></p>                                
+                                <p><b>位置：</b><span class="cam_place"></span></p>
+                                <p><b>说明：</b><span class="cam_description"></span></p>
+                                
                             </div>
                         </div>
                     </div>
@@ -671,10 +676,12 @@ let initMonitoringContainer={
         }else{
             $("#videoModal").show();
         }
-        $("span.cam_title").text(`${option.description.slice(0,4)} - ${option.guid.slice(-4)}`);
+        // $("span.cam_title").text(`${option.description.slice(0,4)} - ${option.guid.slice(-4)}`);
         $("span.cam_name").text(option.name);
-        $("span.cam_id").text(option.id);
         $("span.cam_guid").text(option.guid);
+        $("span.cam_place").text(option.place);
+        $("span.cam_description").text(option.description||'暂无说明');
+        
         //播放视频
         MonitorConnPool.play(option.guid,document.getElementById("cameraVideo-large"),2);
         this.videoModalId=option.guid;
@@ -751,15 +758,14 @@ let initMonitoringContainer={
             this.linesOfViewFrustum.push(elem.guid);
             this.videoOfListMode(elem,i);
             let html=`<div class="videoContainer" id="videoContainer-${elem.guid}">
-                <div class="videoInfo realTimeMonitoring_videoInfo">${elem.description.slice(0,4)} - ${elem.guid.slice(-4)}</div>
+                <div class="videoInfo realTimeMonitoring_videoInfo">${elem.name}</div>
             </div>`;
             bt_Plug_Annotation.setAnnotation("videoContainer-"+elem.guid, elem.position.x, elem.position.y, elem.position.z, -42, -36, html, false);
             this.guids.push(elem.guid);
         });
     },
-    videoOfListMode:function(option,index){
-        let html=`<video id="video-${option.guid}"  poster="image/loading.gif"></video><span>${option.description.slice(0,4)} - ${option.guid.slice(-4)}</span>`;
-		//let html=`<video id="video-${option.guid}"  ></video><span>${option.description.slice(0,4)} - ${option.guid.slice(-4)}</span>`;
+    videoOfListMode:function(option,index){        
+        let html=`<video id="video-${option.guid}"  poster="image/loading.gif"></video><span>${option.name}</span>`;		
         $($("div.videoItemBox")[index]).html(html);
 		$(`#video-${option.guid}`).on('canplay',function(){
 			$(this).attr('poster','');
