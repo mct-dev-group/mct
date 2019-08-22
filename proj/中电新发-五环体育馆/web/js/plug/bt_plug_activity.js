@@ -747,22 +747,34 @@ let bt_activity = {
         tableRowClassName({ row, rowIndex }) {
           return row.id;
         },
+        flyTo() {
+          const { x, y } = LL2Geo(
+            this.crrData.longitude,
+            this.crrData.latitude
+          );
+          bt_Util.executeScript(
+            `Render\\CameraControl\\FlyTo ${x} ${y} 300 ${x} ${y} 50;`
+          );
+        },
         showPoliceDetail() {
           this.crrData = this.crrAct.police.filter(
             p => arguments[0].id == p.id
           )[0];
+          this.flyTo();
           this.dialogPoliceVisible = true;
         },
         showPlaceDetail() {
           this.crrData = this.crrAct.place.filter(
             p => arguments[0].id == p.id
           )[0];
+          this.flyTo();
           this.dialogPlaceVisible = true;
         },
         showDepartmentDetail() {
           this.crrData = this.crrAct.department.filter(
             p => arguments[0].id == p.id
           )[0];
+          this.flyTo();
           this.dialogDepartmentVisible = true;
         },
         showPersonDetail() {
