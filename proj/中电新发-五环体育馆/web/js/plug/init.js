@@ -429,10 +429,11 @@ $(function(){
             case 4://告警
                 if($("#warnningBox").is(":hidden")){
                     $("#warnningBox").show();
-                    bt_plug_warnning.command_activate(0);
+                    bt_plug_warnning.plug_activate();
                 }else{
                     $("#warnningBox").hide();
-                    bt_plug_warnning.command_deactivate(0);
+										$('#infoBox').hide()
+                    bt_plug_warnning.plug_deactivate();
                 }
             break;
             case 5://模式

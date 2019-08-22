@@ -88,18 +88,24 @@ var _css = `<style>
   position: absolute;
   width: 500px;
   height: 400px;
-  background: rgba(255, 255, 255, 0.9);
+  /*background: rgba(255, 255, 255, 0.9);*/
+	background: rgba(48,89,111, 0.384);
   color: #409EFF;
   margin: 0 auto;
   /* top: 10%; */
   display: none;
-  z-index: 10;
+  z-index: 210;
   bottom: 20px;
   left: 190px;
+	border: 1px solid #fff;
 }
 
 #infoBox .el-card__header {
   padding: 10px 20px;
+	background: rgba(60,88,109,0.7);
+	border-top-left-radius: 5px;
+	border-top-right-radius: 5px;
+	border-bottom: 2px solid white;
 }
 #infoBox .clearfix {
   text-align: center;
@@ -107,7 +113,7 @@ var _css = `<style>
 #infoBox .clearfix>span{
   margin: 0 auto;
   font-size: 15px;
-  color: #409EFF;
+  color: #fff;
   display: inline-block;
 }
 #infoBox .el-card__body {
@@ -119,6 +125,8 @@ var _css = `<style>
   width: 60px;
   margin: 1px;
   margin-right: 10px;
+	color: #fff;
+	background: #2c425fa8;
 }
 </style>`
 var _html = `<!-- 预警布告栏 start -->
@@ -169,11 +177,11 @@ var _html = `<!-- 预警布告栏 start -->
     </div>
     <article v-if="info!=null">
         <div class="content" v-if="type == 'face'">
-            <img :src="info.subimage_list[0]" style="width: 500px;height: 150px;">
+            <img :src="info.subimage_list[0].StoragePath" style="width: 488px;height: 180px;margin: 0 5px;">
             <div style="display: flex; margin-top: 10px;">
-                <img :src="info.subimage_list[1]" style="width: 140px;height: 140px;">
-                <img :src="info.target_image_uri" style="width: 140px;height: 140px;">
-                <div>
+                <img :src="info.subimage_list[1].StoragePath" style="width: 140px;height: 140px; margin: 0 5px;">
+                <img :src="info.target_image_uri" style="width: 140px;height: 140px; margin: 0 5px;">
+                <div style="color: #fff;width: 195px;    margin: 0 5px;">
                     <el-tag size="mini">年龄范围</el-tag>{{info.age_lower_limit}}~{{info.age_up_limit}}岁
                     <br>
                     <el-tag size="mini">出现时间</el-tag>{{info.face_appear_time}}
@@ -190,11 +198,11 @@ var _html = `<!-- 预警布告栏 start -->
             </div>
         </div>
         <div class="content" v-else>
-            <img :src="info.subimage_list[0]" style="width: 500px;height: 150px;">
+            <img :src="info.subimage_list[0].StoragePath" style="width: 500px;height: 150px;margin: 0 5px;">
             <div style="display: flex; margin-top: 10px;">
-                <img :src="info.subimage_list[1]" style="width: 140px;height: 140px;">
-                <img :src="info.target_image_uri" style="width: 140px;height: 140px;">
-                <div>
+                <img :src="info.subimage_list[1].StoragePath" style="width: 140px;height: 140px;margin: 0 5px;">
+                <img :src="info.target_image_uri" style="width: 140px;height: 140px; margin: 0 5px;">
+                <div style="color: #fff;width: 195px; margin: 0 5px;">
                     <el-tag size="mini">出现时间</el-tag>{{info.appear_time}}
                     <br>
                     <el-tag size="mini">消失时间</el-tag>{{info.disappear_time}}
@@ -226,21 +234,19 @@ let bt_plug_warnning = new Plug()
 // 插件信息
 bt_plug_warnning.js_name = 'bt_plug_warnning'
 bt_plug_warnning.plug_name = '视频预警栏目'
-bt_plug_warnning.plug_icon = 'ali-icon-ditu-dibiao'
+// bt_plug_warnning.plug_icon = 'ali-icon-ditu-dibiao'
 bt_plug_warnning.plug_commandOnly = true
 bt_plug_warnning.plug_isOnMobile = false
 
 // 插件功能
 bt_plug_warnning.plug_commands = []
-bt_plug_warnning.plug_commands[0] = new Command("预警信息", 0, false, false)
+// bt_plug_warnning.plug_commands[0] = new Command("预警信息", 0, false, false)
 let warnningBoxShow = true
 bt_plug_warnning.command_activate = commandID => {
   switch (commandID) {
     case 0:
       console.log('command activated: ' + commandID)
-      $('#warnningBox').addClass('animated bounceInRight').show()
-      warnningBoxShow = true
-      $("li[data-type=4]").addClass("sideNav-isActive");
+      
       break
   
     default:
@@ -252,11 +258,6 @@ bt_plug_warnning.command_deactivate = commandID => {
   switch (commandID) {
     case 0:
       console.log('command deactivated: ' + commandID)
-      $('#warnningBox').removeClass('animated bounceInRight').hide()
-      $('#infoBox').removeClass('animated slideInDown').hide()
-      bt_Plug_Annotation.removeAnnotation('warnningPoi')
-      warnningBoxShow = false
-      $("li[data-type=4]").removeClass("sideNav-isActive");
       break
   
     default:
@@ -265,11 +266,24 @@ bt_plug_warnning.command_deactivate = commandID => {
 }
 
 bt_plug_warnning.plug_activate = () => {
-  console.log('plug activated')  
+  console.log('plug activated') 
+	// $('#warnningBox').addClass('animated bounceInRight').show()
+	$('#warnningBox').show()
+	warnningBoxShow = true
+	$("li[data-type=4]").addClass("sideNav-isActive");
 }
 
 bt_plug_warnning.plug_deactivate = () => {
   console.log('plug deactivated')  
+	// $('#warnningBox').removeClass('animated bounceInRight').hide()
+	// $('#infoBox').removeClass('animated slideInDown').hide()
+	$('#warnningBox').hide()
+	$('#infoBox').hide()
+	bt_Plug_Annotation.removeAnnotation('warnningPoi')
+	warnningBoxShow = false
+	warnning_vm.faceList = [];
+	warnning_vm.vehicleList = [];
+	$("li[data-type=4]").removeClass("sideNav-isActive");
 }
 
 bt_PlugManager.insert_plug(bt_plug_warnning);
@@ -280,11 +294,17 @@ var warnning_vm = new Vue({
     title: '近期警告',
     activeName: 'face',
     faceList: [],
-    vehicleList: []
+    vehicleList: [],
+		startDate:null
   },
   mounted () {
+		// 获取启动时系统时间
+		// this.startDate  = new Date('2019-08-06 19:19:12');
+		this.startDate  = new Date();
+		
     var self = this
     setInterval(function() {
+			self.startDate = new Date(self.startDate.getTime() + 3000);
       if (warnningBoxShow) {
         if (self.faceList.length > 100) {
           self.faceList.length = 100
@@ -295,7 +315,7 @@ var warnning_vm = new Vue({
         self.addFaceItem()
         self.addVehicleItem()
       }
-    },5000)
+    },3000)
   },
   updated () {
     this.$nextTick(function(){
@@ -323,7 +343,7 @@ var warnning_vm = new Vue({
           return str
       }
       date = date ? date :new Date()
-      date.setSeconds(date.getSeconds() - 3)
+			
       var yy = date.getFullYear()
       var mm = date.getMonth()+1
       var dd = date.getDate()
@@ -331,14 +351,37 @@ var warnning_vm = new Vue({
       var MM = date.getMinutes()
       var SS = date.getSeconds()
 
-      return toDou(mm)+'月'+toDou(dd)+'日'
-      // return yy+'-'+toDou(mm)+'-'+toDou(dd)+' '+toDou(HH)+':'+toDou(MM)+':'+toDou(SS)
+      // return toDou(mm)+'月'+toDou(dd)+'日'
+      return yy+'-'+toDou(mm)+'-'+toDou(dd)+' '+toDou(HH)+':'+toDou(MM)+':'+toDou(SS)
     },
+		getMyDate2 : function (date) {
+		  function toDou (num) {
+		      var str = ''
+		      if (num < 10) {
+		        str = '0'+num
+		      } else {
+		        str = ''+num
+		      }
+		      return str
+		  }
+		  date = date ? date :new Date()
+			
+		  var yy = date.getFullYear()
+		  var mm = date.getMonth()+1
+		  var dd = date.getDate()
+		  var HH = date.getHours()
+		  var MM = date.getMinutes()
+		  var SS = date.getSeconds()
+		
+		  return toDou(mm)+'月'+toDou(dd)+'日'
+		},
     addFaceItem: function () {
       var self = this
-      var date = this.getMyDate()
-      date = '2019-05-27 13:09:39'
-      var url= "http://"+location.hostname+":8014/sqlservice/v1/executeSql?sql=SELECT df.*, a.name FROM disposition_face df left join ape a on df.device_id = a.id where df.face_appear_time > '"+date+"' ORDER BY df.face_appear_time"
+      // date = '2019-05-27 13:09:39'
+			var date = this.getMyDate(this.startDate);
+			// this.startDate = new Date(this.startDate.getTime() + 3000);
+			
+      var url= "http://"+location.hostname+":8014/sqlservice/v1/executeSql?sql=SELECT df.*, a.name FROM disposition_face df right join ape a on df.device_id = a.id where df.face_appear_time > '"+date+"' and df.face_appear_time ORDER BY df.face_appear_time"
       // console.log(url)
       $.ajax({
         url: url,
@@ -347,9 +390,24 @@ var warnning_vm = new Vue({
           if (data.length > 0) {
             for (var i = 0; i < data.length; i++) {
               // data[i].device_id = self.getMyDate()
-              data[i].face_appear_time = self.getMyDate(new Date(data[i].face_appear_time))
+              // data[i].face_appear_time = self.getMyDate2(new Date(data[i].face_appear_time.replace('Z','')))
+							 data[i].face_appear_time = self.getMyDate2(new Date(data[i].face_appear_time))
               data[i].target_image_uri = data[i].target_image_uri ? data[i].target_image_uri: 'image/default.png'
-              data[i].subimage_list = data[i].subimage_list ? data[i].subimage_list : ['image/big_p.png','image/small_p.png']
+              // data[i].subimage_list = data[i].subimage_list ? data[i].subimage_list : ['image/big_p.png','image/small_p.png']
+							let subimage_list = [
+								{	
+									"StoragePath":"image/default_big.png",
+									"DeviceID":""
+								},
+								{
+									"StoragePath":"image/default_small.png",
+									"DeviceID":"",
+									"Height":206,
+									"Width":172
+								}
+							]
+							data[i].subimage_list = data[i].subimage_list ? JSON.parse(data[i].subimage_list) : subimage_list;
+							data[i].similaritydegree = Math.floor(data[i].similaritydegree)
               self.faceList.unshift(data[i])
             }
           }
@@ -359,9 +417,11 @@ var warnning_vm = new Vue({
     },
     addVehicleItem: function () {
       var self = this
-      var date = this.getMyDate()
-      date = '2019-05-27 13:09:39'
-      var url= "http://"+location.hostname+":8014/sqlservice/v1/executeSql?sql=SELECT dv.*,a.name FROM disposition_vehicle dv left join ape a on dv.device_id = a.id where dv.appear_time > '"+date+"' ORDER BY dv.appear_time"
+      // var date = this.getMyDate()
+      // date = '2019-05-27 13:09:39'
+			var date = this.getMyDate(this.startDate);
+			// this.startDate = new Date(this.startDate.getTime() + 3000);
+      var url= "http://"+location.hostname+":8014/sqlservice/v1/executeSql?sql=SELECT dv.*,a.name FROM disposition_vehicle dv right join ape a on dv.device_id = a.id where dv.appear_time > '"+date+"' ORDER BY dv.appear_time"
       console.log(url)
       $.ajax({
         url: url,
@@ -369,9 +429,22 @@ var warnning_vm = new Vue({
         success: function(data){
           if (data.length > 0) {
             for (var i = 0; i < data.length; i++) {
-              data[i].appear_time = self.getMyDate(new Date(data[i].appear_time))
+              data[i].appear_time = self.getMyDate2(new Date(data[i].appear_time))
               data[i].target_image_uri = data[i].target_image_uri ? data[i].target_image_uri: 'image/default.png'
-              data[i].subimage_list = data[i].subimage_list ? data[i].subimage_list : ['image/big_c.png','image/small_c.png']
+              // data[i].subimage_list = data[i].subimage_list ? data[i].subimage_list : ['image/big_c.png','image/small_c.png']
+							let subimage_list = [
+								{	
+									"StoragePath":"image/default_big.png",
+									"DeviceID":""
+								},
+								{
+									"StoragePath":"image/default_small.png",
+									"DeviceID":"",
+									"Height":206,
+									"Width":172
+								}
+							]
+							data[i].subimage_list = data[i].subimage_list ? JSON.parse(data[i].subimage_list) : subimage_list;
               self.vehicleList.unshift(data[i])
             }
           }
@@ -384,7 +457,7 @@ var warnning_vm = new Vue({
       // var self = this
       var id = data.device_id
       // id = 'd0587e35-81c3-11e9-adf8-00163e068fd6'
-      var url = "http://"+location.hostname+":8014/sqlservice/v1/executeSql?sql=SELECT longitude,latitude,name FROM ape WHERE id = '"+id +"'"
+      var url = "http://"+location.hostname+":8014/sqlservice/v1/executeSql?sql=SELECT longitude,latitude, space_z as height,name FROM ape WHERE id = '"+id +"'"
       console.log(url)
       $.ajax({
         url: url,
@@ -397,7 +470,9 @@ var warnning_vm = new Vue({
           // data.device_name = device[0].name
           // self.$set(data,'device_name',device[0].name)
           var ll = LL2Geo(device[0].longitude,device[0].latitude)
-          bt_Util.executeScript('Render\\CameraControl\\FlyTo2 '+ll.x+' '+ll.y+' 0;');
+					var height = device.height ? device.height : 0;
+          // bt_Util.executeScript('Render\\CameraControl\\FlyTo2 '+ll.x+' '+ll.y+' 0;');
+					bt_Util.executeScript(`Render\\CameraControl\\FlyTo ${ll.x} ${ll.y} ${height + 120} ${ll.x} ${ll.y} ${height};`);
           bt_Plug_Annotation.setAnnotation('warnningPoi', ll.x, ll.y, 100, -8, -16, "<div style='background:url(image/DefaultIcon.png); background-position:center left; background-repeat: no-repeat;width:16px;height:16px;line-height:16px;'></div>", false);
           // bt_Plug_Annotation.setAnnotation('warnningPoi2', ll.x, ll.y, 70, -8, -16, '<div>123</div>', false);
           setTimeout(function(){
@@ -491,7 +566,8 @@ var info_vm = new Vue({
     showInfo: function(data,type,deviceName) {
       var self = this
       this.$nextTick(function(){
-        $('#infoBox').addClass('animated slideInLeft').show()
+        // $('#infoBox').addClass('animated slideInLeft').show()
+				$('#infoBox').show()
         self.type = type
         if (type == 'face') {
           self.title = '人脸识别报警'

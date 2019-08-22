@@ -1,10 +1,29 @@
-﻿const Koa = require('koa');
+const Koa = require('koa');
 const cors = require('koa2-cors');
 const router = require('koa-router')();
 const Sequelize = require('sequelize');
 
 const app = new Koa();
-const sequelize = new Sequelize('mysql://yuanjing:yuanjing123456@100.85.228.94:3306/bigdataactiveplatform',{logging:false});
+/* const sequelize = new Sequelize('mysql://root:getinmysql@localhost:3306/20190820',{
+    logging:false,
+    dialectOptions: {
+        dateStrings: true,
+        typeCast(field, next) {
+            // for reading from database
+            if (field.type === "DATETIME") {
+            return field.string();
+            }
+            return next();
+        }
+    },
+});*/
+const sequelize = new Sequelize('mysql://yuanjing:yuanjing123456@47.105.123.78/bigdataactiveplatform',{
+    logging:false,
+    dialectOptions: {
+			dateStrings: true,
+			typeCast: true 
+		},
+});
 sequelize.authenticate()
     .then(() => {
         console.log('数据库连接成功！');
@@ -17,7 +36,7 @@ app.use(cors());
 
 router.get('/sqlservice/v1/executeSql', async ctx => {
     if(ctx.querystring !== "" && ctx.query.sql){
-        try {
+        try {            
             let result = await sequelize.query(ctx.query.sql,{type: sequelize.QueryTypes.SELECT});
             ctx.body=result;
         } catch (error) {
