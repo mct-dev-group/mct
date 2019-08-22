@@ -12,12 +12,11 @@ function SurveillanceCamera(option){
     let position=LL2Geo(option.longitude,option.latitude);
     position.z=this.space_z;
     this.position=position;
-    //给定默认值
-    this.nearest_sight_distance=this.nearest_sight_distance||5;
+    //给定默认值    
     this.farthest_sight_distance=this.farthest_sight_distance||100;
     this.view_angle_y=this.view_angle_y||Math.PI/4;
     this.width_span_rate=this.width_span_rate||16/9;
-    this.type=this.type||1;
+    this.type=this.type||'1';
 }
 
 
@@ -25,7 +24,7 @@ function SurveillanceCamera(option){
  * @description: 设置监控相机图标 
  */
 function setIcon(id,type,position){
-    let html=`<img id="camIcon_${id}" src="`;
+    let html=`<img id="camIcon_${id}" title='点击查看视频'  src="`;
     let url="";
     switch(type){
         //枪机
@@ -45,9 +44,8 @@ function setIcon(id,type,position){
 
 
 $.ajax({
-    type: "get",
-    // url: "http://"+window.location.hostname+":8014/sqlservice/v1/executeSql?sql=",
-    url: "http://"+window.location.hostname+":8014/sqlservice/v1/executeSql?sql=SELECT * FROM ape",
+    type: "get",    
+    url: "http://"+window.location.hostname+":8014/sqlservice/v1/executeSql?sql=SELECT * FROM ape",    
     success: function (result) {        
         result.forEach(element => {
             camera_list.push(new SurveillanceCamera(element));            
