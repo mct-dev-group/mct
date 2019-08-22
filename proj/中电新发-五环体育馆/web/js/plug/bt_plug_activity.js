@@ -8,9 +8,11 @@ plug_activity.plug_activate = function() {
   $("head").append(
     `
     <style>
+    #ActivityVue {
+      display:none;
+    }
     #keyActivity {
       position: absolute;
-      display:none;
       bottom: 20px;
       left: 190px;
 	    z-index:200;
@@ -99,11 +101,11 @@ plug_activity.plug_activate = function() {
   });
 
   $("li[data-type=2]").addClass("sideNav-isActive");
-  $("#keyActivity")[0].style.display = "block";
+  $("#ActivityVue")[0].style.display = "block";
 };
 
 plug_activity.plug_deactivate = function() {
-  $("#keyActivity")[0] && $("#keyActivity")[0].remove();
+  $("#ActivityVue")[0] && $("#ActivityVue")[0].remove();
   bt_activity.deactivate();
   $("li[data-type=2]").removeClass("sideNav-isActive");
 };
@@ -142,7 +144,7 @@ let bt_activity = {
     }
   },
   deactivate: function() {
-    $("#keyActivity")[0] ? ($("#keyActivity")[0].style.display = "none") : null;
+    $("#ActivityVue")[0] ? ($("#ActivityVue")[0].style.display = "none") : null;
     bt_activity.vueIns = null;
     bt_activity.inter && bt_activity.removeAllPOI();
   },
