@@ -1,7 +1,7 @@
 let plug_intelligentTracking = new Plug();
 plug_intelligentTracking.js_name = 'plug_intelligentTracking';
 plug_intelligentTracking.plug_icon="ali-icon-yunyingguanli";
-plug_intelligentTracking.plug_name = '智能追踪';
+plug_intelligentTracking.plug_name = '实时监控';
 plug_intelligentTracking.plug_commandOnly = true;
 
 
