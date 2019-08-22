@@ -4,25 +4,12 @@ const router = require('koa-router')();
 const Sequelize = require('sequelize');
 
 const app = new Koa();
-/* const sequelize = new Sequelize('mysql://root:getinmysql@localhost:3306/20190820',{
-    logging:false,
-    dialectOptions: {
-        dateStrings: true,
-        typeCast(field, next) {
-            // for reading from database
-            if (field.type === "DATETIME") {
-            return field.string();
-            }
-            return next();
-        }
-    },
-});*/
 const sequelize = new Sequelize('mysql://yuanjing:yuanjing123456@47.105.123.78/bigdataactiveplatform',{
     logging:false,
     dialectOptions: {
-			dateStrings: true,
-			typeCast: true 
-		},
+        dateStrings: true,
+        typeCast: true 
+    },
 });
 sequelize.authenticate()
     .then(() => {
