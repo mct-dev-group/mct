@@ -89,7 +89,7 @@ var _css = `<style>
   width: 700px;
   height: 520px;
   /*background: rgba(255, 255, 255, 0.9);*/
-	background: rgba(48,89,111, 0.384);
+	background: rgba(48,89,111, 0.9);
   color: #409EFF;
   margin: 0 auto;
   /* top: 10%; */
@@ -403,7 +403,7 @@ var warnning_vm = new Vue({
             for (var i = 0; i < data.length; i++) {
 							data[i].face_appear_time_format = self.getMyDate2(new Date(data[i].face_appear_time));
 							data[i].similaritydegree = Number(data[i].similaritydegree).toFixed(2);
-              /*data[i].target_image_uri = data[i].target_image_uri ? data[i].target_image_uri: 'image/default.png'
+              data[i].target_image_uri = data[i].target_image_uri ? data[i].target_image_uri: 'image/default.png'
 							let subimage_list = [
 								{	
 									"StoragePath":"image/default_big.png",
@@ -416,21 +416,21 @@ var warnning_vm = new Vue({
 									"Width":172
 								}
 							]
-							data[i].subimage_list = data[i].subimage_list ? JSON.parse(data[i].subimage_list) : subimage_list;*/
-							data[i].target_image_uri = 'image/test/微信图片_20190723115339.jpg'
-							let subimage_list = [
-								{	
-									"StoragePath":'image/test/ZFXkXV1Kjz6AZ0k5AANxrOBBUgQ381.jpg',
-									"DeviceID":""
-								},
-								{
-									"StoragePath":'image/test/43000001001321223052_2019-08-07_16_43_41_79.jpg',
-									"DeviceID":"",
-									"Height":206,
-									"Width":172
-								}
-							]
-							data[i].subimage_list = subimage_list;
+							data[i].subimage_list = data[i].subimage_list ? JSON.parse(data[i].subimage_list) : subimage_list;
+							// data[i].target_image_uri = 'image/test/微信图片_20190723115339.jpg'
+							// let subimage_list = [
+							// 	{	
+							// 		"StoragePath":'image/test/ZFXkXV1Kjz6AZ0k5AANxrOBBUgQ381.jpg',
+							// 		"DeviceID":""
+							// 	},
+							// 	{
+							// 		"StoragePath":'image/test/43000001001321223052_2019-08-07_16_43_41_79.jpg',
+							// 		"DeviceID":"",
+							// 		"Height":206,
+							// 		"Width":172
+							// 	}
+							// ]
+							// data[i].subimage_list = subimage_list;
               self.faceList.unshift(data[i])
             }
           }
@@ -461,7 +461,7 @@ var warnning_vm = new Vue({
             for (var i = 0; i < data.length; i++) {
 							data[i].appear_time_format = self.getMyDate2(new Date(data[i].appear_time));
 							data[i].similaritydegree = Number(data[i].similaritydegree).toFixed(2);
-              /*data[i].target_image_uri = data[i].target_image_uri ? data[i].target_image_uri: 'image/default.png'
+              data[i].target_image_uri = data[i].target_image_uri ? data[i].target_image_uri: 'image/default.png'
 							let subimage_list = [
 								{	
 									"StoragePath":"image/default_big.png",
@@ -474,21 +474,21 @@ var warnning_vm = new Vue({
 									"Width":172
 								}
 							]
-							data[i].subimage_list = data[i].subimage_list ? JSON.parse(data[i].subimage_list) : subimage_list;*/
-							data[i].target_image_uri = 'image/test/a.jpg'
-							let subimage_list = [
-								{	
-									"StoragePath":'image/test/ZFXkY11LgOeAFLLNAAWPoeBzhMA930.jpg',
-									"DeviceID":""
-								},
-								{
-									"StoragePath":'image/test/ZFXkY11LgOeAeyiIAAAbt7i55_I598.jpg',
-									"DeviceID":"",
-									"Height":206,
-									"Width":172
-								}
-							]
-							data[i].subimage_list = subimage_list;
+							data[i].subimage_list = data[i].subimage_list ? JSON.parse(data[i].subimage_list) : subimage_list;
+							// data[i].target_image_uri = 'image/test/a.jpg'
+							// let subimage_list = [
+							// 	{	
+							// 		"StoragePath":'image/test/ZFXkY11LgOeAFLLNAAWPoeBzhMA930.jpg',
+							// 		"DeviceID":""
+							// 	},
+							// 	{
+							// 		"StoragePath":'image/test/ZFXkY11LgOeAeyiIAAAbt7i55_I598.jpg',
+							// 		"DeviceID":"",
+							// 		"Height":206,
+							// 		"Width":172
+							// 	}
+							// ]
+							// data[i].subimage_list = subimage_list;
               self.vehicleList.unshift(data[i])
             }
           }
