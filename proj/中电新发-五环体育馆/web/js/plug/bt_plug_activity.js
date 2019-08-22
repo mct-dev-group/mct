@@ -508,7 +508,7 @@ let bt_activity = {
           </el-table-column>
           <el-table-column align="center" show-overflow-tooltip="" prop="plan_type" label="预案类型" width="180">
           </el-table-column>
-          <el-table-column align="center" show-overflow-tooltip="" prop="html_path" label="查看文档" width="100">
+          <el-table-column align="center" show-overflow-tooltip="" prop="html_path" label="文档" width="100">
            <template slot-scope="scope" size="mini">
             <el-button @click="openLink(scope.row)" type="text" size="small">
              查看
@@ -721,23 +721,23 @@ let bt_activity = {
             }, 100);
           };
           if (className.includes("plan")) {
-            $("#tab-1").click();
+            $("#keyActivity #tab-1")[0].click();
             scrollTo(id);
           }
           if (className.includes("police")) {
-            $("#tab-2").click();
+            $("#keyActivity #tab-2")[0].click();
             scrollTo(id);
           }
           if (className.includes("department")) {
-            $("#tab-3").click();
+            $("#keyActivity #tab-3")[0].click();
             scrollTo(id);
           }
           if (className.includes("person")) {
-            $("#tab-4").click();
+            $("#keyActivity #tab-4")[0].click();
             scrollTo(id);
           }
           if (className.includes("place")) {
-            $("#tab-5").click();
+            $("#keyActivity #tab-5")[0].click();
             scrollTo(id);
           }
         },
