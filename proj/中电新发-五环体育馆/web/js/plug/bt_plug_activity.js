@@ -685,6 +685,9 @@ let bt_activity = {
 
   initVue: function() {
     if (bt_activity.count.length != 5 || bt_activity.vueIns) {
+      bt_activity.addPolicePOI();
+      bt_activity.addPlacePOI();
+      bt_activity.addDepartmentPOI();
       return;
     }
     bt_activity.vueIns = new Vue({
@@ -826,10 +829,6 @@ let bt_activity = {
         activity: function() {}
       }
     });
-
-    bt_activity.addPolicePOI();
-    bt_activity.addPlacePOI();
-    bt_activity.addDepartmentPOI();
   }
 };
 bt_activity.getKeyActivity();
