@@ -86,8 +86,8 @@ var _css = `<style>
 #infoBox{
   /* position: relative; */
   position: absolute;
-  width: 500px;
-  height: 400px;
+  width: 700px;
+  height: 520px;
   /*background: rgba(255, 255, 255, 0.9);*/
 	background: rgba(48,89,111, 0.384);
   color: #409EFF;
@@ -144,9 +144,9 @@ var _html = `<!-- 预警布告栏 start -->
               <ul class="list">
                 <li v-for="(item, index) in faceList" :key="faceList.id" @click="clickRow(item,'face')">
                   <div>
-                    <span style="display: inline-block;width: 190px;overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">位置：{{item.name}}</span>
+                    <span style="display: inline-block;width: 190px;overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">摄像头：{{item.diviceName}}</span>
                     <span>人脸信息</span>
-                    <span>{{item.face_appear_time}}</span>
+                    <span>{{item.face_appear_time_format}}</span>
                   </div>
                 </li>
               </ul>
@@ -159,9 +159,9 @@ var _html = `<!-- 预警布告栏 start -->
               <ul class="list">
                 <li v-for="(item, index) in vehicleList" :key="vehicleList.id" @click="clickRow(item),'vehicle'">
                   <div>
-                    <span style="display: inline-block;width: 190px;overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">位置：{{item.name}}</span>
+                    <span style="display: inline-block;width: 190px;overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">摄像头：{{item.diviceName}}</span>
                     <span>卡口信息</span>
-                    <span>{{item.appear_time}}</span>
+                    <span>{{item.appear_time_format}}</span>
                   </div>
                 </li>
               </ul>
@@ -173,48 +173,57 @@ var _html = `<!-- 预警布告栏 start -->
   </div>
 <el-card id="infoBox" style="animation-duration: 500ms">
     <div slot="header" class="clearfix">
-      <span style="width: 445px;">{{title}} - {{deviceName}}</span><span style="cursor: pointer;" @click="close">X</span>
+      <span style="width: 620px;">{{title}} - {{deviceName}}</span><span style="cursor: pointer;" @click="close">X</span>
     </div>
     <article v-if="info!=null">
         <div class="content" v-if="type == 'face'">
-            <img :src="info.subimage_list[0].StoragePath" style="width: 488px;height: 180px;margin: 0 5px;">
+            <img :src="info.subimage_list[0].StoragePath" style="width: 688px;height: 230px;margin: 0 5px;">
             <div style="display: flex; margin-top: 10px;">
-                <img :src="info.subimage_list[1].StoragePath" style="width: 140px;height: 140px; margin: 0 5px;">
-                <img :src="info.target_image_uri" style="width: 140px;height: 140px; margin: 0 5px;">
-                <div style="color: #fff;width: 195px;    margin: 0 5px;">
-                    <el-tag size="mini">年龄范围</el-tag>{{info.age_lower_limit}}~{{info.age_up_limit}}岁
-                    <br>
+                <img :src="info.subimage_list[1].StoragePath" style="width: 220px;height: 220px; margin: 0 5px;">
+                <img :src="info.target_image_uri" style="width: 220px;height: 220px; margin: 0 5px;">
+                <div style="color: #fff;width: 220px; margin: 0 5px;">
+                    
                     <el-tag size="mini">出现时间</el-tag>{{info.face_appear_time}}
                     <br>
                     <el-tag size="mini">消失时间</el-tag>{{info.face_disappear_time}}
                     <br>
-                    <el-tag size="mini">性别</el-tag>{{info.gender_code | genderFilter}}
+										<el-tag size="mini">名字</el-tag>{{info.name}}
+										<br>
+                    <el-tag size="mini">性别</el-tag>{{info.GenderTypeExplain}}
                     <br>
+										<el-tag size="mini">年龄范围</el-tag>{{info.age_lower_limit}}~{{info.age_up_limit}}岁
+										<br>
                     <el-tag size="mini">肤色</el-tag>{{info.skin_color}}
                     <br>
+										<el-tag size="mini">名单类型</el-tag>{{info.listTypeExplain}}
+										<br>
                     <el-tag size="mini">相似度</el-tag>{{info.similaritydegree}}%
                     <br>
                 </div>
             </div>
         </div>
         <div class="content" v-else>
-            <img :src="info.subimage_list[0].StoragePath" style="width: 500px;height: 150px;margin: 0 5px;">
+            <img :src="info.subimage_list[0].StoragePath" style="width: 688px;height: 230px;margin: 0 5px;">
             <div style="display: flex; margin-top: 10px;">
-                <img :src="info.subimage_list[1].StoragePath" style="width: 140px;height: 140px;margin: 0 5px;">
-                <img :src="info.target_image_uri" style="width: 140px;height: 140px; margin: 0 5px;">
-                <div style="color: #fff;width: 195px; margin: 0 5px;">
+                <img :src="info.subimage_list[1].StoragePath" style="width: 220px;height: 220px;margin: 0 5px;">
+                <img :src="info.target_image_uri" style="width: 220px;height: 220px; margin: 0 5px;">
+                <div style="color: #fff;width: 220px; margin: 0 5px;">
                     <el-tag size="mini">出现时间</el-tag>{{info.appear_time}}
                     <br>
                     <el-tag size="mini">消失时间</el-tag>{{info.disappear_time}}
                     <br>
-                    <el-tag size="mini">车牌号</el-tag>{{info.plate_no}}
-                    <br>
-                    <el-tag size="mini">车牌类型</el-tag>{{info.plate_class}}
-                    <br>
+										<el-tag size="mini">车牌类型</el-tag>{{info.PlateClassTypeExplain}}
+										<br>
                     <el-tag size="mini">车牌颜色</el-tag>{{info.plate_color|plate_colorFilter}}
                     <br>
-                    <el-tag size="mini">车辆类型</el-tag>{{info.vehicle_class}}
+                    <el-tag size="mini">车牌号</el-tag>{{info.plate_no}}
                     <br>
+                    <el-tag size="mini">车辆类型</el-tag>{{info.VehicleClassTypeExplain}}
+                    <br>
+										<el-tag size="mini">车辆品牌</el-tag>{{info.VehicleBrandTypeExplain}}
+										<br>
+										<el-tag size="mini">车辆型号</el-tag>{{info.VehicleModelName}}
+										<br>
                     <el-tag size="mini">车身颜色</el-tag>{{info.vehicle_color|plate_colorFilter}}
                     <br>
                     <el-tag size="mini">相似度</el-tag>{{info.similaritydegree}}%
@@ -351,7 +360,6 @@ var warnning_vm = new Vue({
       var MM = date.getMinutes()
       var SS = date.getSeconds()
 
-      // return toDou(mm)+'月'+toDou(dd)+'日'
       return yy+'-'+toDou(mm)+'-'+toDou(dd)+' '+toDou(HH)+':'+toDou(MM)+':'+toDou(SS)
     },
 		getMyDate2 : function (date) {
@@ -377,23 +385,25 @@ var warnning_vm = new Vue({
 		},
     addFaceItem: function () {
       var self = this
-      // date = '2019-05-27 13:09:39'
 			var date = this.getMyDate(this.startDate);
-			// this.startDate = new Date(this.startDate.getTime() + 3000);
-			
-      var url= "http://"+location.hostname+":8014/sqlservice/v1/executeSql?sql=SELECT df.*, a.name FROM disposition_face df right join ape a on df.device_id = a.id where df.face_appear_time > '"+date+"' and df.face_appear_time ORDER BY df.face_appear_time"
-      // console.log(url)
+			// var sql = "SELECT df.*, a.name FROM disposition_face df right join ape a on df.device_id = a.id where df.face_appear_time > '"+date+"' and df.face_appear_time ORDER BY df.face_appear_time";
+      var sql = `SELECT df.*, a.NAME as diviceName, gt.GenderTypeExplain, lt.listTypeExplain FROM disposition_face df 
+					RIGHT JOIN ape a ON df.device_id = a.id 
+					left join genderType gt on df.gender_code = gt.GenderTypeNum 
+					left join listType lt on df.list_type = lt.ListTypeNum 
+					WHERE df.face_appear_time > '${date}' 
+					AND df.face_appear_time ORDER BY df.face_appear_time`;
+			var url= "http://"+location.hostname+":8014/sqlservice/v1/executeSql?sql="+sql;
+
       $.ajax({
         url: url,
         type:'GET',
         success: function(data){
           if (data.length > 0) {
             for (var i = 0; i < data.length; i++) {
-              // data[i].device_id = self.getMyDate()
-              // data[i].face_appear_time = self.getMyDate2(new Date(data[i].face_appear_time.replace('Z','')))
-							 data[i].face_appear_time = self.getMyDate2(new Date(data[i].face_appear_time))
-              data[i].target_image_uri = data[i].target_image_uri ? data[i].target_image_uri: 'image/default.png'
-              // data[i].subimage_list = data[i].subimage_list ? data[i].subimage_list : ['image/big_p.png','image/small_p.png']
+							data[i].face_appear_time_format = self.getMyDate2(new Date(data[i].face_appear_time));
+							data[i].similaritydegree = Number(data[i].similaritydegree).toFixed(2);
+              /*data[i].target_image_uri = data[i].target_image_uri ? data[i].target_image_uri: 'image/default.png'
 							let subimage_list = [
 								{	
 									"StoragePath":"image/default_big.png",
@@ -406,8 +416,21 @@ var warnning_vm = new Vue({
 									"Width":172
 								}
 							]
-							data[i].subimage_list = data[i].subimage_list ? JSON.parse(data[i].subimage_list) : subimage_list;
-							data[i].similaritydegree = Math.floor(data[i].similaritydegree)
+							data[i].subimage_list = data[i].subimage_list ? JSON.parse(data[i].subimage_list) : subimage_list;*/
+							data[i].target_image_uri = 'image/test/微信图片_20190723115339.jpg'
+							let subimage_list = [
+								{	
+									"StoragePath":'image/test/ZFXkXV1Kjz6AZ0k5AANxrOBBUgQ381.jpg',
+									"DeviceID":""
+								},
+								{
+									"StoragePath":'image/test/43000001001321223052_2019-08-07_16_43_41_79.jpg',
+									"DeviceID":"",
+									"Height":206,
+									"Width":172
+								}
+							]
+							data[i].subimage_list = subimage_list;
               self.faceList.unshift(data[i])
             }
           }
@@ -417,11 +440,18 @@ var warnning_vm = new Vue({
     },
     addVehicleItem: function () {
       var self = this
-      // var date = this.getMyDate()
-      // date = '2019-05-27 13:09:39'
 			var date = this.getMyDate(this.startDate);
-			// this.startDate = new Date(this.startDate.getTime() + 3000);
-      var url= "http://"+location.hostname+":8014/sqlservice/v1/executeSql?sql=SELECT dv.*,a.name FROM disposition_vehicle dv right join ape a on dv.device_id = a.id where dv.appear_time > '"+date+"' ORDER BY dv.appear_time"
+			// var sql = "SELECT dv.*,a.name FROM disposition_vehicle dv right join ape a on dv.device_id = a.id where dv.appear_time > '"+date+"' ORDER BY dv.appear_time";
+      
+      var sql = `SELECT dv.*,a.NAME as diviceName, pct.PlateClassTypeExplain,vct.VehicleClassTypeExplain,vbt.VehicleBrandTypeExplain, vmt.Name AS VehicleModelName    
+			 FROM disposition_vehicle dv 
+				right join ape a on dv.device_id = a.id 
+				left join plateClassType pct on dv.plate_class = pct.PlateClassTypeNum 
+				left join vehicleClassType vct on dv.vehicle_class = vct.VehicleClassTypeNum 
+				left join vehicleBrandType vbt on dv.vehicle_brand = vbt.VehicleBrandTypeNum 
+				left join vehicleModelType vmt on dv.vehicle_model = vmt.VehicleModelID 
+				where dv.appear_time > '${date}' ORDER BY dv.appear_time`;
+			var url= "http://"+location.hostname+":8014/sqlservice/v1/executeSql?sql="+sql;
       console.log(url)
       $.ajax({
         url: url,
@@ -429,9 +459,9 @@ var warnning_vm = new Vue({
         success: function(data){
           if (data.length > 0) {
             for (var i = 0; i < data.length; i++) {
-              data[i].appear_time = self.getMyDate2(new Date(data[i].appear_time))
-              data[i].target_image_uri = data[i].target_image_uri ? data[i].target_image_uri: 'image/default.png'
-              // data[i].subimage_list = data[i].subimage_list ? data[i].subimage_list : ['image/big_c.png','image/small_c.png']
+							data[i].appear_time_format = self.getMyDate2(new Date(data[i].appear_time));
+							data[i].similaritydegree = Number(data[i].similaritydegree).toFixed(2);
+              /*data[i].target_image_uri = data[i].target_image_uri ? data[i].target_image_uri: 'image/default.png'
 							let subimage_list = [
 								{	
 									"StoragePath":"image/default_big.png",
@@ -444,7 +474,21 @@ var warnning_vm = new Vue({
 									"Width":172
 								}
 							]
-							data[i].subimage_list = data[i].subimage_list ? JSON.parse(data[i].subimage_list) : subimage_list;
+							data[i].subimage_list = data[i].subimage_list ? JSON.parse(data[i].subimage_list) : subimage_list;*/
+							data[i].target_image_uri = 'image/test/a.jpg'
+							let subimage_list = [
+								{	
+									"StoragePath":'image/test/ZFXkY11LgOeAFLLNAAWPoeBzhMA930.jpg',
+									"DeviceID":""
+								},
+								{
+									"StoragePath":'image/test/ZFXkY11LgOeAeyiIAAAbt7i55_I598.jpg',
+									"DeviceID":"",
+									"Height":206,
+									"Width":172
+								}
+							]
+							data[i].subimage_list = subimage_list;
               self.vehicleList.unshift(data[i])
             }
           }
