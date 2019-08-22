@@ -8,11 +8,14 @@ plug_activity.plug_activate = function() {
   $("head").append(
     `
     <style>
+    #ActivityVue {
+      display:none;
+    }
     #keyActivity {
       position: absolute;
-      display:none;
       bottom: 20px;
-      left: 190px;	  
+      left: 190px;
+	    z-index:200;
     }
     .box-card {
       color:#111;
@@ -93,16 +96,16 @@ plug_activity.plug_activate = function() {
     </style>`
   );
   bt_activity.appendVueBody();
-  $(function(){
+  $(function() {
     bt_activity.active();
-  })
-  
+  });
+
   $("li[data-type=2]").addClass("sideNav-isActive");
-  $("#keyActivity")[0].style.display = "block";
+  $("#ActivityVue")[0].style.display = "block";
 };
 
 plug_activity.plug_deactivate = function() {
-  $("#keyActivity")[0] && $("#keyActivity")[0].remove();
+  $("#ActivityVue")[0] && $("#ActivityVue")[0].remove();
   bt_activity.deactivate();
   $("li[data-type=2]").removeClass("sideNav-isActive");
 };
@@ -141,7 +144,7 @@ let bt_activity = {
     }
   },
   deactivate: function() {
-    $("#keyActivity")[0] ? ($("#keyActivity")[0].style.display = "none") : null;
+    $("#ActivityVue")[0] ? ($("#ActivityVue")[0].style.display = "none") : null;
     bt_activity.vueIns = null;
     bt_activity.inter && bt_activity.removeAllPOI();
   },
@@ -184,7 +187,7 @@ let bt_activity = {
     // bt_activity.commandSelect = plug_activity.plug_commands;
     bt_PlugManager.insert_plug(plug_activity);
     plug_activity.plug_activate();
-    
+
     // console.log(plug_activity.plug_commands);
   },
   addPolicePOI: function() {
@@ -440,346 +443,244 @@ let bt_activity = {
   // </el-table-column> */}
 
   appendVueBody: function() {
-    $("body").append(`<div id="keyActivity">
-    <div class="tContainer">
-    <div class="tContainer-header">
-        <div class="tContainer-header-icon bgImage-activity"></div>
-        <div class="tContainer-header-title">重点活动</div>
-        <div class="tContainer-header-btn">
-          <el-select v-model="value" placeholder="请选择" @change="commandActivate">
-            <el-option
-              v-for="item in command"
-              :key="item.command_id"
-              :label="item.command_name"
-              :value="item.command_id">
-            </el-option>
-          </el-select>
-        </div>
-    </div>
-    <div class="tContainer-content">
-
-    <el-tabs type="border-card" class="box-card" @tab-click="showPOI" stretch v-cloak>
-    <el-tab-pane label="全部" >
-      <el-form label-position="left" label-width="80px">
-        <el-form-item label="预案" style='margin-bottom: 0px;font-size:14px;'>
-          <el-tag class='plan' v-show="crrAct.plan[0].id" :id="crrAct.plan[0].id" type="danger" @click.native="handleItemClick">
-            {{crrAct.plan[0].plan_key_words}}
-          </el-tag>
-          <el-tag v-show="planCount" class='plan' :id="crrAct.plan[0].id"  @click.native="handleItemClick">
-            ......
-          </el-tag>
-        </el-form-item>
-        <el-form-item label="警员"  style='margin-bottom: 0px;font-size:14px;'>
-          <el-tag class='police' v-show="crrAct.police[0].id" :id="crrAct.police[0].id"  @click.native="handleItemClick">
-            {{crrAct.police[0].police_name}}
-          </el-tag>
-          <el-tag v-show="policeCount" class='police' :id="crrAct.police[0].id"  @click.native="handleItemClick">
-            ......
-          </el-tag>
-        </el-form-item>
-        <el-form-item label="重点单位" style='margin-bottom: 0px;font-size:14px;'>
-        <el-tag class='department'  v-show="crrAct.department[0].id"  :id="crrAct.department[0].id"  @click.native="handleItemClick">
-          {{crrAct.department[0].department_name}}
-        </el-tag>
-        <el-tag v-show="departmentCount" class='department' :id="crrAct.department[0].id"  @click.native="handleItemClick">
-          ......
-        </el-tag>
-        </el-form-item>
-        <el-form-item label="重点人员" style='margin-bottom: 0px;font-size:14px;'>
-        <el-tag class='person' v-show="crrAct.person[0].id" :id="crrAct.person[0].id"  @click.native="handleItemClick">
-          {{crrAct.person[0].person_name}}
-        </el-tag>
-        <el-tag v-show="personCount" class='person' :id="crrAct.person[0].id"  @click.native="handleItemClick">
-          ......
-        </el-tag>
-        </el-form-item>
-        <el-form-item label="重点部位" style='margin-bottom: 0px;font-size:14px;' @click="handleItemClick">
-        <el-tag class='place' v-show="crrAct.place[0].id" :id="crrAct.place[0].id"  @click.native="handleItemClick">
-          {{crrAct.place[0].place_name}}
-        </el-tag>
-        <el-tag v-show="placeCount" class='place' :id="crrAct.place[0].id"  @click.native="handleItemClick">
-          ......
-        </el-tag>
-      </el-form-item>
-    </el-form>
-    </el-tab-pane>
-    <el-tab-pane label="预案">
-      <el-table
-        size="small"
-        :data="crrAct.plan"
-        style="width: 100%" :row-class-name="tableRowClassName">
-        <el-table-column
-          align="center"
-          show-overflow-tooltip
-          prop="plan_key_words"
-          label="关键字"
-          width="80">
-        </el-table-column>
-        <el-table-column
-        align="center"
-        show-overflow-tooltip
-          prop="plan_type"
-          label="预案类型"
-          width="180">
-        </el-table-column>
-
-        <el-table-column
-        align="center"
-        show-overflow-tooltip
-          prop="html_path"
-          label="查看文档"
-          width="100">
-          <template slot-scope="scope" size="mini">
-          <el-button @click="openLink(scope.row)" type="text" size="small">查看</el-button>
-        </template>
-        </el-table-column>
-      </el-table>
-    </el-tab-pane>
-    <el-tab-pane label="警员" >
-      <template>
-      <el-table
-        size="small"
-        :data="crrAct.police"
-        style="width: 100%" :row-class-name="tableRowClassName"
-        @row-click="showPoliceDetail">
-        <el-table-column
-        align="center"
-        show-overflow-tooltip
-          prop="police_name"
-          label="姓名"
-          width="80">
-        </el-table-column>
-        <el-table-column
-        align="center"
-        show-overflow-tooltip
-          prop="police_gender"
-          label="性别"
-          width="80">
-        </el-table-column>
-        <el-table-column
-        align="center"
-        show-overflow-tooltip
-          prop="police_age"
-          label="年龄"
-          width="80">
-        </el-table-column>
-        <el-table-column
-        align="center"
-        show-overflow-tooltip
-          prop="org_name"
-          label="单位">
-        </el-table-column>
-      </el-table>
-    </template>
-    </el-tab-pane>
-      <el-tab-pane label="重点单位">
-        <template>
-        <el-table
-          size="small"
-          :data="crrAct.department"
-          style="width: 100%" :row-class-name="tableRowClassName"
-          @row-click="showDepartmentDetail">
-          <el-table-column
-          align="center"
-          show-overflow-tooltip
-            prop="department_name"
-            label="名称"
-            width="120">
+    $("body").append(`<div id="ActivityVue">
+    <div id="keyActivity">
+     <div class="tContainer">
+      <div class="tContainer-header">
+       <div class="tContainer-header-icon bgImage-activity"></div>
+       <div class="tContainer-header-title">
+        重点活动
+       </div>
+       <div class="tContainer-header-btn">
+        <el-select v-model="value" placeholder="请选择" @change="commandActivate">
+         <el-option v-for="item in command" :key="item.command_id" :label="item.command_name" :value="item.command_id">
+         </el-option>
+        </el-select>
+       </div>
+      </div>
+      <div class="tContainer-content">
+       <el-tabs type="border-card" class="box-card" @tab-click="showPOI" stretch="" v-cloak="">
+        <el-tab-pane label="全部">
+         <el-form label-position="left" label-width="80px">
+          <el-form-item label="预案" style="margin-bottom: 0px;font-size:14px;">
+           <el-tag class="plan" v-show="crrAct.plan[0].id" :id="crrAct.plan[0].id" type="danger" @click.native="handleItemClick">
+             {{crrAct.plan[0].plan_key_words}}
+           </el-tag>
+           <el-tag v-show="planCount" class="plan" :id="crrAct.plan[0].id" @click.native="handleItemClick">
+             ......
+           </el-tag>
+          </el-form-item>
+          <el-form-item label="警员" style="margin-bottom: 0px;font-size:14px;">
+           <el-tag class="police" v-show="crrAct.police[0].id" :id="crrAct.police[0].id" @click.native="handleItemClick">
+             {{crrAct.police[0].police_name}}
+           </el-tag>
+           <el-tag v-show="policeCount" class="police" :id="crrAct.police[0].id" @click.native="handleItemClick">
+             ......
+           </el-tag>
+          </el-form-item>
+          <el-form-item label="重点单位" style="margin-bottom: 0px;font-size:14px;">
+           <el-tag class="department" v-show="crrAct.department[0].id" :id="crrAct.department[0].id" @click.native="handleItemClick">
+             {{crrAct.department[0].department_name}}
+           </el-tag>
+           <el-tag v-show="departmentCount" class="department" :id="crrAct.department[0].id" @click.native="handleItemClick">
+             ......
+           </el-tag>
+          </el-form-item>
+          <el-form-item label="重点人员" style="margin-bottom: 0px;font-size:14px;">
+           <el-tag class="person" v-show="crrAct.person[0].id" :id="crrAct.person[0].id" @click.native="handleItemClick">
+             {{crrAct.person[0].person_name}}
+           </el-tag>
+           <el-tag v-show="personCount" class="person" :id="crrAct.person[0].id" @click.native="handleItemClick">
+             ......
+           </el-tag>
+          </el-form-item>
+          <el-form-item label="重点部位" style="margin-bottom: 0px;font-size:14px;" @click="handleItemClick">
+           <el-tag class="place" v-show="crrAct.place[0].id" :id="crrAct.place[0].id" @click.native="handleItemClick">
+             {{crrAct.place[0].place_name}}
+           </el-tag>
+           <el-tag v-show="placeCount" class="place" :id="crrAct.place[0].id" @click.native="handleItemClick">
+             ......
+           </el-tag>
+          </el-form-item>
+         </el-form>
+        </el-tab-pane>
+        <el-tab-pane label="预案">
+         <el-table size="small" :data="crrAct.plan" style="width: 100%" :row-class-name="tableRowClassName">
+          <el-table-column align="center" show-overflow-tooltip="" prop="plan_key_words" label="关键字" width="80">
           </el-table-column>
-          <el-table-column
-          align="center"
-          show-overflow-tooltip
-            prop="divi_name"
-            label="所在区域"
-            width="120">
+          <el-table-column align="center" show-overflow-tooltip="" prop="plan_type" label="预案类型" width="180">
           </el-table-column>
-          <el-table-column
-          align="center"
-          show-overflow-tooltip
-            prop="org_name"
-            label="管辖单位">
+          <el-table-column align="center" show-overflow-tooltip="" prop="html_path" label="文档" width="100">
+           <template slot-scope="scope" size="mini">
+            <el-button @click="openLink(scope.row)" type="text" size="small">
+             查看
+            </el-button>
+           </template>
           </el-table-column>
-        </el-table>
-      </template>
-    </el-tab-pane>
-    <el-tab-pane label="重点人员">
-      <template>
-        <el-table
-          size="small"
-          :data="crrAct.person"
-          style="width: 100%" :row-class-name="tableRowClassName"
-          @row-click="showPersonDetail">
-          <el-table-column
-            align="center"
-            show-overflow-tooltip
-            prop="person_name"
-            label="名称"
-            width="120">
-          </el-table-column>
-          <el-table-column
-            align="center"
-            show-overflow-tooltip
-            prop="person_gender"
-            label="性别"
-            width="80">
-          </el-table-column>
-          <el-table-column
-            align="center"
-            show-overflow-tooltip
-            prop="person_category"
-            label="类别">
-          </el-table-column>
-        </el-table>
-      </template>
-      </el-tab-pane>
-      <el-tab-pane label="重点部位"  >
-        <template>
-          <el-table
-            :data="crrAct.place"
-            style="width: 100%"
-            size="small"
-            :row-class-name="tableRowClassName"
-            @row-click="showPlaceDetail">
-            <el-table-column
-              prop="place_name"
-              label="名称"
-              align="center"
-              show-overflow-tooltip
-              width="120">
-            </el-table-column>
-            <el-table-column
-              prop="divi_name"
-              label="所在区域"
-              align="center"
-              show-overflow-tooltip
-              width="120">
-            </el-table-column>
-            <el-table-column
-              prop="place_address"
-              align="center"
-              show-overflow-tooltip
-              label="地址">
-            </el-table-column>
+         </el-table>
+        </el-tab-pane>
+        <el-tab-pane label="警员">
+         <template>
+          <el-table size="small" :data="crrAct.police" style="width: 100%" :row-class-name="tableRowClassName" @row-click="showPoliceDetail">
+           <el-table-column align="center" show-overflow-tooltip="" prop="police_name" label="姓名" width="80">
+           </el-table-column>
+           <el-table-column align="center" show-overflow-tooltip="" prop="police_gender" label="性别" width="80">
+           </el-table-column>
+           <el-table-column align="center" show-overflow-tooltip="" prop="police_age" label="年龄" width="80">
+           </el-table-column>
+           <el-table-column align="center" show-overflow-tooltip="" prop="org_name" label="单位">
+           </el-table-column>
           </el-table>
-        </template>
-      </el-tab-pane>
-    </el-tabs>
-
-    <el-dialog title="警员信息" :visible.sync="dialogPoliceVisible" width="600px" v-cloak>
-      <div v-if="crrData.police_head_portrait">
-        <img  :src="crrData.police_head_portrait" class="police_image">
+         </template>
+        </el-tab-pane>
+        <el-tab-pane label="重点单位">
+         <template>
+          <el-table size="small" :data="crrAct.department" style="width: 100%" :row-class-name="tableRowClassName" @row-click="showDepartmentDetail">
+           <el-table-column align="center" show-overflow-tooltip="" prop="department_name" label="名称" width="120">
+           </el-table-column>
+           <el-table-column align="center" show-overflow-tooltip="" prop="divi_name" label="所在区域" width="120">
+           </el-table-column>
+           <el-table-column align="center" show-overflow-tooltip="" prop="org_name" label="管辖单位">
+           </el-table-column>
+          </el-table>
+         </template>
+        </el-tab-pane>
+        <el-tab-pane label="重点人员">
+         <template>
+          <el-table size="small" :data="crrAct.person" style="width: 100%" :row-class-name="tableRowClassName" @row-click="showPersonDetail">
+           <el-table-column align="center" show-overflow-tooltip="" prop="person_name" label="名称" width="120">
+           </el-table-column>
+           <el-table-column align="center" show-overflow-tooltip="" prop="person_gender" label="性别" width="80">
+           </el-table-column>
+           <el-table-column align="center" show-overflow-tooltip="" prop="person_category" label="类别">
+           </el-table-column>
+          </el-table>
+         </template>
+        </el-tab-pane>
+        <el-tab-pane label="重点部位">
+         <template>
+          <el-table :data="crrAct.place" style="width: 100%" size="small" :row-class-name="tableRowClassName" @row-click="showPlaceDetail">
+           <el-table-column prop="place_name" label="名称" align="center" show-overflow-tooltip="" width="120">
+           </el-table-column>
+           <el-table-column prop="divi_name" label="所在区域" align="center" show-overflow-tooltip="" width="120">
+           </el-table-column>
+           <el-table-column prop="place_address" align="center" show-overflow-tooltip="" label="地址">
+           </el-table-column>
+          </el-table>
+         </template>
+        </el-tab-pane>
+       </el-tabs>
       </div>
-      <div v-else>
-        <img  src="./image/公安big.png" class="police_image">
-      </div>
-      <div class="detail">
-        {{'姓名: ' + crrData.police_name }}
-      </div>
-      <div class="detail">
-        {{'警号: ' + crrData.police_assistant }}
-      </div>
-      <div class="detail">
-        {{'姓别: ' + crrData.police_gender }}
-      </div>
-      <div class="detail">
-        {{'年龄: ' + crrData.police_age }}
-      </div>
-      <div class="detail">
-        {{'户籍地址: ' + crrData.divi_name }}
-      </div>
-      <div class="detail">
-        {{'联系方式: ' + crrData.police_contact }}
-      </div>
-      <div class="detail">
-        {{'所属单位: ' + crrData.org_name }}
-      </div>
-      <div class="detail">
-        {{'直属领导: ' + crrData.lead_name }}
-      </div>
-    </el-dialog>
-
-    <el-dialog title="重点单位信息" :visible.sync="dialogDepartmentVisible" width="600px" v-cloak>
-      <div class="detail">
-        {{'单位名称: ' + crrData.department_name }}
-      </div>
-      <div class="detail">
-        {{'所在区域: ' + crrData.divi_name }}
-      </div>
-      <div class="detail">
-        {{'管辖单位: ' + crrData.org_name }}
-      </div>
-      <div class="detail">
-        {{'单位法人姓名: ' + crrData.department_legal_person_name }}
-      </div>
-      <div class="detail">
-        {{'地址: ' + crrData.department_address }}
-      </div>
-    </el-dialog>
-
-
-    <el-dialog title="重点人员信息" :visible.sync="dialogPersonVisible" width="600px" v-cloak>
-      <div v-if="crrData.person_image_url">
-        <img  :src="crrData.person_image_url" class="person_image">
-      </div>
-      <div v-else>
-        <img src="./image/person_img.jpg" class="person_image">
-      </div>
-        <div  class="detail">
-        {{'姓名: ' + crrData.person_name }}
-      </div>
-        <div  class="detail">
-        {{'性别: ' + crrData.person_gender }}
-      </div>
-      <div  class="detail">
-        {{'人员类别: ' + crrData.person_category }}
-      </div>
-      <div  class="detail">
-        {{'民族: ' + crrData.person_nation }}
-      </div>
-      <div  class="detail">
-        {{'身高: ' + crrData.person_height }}
-      </div>
-      <div  class="detail">
-        {{'职业: ' + crrData.person_job }}
-      </div>
-      <div  class="detail">
-        {{'文化程度: ' + crrData.person_educational_status }}
-      </div>
-      <div class="detail">
-      {{'户籍地址: ' + crrData.divi_name }}
-      </div>
-      <div  class="detail">
-        {{'人员等级: ' + crrData.person_grade }}
-      </div>
-      <div  class="detail">
-        {{'联系方式: ' + crrData.person_contact_information }}
-      </div>
-      <div  class="detail">
-        {{'责任民警: ' + crrData.police_name }}
-      </div>
-      <div  class="detail">
-        {{'管辖单位: ' + crrData.org_name }}
-      </div>
-    </el-dialog>
-
-    <el-dialog title="重点部位信息" :visible.sync="dialogPlaceVisible" width="600px" v-cloak>
-      <div  class="detail">
-        {{'部位名称: ' + crrData.place_name }}
-      </div>
-        <div  class="detail">
-        {{'部位法人姓名: ' + crrData.place_legal_person_name }}
-      </div>
-      <div class="detail">
-        {{'所在区域: ' + crrData.divi_name }}
-      </div>
-      <div  class="detail">
-        {{'地址: ' + crrData.place_address }}
-      </div>
-    </el-dialog>
+     </div>
     </div>
-</div>
-
-    </div>`);
+    <el-dialog title="警员信息" :visible.sync="dialogPoliceVisible" width="600px" v-cloak="">
+     <div v-if="crrData.police_head_portrait">
+      <img :src="crrData.police_head_portrait" class="police_image" />
+     </div>
+     <div v-else="">
+      <img src="./image/公安big.png" class="police_image" />
+     </div>
+     <div class="detail">
+       {{'姓名: ' + crrData.police_name }}
+     </div>
+     <div class="detail">
+       {{'警号: ' + crrData.police_assistant }}
+     </div>
+     <div class="detail">
+       {{'姓别: ' + crrData.police_gender }}
+     </div>
+     <div class="detail">
+       {{'年龄: ' + crrData.police_age }}
+     </div>
+     <div class="detail">
+       {{'户籍地址: ' + crrData.divi_name }}
+     </div>
+     <div class="detail">
+       {{'联系方式: ' + crrData.police_contact }}
+     </div>
+     <div class="detail">
+       {{'所属单位: ' + crrData.org_name }}
+     </div>
+     <div class="detail">
+       {{'直属领导: ' + crrData.lead_name }}
+     </div>
+    </el-dialog>
+    <el-dialog title="重点单位信息" :visible.sync="dialogDepartmentVisible" width="600px" v-cloak="">
+     <div class="detail">
+       {{'单位名称: ' + crrData.department_name }}
+     </div>
+     <div class="detail">
+       {{'所在区域: ' + crrData.divi_name }}
+     </div>
+     <div class="detail">
+       {{'管辖单位: ' + crrData.org_name }}
+     </div>
+     <div class="detail">
+       {{'单位法人姓名: ' + crrData.department_legal_person_name }}
+     </div>
+     <div class="detail">
+       {{'地址: ' + crrData.department_address }}
+     </div>
+    </el-dialog>
+    <el-dialog title="重点人员信息" :visible.sync="dialogPersonVisible" width="600px" v-cloak="">
+     <div v-if="crrData.person_image_url">
+      <img :src="crrData.person_image_url" class="person_image" />
+     </div>
+     <div v-else="">
+      <img src="./image/person_img.jpg" class="person_image" />
+     </div>
+     <div class="detail">
+       {{'姓名: ' + crrData.person_name }}
+     </div>
+     <div class="detail">
+       {{'性别: ' + crrData.person_gender }}
+     </div>
+     <div class="detail">
+       {{'人员类别: ' + crrData.person_category }}
+     </div>
+     <div class="detail">
+       {{'民族: ' + crrData.person_nation }}
+     </div>
+     <div class="detail">
+       {{'身高: ' + crrData.person_height }}
+     </div>
+     <div class="detail">
+       {{'职业: ' + crrData.person_job }}
+     </div>
+     <div class="detail">
+       {{'文化程度: ' + crrData.person_educational_status }}
+     </div>
+     <div class="detail">
+       {{'户籍地址: ' + crrData.divi_name }}
+     </div>
+     <div class="detail">
+       {{'人员等级: ' + crrData.person_grade }}
+     </div>
+     <div class="detail">
+       {{'联系方式: ' + crrData.person_contact_information }}
+     </div>
+     <div class="detail">
+       {{'责任民警: ' + crrData.police_name }}
+     </div>
+     <div class="detail">
+       {{'管辖单位: ' + crrData.org_name }}
+     </div>
+    </el-dialog>
+    <el-dialog title="重点部位信息" :visible.sync="dialogPlaceVisible" width="600px" v-cloak="">
+     <div class="detail">
+       {{'部位名称: ' + crrData.place_name }}
+     </div>
+     <div class="detail">
+       {{'部位法人姓名: ' + crrData.place_legal_person_name }}
+     </div>
+     <div class="detail">
+       {{'所在区域: ' + crrData.divi_name }}
+     </div>
+     <div class="detail">
+       {{'地址: ' + crrData.place_address }}
+     </div>
+    </el-dialog>
+   </div>`);
   },
 
   initVue: function() {
@@ -787,7 +688,7 @@ let bt_activity = {
       return;
     }
     bt_activity.vueIns = new Vue({
-      el: "#keyActivity",
+      el: "#ActivityVue",
       data: {
         command_id: 0,
         crrAct: bt_activity.crrAct,
@@ -822,23 +723,23 @@ let bt_activity = {
             }, 100);
           };
           if (className.includes("plan")) {
-            $("#tab-1").click();
+            $("#keyActivity #tab-1")[0].click();
             scrollTo(id);
           }
           if (className.includes("police")) {
-            $("#tab-2").click();
+            $("#keyActivity #tab-2")[0].click();
             scrollTo(id);
           }
           if (className.includes("department")) {
-            $("#tab-3").click();
+            $("#keyActivity #tab-3")[0].click();
             scrollTo(id);
           }
           if (className.includes("person")) {
-            $("#tab-4").click();
+            $("#keyActivity #tab-4")[0].click();
             scrollTo(id);
           }
           if (className.includes("place")) {
-            $("#tab-5").click();
+            $("#keyActivity #tab-5")[0].click();
             scrollTo(id);
           }
         },
@@ -848,22 +749,34 @@ let bt_activity = {
         tableRowClassName({ row, rowIndex }) {
           return row.id;
         },
+        flyTo() {
+          const { x, y } = LL2Geo(
+            this.crrData.longitude,
+            this.crrData.latitude
+          );
+          bt_Util.executeScript(
+            `Render\\CameraControl\\FlyTo ${x} ${y} 300 ${x} ${y} 50;`
+          );
+        },
         showPoliceDetail() {
           this.crrData = this.crrAct.police.filter(
             p => arguments[0].id == p.id
           )[0];
+          this.flyTo();
           this.dialogPoliceVisible = true;
         },
         showPlaceDetail() {
           this.crrData = this.crrAct.place.filter(
             p => arguments[0].id == p.id
           )[0];
+          this.flyTo();
           this.dialogPlaceVisible = true;
         },
         showDepartmentDetail() {
           this.crrData = this.crrAct.department.filter(
             p => arguments[0].id == p.id
           )[0];
+          this.flyTo();
           this.dialogDepartmentVisible = true;
         },
         showPersonDetail() {
@@ -913,7 +826,7 @@ let bt_activity = {
         activity: function() {}
       }
     });
-    
+
     bt_activity.addPolicePOI();
     bt_activity.addPlacePOI();
     bt_activity.addDepartmentPOI();
