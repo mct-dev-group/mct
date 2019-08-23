@@ -831,6 +831,9 @@ let bt_activity = {
         activity: function() {}
       }
     });
+    bt_activity.addPolicePOI();
+    bt_activity.addPlacePOI();
+    bt_activity.addDepartmentPOI();
   }
 };
 bt_activity.getKeyActivity();
