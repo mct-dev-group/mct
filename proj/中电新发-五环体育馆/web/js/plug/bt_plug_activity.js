@@ -204,6 +204,7 @@ let bt_activity = {
         -16,
         `<div class='tag police' onclick="bt_activity.vueIns.handleItemClick(this)" id=${id} style=' background:url(image/公安.png); background-position:center left; background-repeat: no-repeat; height:16px;line-height:10px;'><span style='margin-left:16px; font-size:9px; white-space: nowrap;'>${name}</span></div>`
       );
+      // $("#" + id).hide();
     });
   },
   addDepartmentPOI: function() {
@@ -220,6 +221,7 @@ let bt_activity = {
         -16,
         `<div class='tag department' onclick="bt_activity.vueIns.handleItemClick(this)" id=${id} style=' background:url(image/重点单位.png); background-position:center left; background-repeat: no-repeat; height:16px;line-height:10px;'><span style='margin-left:16px; font-size:9px; white-space: nowrap;'>${name}</span></div>`
       );
+      // $("#" + id).hide();
     });
   },
   addPlacePOI: function() {
@@ -236,7 +238,13 @@ let bt_activity = {
         -16,
         `<div class='tag place' onclick="bt_activity.vueIns.handleItemClick(this)" id=${id} style='background:url(image/重点部位.png); background-position:center left; background-repeat: no-repeat; height:16px;line-height:10px;'><span style='margin-left:16px; font-size:9px; white-space: nowrap;'>${name}</span></div>`
       );
+      // $("#" + id).hide();
     });
+  },
+  removePOI: function(name) {
+    bt_activity.crrAct[name].map(a =>
+      bt_Plug_Annotation.removeAnnotation(a.id)
+    );
   },
   removeAllPOI: function() {
     bt_activity.crrAct.place.map(a =>
@@ -435,13 +443,6 @@ let bt_activity = {
     }, sql);
   },
 
-  // {/* <el-table-column
-  //   prop="plan_content"
-  //   label="预案内容"
-  //   width="280"
-  //   show-overflow-tooltip>
-  // </el-table-column> */}
-
   appendVueBody: function() {
     $("body").append(`<div id="ActivityVue">
     <div id="keyActivity">
@@ -459,7 +460,7 @@ let bt_activity = {
        </div>
       </div>
       <div class="tContainer-content">
-       <el-tabs type="border-card" class="box-card" @tab-click="showPOI" stretch="" v-cloak="">
+       <el-tabs type="border-card" class="box-card" @tab-click="showPOIs" stretch="" v-cloak="">
         <el-tab-pane label="全部">
          <el-form label-position="left" label-width="80px">
           <el-form-item label="预案" style="margin-bottom: 0px;font-size:14px;">
@@ -686,6 +687,7 @@ let bt_activity = {
   initVue: function() {
     if (bt_activity.count.length != 5 || bt_activity.vueIns) {
       if (bt_activity.count.length == 5) {
+        $("#ActivityVue #tab-0")[0].click();
         bt_activity.addPolicePOI();
         bt_activity.addPlacePOI();
         bt_activity.addDepartmentPOI();
@@ -790,35 +792,33 @@ let bt_activity = {
           )[0];
           this.dialogPersonVisible = true;
         },
-        showPOI(e) {
+        showPOIs(e) {
           const id = e.$el.id;
           if (id == "pane-2") {
-            bt_activity.hidePOI("department");
-            bt_activity.hidePOI("place");
-            bt_activity.showPOI("police");
+            bt_activity.removePOI("department");
+            bt_activity.removePOI("place");
+            bt_activity.addPolicePOI();
             return;
           }
           if (id == "pane-3") {
-            bt_activity.showPOI("department");
-            bt_activity.hidePOI("place");
-            bt_activity.hidePOI("police");
+            bt_activity.addDepartmentPOI();
+            bt_activity.removePOI("place");
+            bt_activity.removePOI("police");
             return;
           }
           if (id == "pane-5") {
-            bt_activity.showPOI("place");
-            bt_activity.hidePOI("department");
-            bt_activity.hidePOI("police");
+            bt_activity.addPlacePOI();
+            bt_activity.removePOI("department");
+            bt_activity.removePOI("police");
             return;
           }
           if (id == "pane-0") {
-            bt_activity.showPOI("place");
-            bt_activity.showPOI("department");
-            bt_activity.showPOI("police");
+            bt_activity.addPolicePOI();
+            bt_activity.addPlacePOI();
+            bt_activity.addDepartmentPOI();
             return;
           }
-          bt_activity.hidePOI("place");
-          bt_activity.hidePOI("department");
-          bt_activity.hidePOI("police");
+          bt_activity.removeAllPOI();
         }
       },
       computed: {
