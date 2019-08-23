@@ -57,7 +57,7 @@ $(function(){
             <ul class="scenesGuide">
                 <li class="scenesGuide-hotPoint">
                     <div>
-                        <span>热点</span>
+                        <span style='cursor:default;'>热点</span>
                     </div>
                     <div>
                         <span id="hotPoint_playground">运动场</span>
@@ -68,7 +68,7 @@ $(function(){
                 </li>
                 <li class="scenesGuide-line">
                     <div>
-                        <span>线路</span>
+                        <span style='cursor:default;'>线路</span>
                         <span class="lineSwitch lineSwitch-start">开始</span>
                         <span class="lineSwitch lineSwitch-stop">暂停</span>
                     </div>
