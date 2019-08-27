@@ -9,18 +9,18 @@ const { getFileCount } = require("./utils");
  * get .ts file
  */
 router.get("/video/:id/:file", async (ctx, next) => {
-	try{
-	  const id = ctx.params.id;
-	  const file = ctx.params.file;
-	  const src = fs.createReadStream(
-		path.join(__dirname, `public/video/${id}/${file}`)
-	  );
-	  ctx.response.set("content-type", "video/mp2t");
-	  ctx.set("Cache-Control", "no-cache");
-	  ctx.body = src;
-	}catch(err){
-		console.log(err);
-	}
+  try {
+    const id = ctx.params.id;
+    const file = ctx.params.file;
+    const src = fs.createReadStream(
+      path.join(__dirname, `public/video/${id}/${file}`)
+    );
+    ctx.response.set("content-type", "video/mp2t");
+    ctx.set("Cache-Control", "no-cache");
+    ctx.body = src;
+  } catch (err) {
+    console.log(err);
+  }
   next();
   return;
 });
@@ -29,17 +29,17 @@ router.get("/video/:id/:file", async (ctx, next) => {
  * get .m3u8 file
  */
 router.get("/video/:id/", async (ctx, next) => {
-	try{
-	  const id = ctx.params.id;
-	  const src = fs.createReadStream(
-		path.join(__dirname, `public/video/${id}/${id}.m3u8`)
-	  );
-	  ctx.response.set("content-type", "application/vnd.apple.mpegurl");
-	  ctx.set("Cache-Control", "no-cache");
-	  ctx.body = src;
-	}catch(err){
-		console.log(err);
-	}
+  try {
+    const id = ctx.params.id;
+    const src = fs.createReadStream(
+      path.join(__dirname, `public/video/${id}/${id}.m3u8`)
+    );
+    ctx.response.set("content-type", "application/vnd.apple.mpegurl");
+    ctx.set("Cache-Control", "no-cache");
+    ctx.body = src;
+  } catch (err) {
+    console.log(err);
+  }
   next();
   return;
 });
@@ -95,7 +95,7 @@ router.get("/monitor/key", async (ctx, next) => {
     conn.timeStamp = Date.now();
   } else {
     try {
-      await addToTask(ID);
+      addToTask(ID);
     } catch (error) {
       ctx.body = {
         code: "400",

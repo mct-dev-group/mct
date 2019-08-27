@@ -4,7 +4,7 @@ const router = require('koa-router')();
 const Sequelize = require('sequelize');
 
 const app = new Koa();
-const sequelize = new Sequelize('mysql://yuanjing:yuanjing123456@47.105.123.78/bigdataactiveplatform',{
+const sequelize = new Sequelize('mysql://yuanjing:yuanjing123456@100.85.228.94:3306/bigdataactiveplatform',{
     logging:false,
     dialectOptions: {
         dateStrings: true,

@@ -1,13 +1,10 @@
 const Koa = require("koa");
 const cors = require("@koa/cors");
 const bodyParser = require("koa-bodyparser");
-const child_process = require("child_process");
 const router = require("./router");
 const serve = require("koa-static");
 const { checkTaskForRun, cheackFfmpegForEnd, addToTask } = require("./ffmpeg");
-const { getAPES } = require("./rtsp");
 const { connWhiteList } = require("./config");
-const { fileMtimeDiff } = require("./utils");
 const PORT = 3002;
 
 const app = new Koa();
@@ -18,7 +15,6 @@ async function serveVideo() {
   connWhiteList.forEach(guid => {
     addToTask(guid);
   });
-  //heartBeatTest
   checkTaskForRun();
   setInterval(cheackFfmpegForEnd, 10000);
 }

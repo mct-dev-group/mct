@@ -15,25 +15,34 @@ module.exports = {
     }
   },
   fileMtimeDiff(dirPath) {
-    const now = Date.now();
-    const mtime = fs.statSync(dirPath).mtimeMs;
-    return now - mtime;
+    try {
+      const now = Date.now();
+      const mtime = fs.statSync(dirPath).mtimeMs;
+      return now - mtime;
+    } catch (err) {
+      console.log(err);
+      return 0;
+    }
   },
   writeLog(filePath, content) {
-    fs.appendFileSync(filePath, content);
+    try {
+      fs.appendFileSync(filePath, content);
+    } catch (err) {
+      console.log(err);
+    }
   },
   getFileCount(id) {
-	  try{
-		const directoryPath = path.join(__dirname, `public/video/${id}`);
-		if (fs.existsSync(directoryPath)) {
-		  const files = fs.readdirSync(directoryPath);
-		  return files.filter(f => f.includes(".ts")).length;
-		} else {
-		  return 0;
-		}  
-	  }catch(err){
-		  console.log(err);
-		  return 0;
-	  }
+    try {
+      const directoryPath = path.join(__dirname, `public/video/${id}`);
+      if (fs.existsSync(directoryPath)) {
+        const files = fs.readdirSync(directoryPath);
+        return files.filter(f => f.includes(".ts")).length;
+      } else {
+        return 0;
+      }
+    } catch (err) {
+      console.log(err);
+      return 0;
+    }
   }
 };

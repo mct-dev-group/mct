@@ -14,6 +14,14 @@ let MonitorConnPool = {
    * @return {void}
    */
   play: (key, videoDOM, type) => {
+    let hls = null;
+    hls = new Hls({
+      liveBackBufferLength: 0,
+      levelLoadingMaxRetry: Infinity,
+      levelLoadingMaxRetryTimeout: 5000
+    });
+    const id = `${key}_${type}`;
+    MonitorConnPool.hls_pool[id] = hls;
     $.ajax({
       data: { key: key },
       type: "GET",
@@ -51,23 +59,19 @@ let MonitorConnPool = {
                     }
                     let SEQUENCE = 0;
                     let SNCount = 0;
-                    let hls = null;
-                    hls = new Hls({
-                      liveBackBufferLength: 0,
-                      levelLoadingMaxRetry: Infinity,
-                      levelLoadingMaxRetryTimeout: 5000
-                    });
-                    const id = `${key}_${type}`;
-                    MonitorConnPool.hls_pool[id] = hls;
-                    hls.loadSource(MonitorConnPool.hls_video_url + key + "/");
-                    hls.on(Hls.Events.MANIFEST_PARSED, () => {
-                      hls.attachMedia(video);
-                      video.play();
-                    });
-                    hls.on(Hls.Events.LEVEL_UPDATED, checkNeedRerun);
-                    hls.on(Hls.Events.DESTROYING, rerun);
+                    let id = `${key}_${type}`;
+                    let hls = MonitorConnPool.hls_pool[id];
+                    if (hls) {
+                      hls.loadSource(MonitorConnPool.hls_video_url + key + "/");
+                      hls.on(Hls.Events.MANIFEST_PARSED, () => {
+                        hls.attachMedia(video);
+                        video.play();
+                      });
+                      hls.on(Hls.Events.LEVEL_UPDATED, checkNeedRerun);
+                      hls.on(Hls.Events.DESTROYING, rerun);
+                      MonitorConnPool.startHeartBeatDetection(key, type);
+                    }
                     clearInterval(tempInterval);
-                    MonitorConnPool.startHeartBeatDetection(key, type);
                     function checkNeedRerun(evt, data) {
                       let curentSN = data.details.startSN;
                       if (curentSN < SEQUENCE || SNCount > 20) {
@@ -155,7 +159,7 @@ let MonitorConnPool = {
     let hls = MonitorConnPool.hls_pool[list_id];
     if (hls) {
       hls.stopLoad();
-      delete MonitorConnPool.hls_pool[id];
+      delete MonitorConnPool.hls_pool[list_id];
       MonitorConnPool.shutOffHeartBeatDetection(id, type);
     }
   },
