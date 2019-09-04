@@ -4,7 +4,7 @@ const fs = require("fs");
 const fse = require("fs-extra");
 const { getRtspUrls } = require("./rtsp");
 const { writeLog, fileMtimeDiff } = require("./utils");
-const { command1, command2, connWhiteList } = require("./config");
+const { commandStaticFile1, commandStaticFile2, connWhiteList } = require("./config");
 
 const ffmpeg = {
   task: {
@@ -64,9 +64,9 @@ const ffmpeg = {
       return;
     }
     const spawnOptions = [
-      ...command1,
+      ...commandStaticFile1,
       rtspUrl,
-      ...command2,
+      ...commandStaticFile2,
       conn_item.filePath
     ];
     const handle = child_process.spawn("ffmpeg", spawnOptions, {

@@ -51,7 +51,7 @@ router.get("/monitor/ready", async (ctx, next) => {
   const id = ctx.request.query.key;
   updateConnTimestamp(id);
   let fileCount = getFileCount(id);
-  if (fileCount > 2) {
+  if (fileCount >= 2) {
     ctx.status = 200;
     ctx.body = {
       code: "200",
