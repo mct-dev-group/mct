@@ -3,7 +3,7 @@
     <router-view />
 
     <leftTree/>
-    <LayerControl/>
+    <LayerControl/>    
     <Compass />
     
     <PlugManager />
@@ -28,12 +28,13 @@ export default {
   name: 'home',
   components: {
     Compass,
-    PlugManager,
+    leftTree,
     LayerControl,
+    
+    PlugManager,
     // 插件
     Measurement,
     PBFastReader,
-    leftTree,
   }
 }
 </script>
