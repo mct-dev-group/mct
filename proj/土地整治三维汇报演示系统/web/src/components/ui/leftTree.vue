@@ -8,8 +8,9 @@
         ref='tree'
         :data='treeData'
         :props="props"
-        node-key="nodeId"
-        :default-expanded-keys="[1]"
+        node-key="id"
+        :default-expanded-keys="[0]"
+        :filter-node-method="filterNode"
         accordion
         @node-contextmenu='handleContextmenu'      
         >
@@ -53,45 +54,19 @@ export default {
           content:'修改图斑状态'
         }
       ],
-      treeData:[
-        {
-          nodeId:1,
-          title:'1县',
-          children:[
-            {title:'1村',children:[
-              {title:'1乡',children:[
-                {title:'潜力图斑',children:[
-                  {title:'101'},
-                  {title:'102'}
-                ]},
-                {title:'规划图斑',children:[
-                  {title:'101'},
-                  {title:'102'}
-                ]}
-              ]}
-              ]
-            },
-            {title:'2村',children:[{title:'加载中'}],},
-            {title:'3村',children:[{title:'加载中'}],},
-            {title:'4村',children:[{title:'加载中'}]},
-            {title:'5村',children:[{title:'加载中'}],},
-            {title:'6村',children:[{title:'加载中'}],},
-            {title:'7村',children:[{title:'加载中'}],},
-            {title:'8村',children:[{title:'加载中'}],},
-            {title:'9村',children:[{title:'加载中'}],},
-            {title:'10村',children:[{title:'加载中'}]},
-            {title:'11村',children:[{title:'加载中'}]},
-            {title:'12村',children:[{title:'加载中'}]},
-            {title:'13村',children:[{title:'加载中'}]},
-            {title:'14村',children:[{title:'加载中'}]},
-            {title:'15村',children:[{title:'加载中'}]},            
-          ]
-        }        								
-      ],
+      treeData:[{
+          label: "一级 1",
+          children: []
+      }],
       props: {
-        label: 'title',
-        children: 'children',
+        children: "children",
+        label: "label"
       },
+    }
+  },
+  watch: {
+    searchText(val) {
+      this.$refs.tree.filter(val);
     }
   },
   computed:{
@@ -103,17 +78,19 @@ export default {
     tabs
   },
   methods:{
-    handleContextmenu(evt,data,node,tree){
-      // if()
+    handleContextmenu(evt,data,node){
+      if(!data.from_table) return;
       this.$store.commit('setShowMenu', true);
       const menuDom=document.getElementById('menuCotainer');
       menuDom.style.left=evt.clientX+'px';
       menuDom.style.top=evt.clientY+'px';
-           
-      switch(node.level){
-        case 1 :
-        case 2 :
-        case 3 :
+      
+      console.log(data.from_table);      
+
+      switch(data.from_table){
+        case 'county' :
+        case 'country' :
+        case 'village' :
           this.menu=[
             {
               id:'1',
@@ -124,10 +101,16 @@ export default {
               id:'2',
               icon:'fa fa-file',
               content:'附件查看'
+            },
+            {
+              id:'3',
+              icon:'el-icon-upload',
+              content:'附件上传'
             }
           ];
           break;
-        case 5 :
+        case 'spot' :
+        case  'plan' :
           this.menu=[
             {
               id:'2',
@@ -136,6 +119,11 @@ export default {
             },
             {
               id:'3',
+              icon:'el-icon-upload',
+              content:'附件上传'
+            },
+            {
+              id:'4',
               icon:'el-icon-edit',
               content:'修改图斑状态'
             }
@@ -146,7 +134,11 @@ export default {
     menuMousedown(id){      
       this.showTabs=true;
       this.activeTab=id;
-    }
+    },
+    filterNode(value, data) {
+      if (!value) return true;
+      return data.label.indexOf(value) !== -1;
+    },
   },
   mounted(){
     const th=this;
@@ -155,7 +147,56 @@ export default {
     },true);
     document.body.addEventListener('contextmenu',function(evt){
       evt.preventDefault();
-    },true);
+    },true);    
+    $.ajax({
+      type: "GET",
+      crossDomain: true,
+      url: config.server + "attachs/getTree",
+      success: data => {
+        //计算目录树
+        th.treeData = makeTree(diffQLGH(data.data));        
+      }
+    });
+    function diffQLGH(data) {
+      const QLGH = [];
+      const dupChaeck = [];
+      data.forEach(a => {
+        if (a.from_table == "spot" || a.from_table == "plan") {
+          const qg = {
+            parent: a.parent,
+            label: a.from_table == "spot" ? "潜力图斑" : "规划图斑",
+            gid: a.parent + "-" + a.from_table
+          };
+          if (!dupChaeck.includes(qg.gid)) {
+            dupChaeck.push(qg.gid);
+            QLGH.push(qg);
+          }
+          a.parent = qg.gid;
+        }
+      });
+      return [...data, ...QLGH];
+    }
+    function makeTree(data) {
+      let tree = [];
+      let hasNoChild = data.filter(a => {
+        if (data.filter(b => b.parent == a.gid).length) {
+          tree.push(a);
+          return false;
+        } else {
+          return true;
+        }
+      });
+      if (hasNoChild.length == data.length) return data;
+      hasNoChild.map(nc => {
+        tree.map(d => {
+          if (nc.parent == d.gid) {
+            d.children = d.children ? d.children : [];
+            d.children.push(nc);
+          }
+        });
+      });
+      return makeTree(tree);
+    }
   }
 }
 </script>
