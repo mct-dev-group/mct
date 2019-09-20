@@ -1,0 +1,26 @@
+* {
+    margin: 0;
+    padding: 0;
+    font-size: 14px;
+}
+body {
+    overflow: hidden;
+}
+#bt_container {
+    position: absolute;
+    overflow: hidden;
+    width: 500px;
+    height: 500px;
+    left: 0px;
+    top: 0px;
+}
+#canvasgl {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+}
+.bt_ui_element {
+    position: absolute;
+    z-index: 10;
+    color: white;
+}

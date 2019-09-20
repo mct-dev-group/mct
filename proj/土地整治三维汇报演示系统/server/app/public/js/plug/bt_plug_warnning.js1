@@ -1,0 +1,502 @@
+var _css = `<style>
+#warnningBox{
+  background: rgba(255, 255, 255, 0.9);
+  height: 584px;
+  position: absolute;
+  width: 300px;
+  right: 20px;
+  bottom: 20px;
+  z-index: 10;
+  border: 0;
+  display: none;
+  overflow: visible;
+}
+#warnningBox .tabBtn{
+  background: #ffffff;
+  width: 40px;
+  margin-left: -40px;
+}
+#warnningBox .tabBtn ul li{
+  line-height: 40px;
+  height: 40px;
+  text-align: center;
+  cursor: pointer;
+  color: #409EFF;
+}
+#warnningBox .tabBtn ul li.active,#warnningBox .tabBtn ul li:hover{
+  background: #409EFF;
+  color: #ffffff
+}
+#warnningBox .el-card__header {
+  padding: 10px 20px;
+}
+#warnningBox .clearfix {
+  text-align: center;
+}
+#warnningBox .clearfix>span{
+  margin: 0 auto;
+  font-size: 15px;
+  color: #409EFF;
+}
+
+#warnningBox .el-card__body {
+  padding: 0;
+  height: calc(100%);
+}
+#warnningBox .el-card__body .el-tabs {
+  height: 100%;
+  margin-top: -80px;
+}
+#warnningBox .el-card__body .el-tabs .el-tabs__header {
+  margin: 0;
+}
+#warnningBox .el-card__body .el-tabs .el-tabs__header .el-tabs__nav{
+  display: none;
+}
+#warnningBox .el-card__body .el-tabs .el-tabs__content {
+  height: calc(100% - 41px);
+  overflow-y: auto;
+}
+#warnningBox div.infoContent ul.list li {
+  height: 70px;
+  display: flex;
+  background:rgba(222, 222, 222,0.5);
+  cursor: pointer;
+  margin-bottom: 1px;
+  color: #409EFF;
+}
+#warnningBox div.infoContent ul.list li:hover {
+  background:rgba(222, 222, 222,0.9);
+}
+#warnningBox div.infoContent ul.list li>div{
+  width: 230px;
+  line-height: 20px;
+  padding-left: 5px;
+}
+
+
+#infoBox{
+  /* position: relative; */
+  position: absolute;
+  width: 500px;
+  height: 400px;
+  background: rgba(255, 255, 255, 0.9);
+  color: #409EFF;
+  margin: 0 auto;
+  /* top: 10%; */
+  display: none;
+  z-index: 10;
+  bottom: 20px;
+  left: 190px;
+}
+
+#infoBox .el-card__header {
+  padding: 10px 20px;
+}
+#infoBox .clearfix {
+  text-align: center;
+}
+#infoBox .clearfix>span{
+  margin: 0 auto;
+  font-size: 15px;
+  color: #409EFF;
+  display: inline-block;
+}
+#infoBox .el-card__body {
+  padding: 0;
+  padding-top: 10px;
+  height: calc(100% - 23px);
+}
+#infoBox .el-card__body .content span.el-tag{
+  width: 60px;
+  margin: 1px;
+  margin-right: 10px;
+}
+</style>`
+var _html = `<!-- 预警布告栏 start -->
+<el-card id="warnningBox">
+    <div class="tabBtn">
+        <ul>
+            <li :class="{'active': activeName === 'face'}" @click="clickBtn('face')">人脸</li>
+            <li :class="{'active': activeName === 'vehicle'}" @click="clickBtn('vehicle')">车辆</li>
+        </ul>
+    </div>
+    <div slot="header" class="clearfix">
+        <span>{{title}}</span>
+    </div>
+    <el-tabs v-model="activeName" type="card">
+        <el-tab-pane label="人脸" name="face">
+            <div class="infoContent face">
+                <template>
+                    <ul class="list">
+                        <li v-for="(item, index) in faceList" :key="faceList.id" @click="clickRow(item,'face')">
+                            <div>
+                                <span>{{item.face_appear_time}}</span>
+                                <br>
+                                <span>人脸识别</span>
+                                <br>
+                                <span style="display: inline-block;width: 200px;overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">{{item.device_id}}</span>
+                            </div>
+                            <img :src="item.target_image_uri" height="70" width="70" />
+                        </li>
+                    </ul>
+                </template>
+            </div>
+        </el-tab-pane>
+        <el-tab-pane label="车辆" name="vehicle">
+                <div class="infoContent vehicle">
+                        <template>
+                            <ul class="list">
+                                <li v-for="(item, index) in vehicleList" :key="vehicleList.id" @click="clickRow(item),'vehicle'">
+                                    <div>
+                                        <span>{{item.appear_time}}</span>
+                                        <br>
+                                        <span>{{item.plate_no}}</span>
+                                        <br>
+                                        <span style="display: inline-block;width: 200px;overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">{{item.device_id}}</span>
+                                    </div>
+                                    <img :src="item.target_image_uri" height="70" width="70" />
+                                </li>
+                            </ul>
+                        </template>
+                    </div>
+        </el-tab-pane>
+    </el-tabs>
+</el-card>
+<el-card id="infoBox" style="animation-duration: 500ms">
+    <div slot="header" class="clearfix">
+      <span style="width: 445px;">{{title}} - {{deviceName}}</span><span style="cursor: pointer;" @click="close">X</span>
+    </div>
+    <article v-if="info!=null">
+        <div class="content" v-if="type == 'face'">
+            <img :src="info.subimage_list[0]" style="width: 500px;height: 150px;">
+            <div style="display: flex; margin-top: 10px;">
+                <img :src="info.subimage_list[1]" style="width: 140px;height: 140px;">
+                <img :src="info.target_image_uri" style="width: 140px;height: 140px;">
+                <div>
+                    <el-tag size="mini">年龄范围</el-tag>{{info.age_lower_limit}}~{{info.age_up_limit}}岁
+                    <br>
+                    <el-tag size="mini">出现时间</el-tag>{{info.face_appear_time}}
+                    <br>
+                    <el-tag size="mini">消失时间</el-tag>{{info.face_disappear_time}}
+                    <br>
+                    <el-tag size="mini">性别</el-tag>{{info.gender_code | genderFilter}}
+                    <br>
+                    <el-tag size="mini">肤色</el-tag>{{info.skin_color}}
+                    <br>
+                    <el-tag size="mini">相似度</el-tag>{{info.similaritydegree}}%
+                    <br>
+                </div>
+            </div>
+        </div>
+        <div class="content" v-else>
+            <img :src="info.subimage_list[0]" style="width: 500px;height: 150px;">
+            <div style="display: flex; margin-top: 10px;">
+                <img :src="info.subimage_list[1]" style="width: 140px;height: 140px;">
+                <img :src="info.target_image_uri" style="width: 140px;height: 140px;">
+                <div>
+                    <el-tag size="mini">出现时间</el-tag>{{info.appear_time}}
+                    <br>
+                    <el-tag size="mini">消失时间</el-tag>{{info.disappear_time}}
+                    <br>
+                    <el-tag size="mini">车牌号</el-tag>{{info.plate_no}}
+                    <br>
+                    <el-tag size="mini">车牌类型</el-tag>{{info.plate_class}}
+                    <br>
+                    <el-tag size="mini">车牌颜色</el-tag>{{info.plate_color|plate_colorFilter}}
+                    <br>
+                    <el-tag size="mini">车辆类型</el-tag>{{info.vehicle_class}}
+                    <br>
+                    <el-tag size="mini">车身颜色</el-tag>{{info.vehicle_color|plate_colorFilter}}
+                    <br>
+                    <el-tag size="mini">相似度</el-tag>{{info.similaritydegree}}%
+                    <br>
+                </div>
+            </div>
+        </div>
+    </article>
+</el-card>
+<!-- 预警布告栏 end -->`
+$('head').append(_css)
+$('body').append(_html)
+
+// 预警信息
+let bt_plug_warnning = new Plug()
+
+// 插件信息
+bt_plug_warnning.js_name = 'bt_plug_warnning'
+bt_plug_warnning.plug_name = '视频预警栏目'
+bt_plug_warnning.plug_icon = 'ali-icon-ditu-dibiao'
+bt_plug_warnning.plug_commandOnly = true
+bt_plug_warnning.plug_isOnMobile = false
+
+// 插件功能
+bt_plug_warnning.plug_commands = []
+bt_plug_warnning.plug_commands[0] = new Command("预警信息", 0, false, false)
+let warnningBoxShow = false
+bt_plug_warnning.command_activate = commandID => {
+  switch (commandID) {
+    case 0:
+      console.log('command activated: ' + commandID)
+      $('#warnningBox').addClass('animated bounceInRight').show()
+      warnningBoxShow = true
+      break
+  
+    default:
+      break
+  }
+}
+
+bt_plug_warnning.command_deactivate = commandID => {
+  switch (commandID) {
+    case 0:
+      console.log('command deactivated: ' + commandID)
+      $('#warnningBox').removeClass('animated bounceInRight').hide()
+      $('#infoBox').removeClass('animated slideInDown').hide()
+      bt_Plug_Annotation.removeAnnotation('warnningPoi')
+      warnningBoxShow = false
+      break
+  
+    default:
+      break
+  }
+}
+
+bt_plug_warnning.plug_activate = () => {
+  console.log('plug activated')
+}
+
+bt_plug_warnning.plug_deactivate = () => {
+  console.log('plug deactivated')
+}
+
+bt_PlugManager.insert_plug(bt_plug_warnning);
+
+var warnning_vm = new Vue({
+  el: '#warnningBox',
+  data: {
+    title: '实时智能报警信息',
+    activeName: 'face',
+    faceList: [],
+    vehicleList: []
+  },
+  mounted () {
+    var self = this
+    setInterval(function() {
+      if (warnningBoxShow) {
+        self.addFaceItem()
+        self.addVehicleItem()
+      }
+    },5000)
+  },
+  updated () {
+    this.$nextTick(function(){
+      $('#warnningBox div.infoContent.vehicle ul.list li').first().addClass('animated flipInX')
+      $('#warnningBox div.infoContent.face ul.list li').first().addClass('animated flipInX')
+      
+      setTimeout(function() {
+        $('#warnningBox div.infoContent.vehicle ul.list li').removeClass()
+        $('#warnningBox div.infoContent.face ul.list li').removeClass()
+      },1000)
+    })
+  },
+  methods: {
+    clickBtn: function (type) {
+      this.activeName = type
+    },
+    getMyDate : function (date) {
+      function toDou (num) {
+          var str = ''
+          if (num < 10) {
+            str = '0'+num
+          } else {
+            str = ''+num
+          }
+          return str
+      }
+      date = date ? date :new Date()
+      date.setSeconds(date.getSeconds() - 3)
+      var yy = date.getFullYear()
+      var mm = date.getMonth()+1
+      var dd = date.getDate()
+      var HH = date.getHours()
+      var MM = date.getMinutes()
+      var SS = date.getSeconds()
+
+      return yy+'-'+toDou(mm)+'-'+toDou(dd)+' '+toDou(HH)+':'+toDou(MM)+':'+toDou(SS)
+    },
+    addFaceItem: function () {
+      var self = this
+      var date = this.getMyDate()
+      date = '2019-05-27 13:09:39'
+      var url= "http://localhost:8014/sqlservice/v1/executeSql?sql=SELECT * FROM disposition_face where face_appear_time > '"+date+"'"
+      // console.log(url)
+      $.ajax({
+        url: url,
+        type:'GET',
+        success: function(data){
+          if (data.length > 0) {
+            for (var i = 0; i < data.length; i++) {
+              // data[i].device_id = self.getMyDate()
+              data[i].face_appear_time = self.getMyDate(new Date(data[i].face_appear_time))
+              data[i].target_image_uri = data[i].target_image_uri ? data[i].target_image_uri: 'image/default.png'
+              data[i].subimage_list = data[i].subimage_list ? data[i].subimage_list : ['image/big_p.png','image/small_p.png']
+              self.faceList.unshift(data[i])
+            }
+          }
+         
+        }
+      })
+    },
+    addVehicleItem: function () {
+      var self = this
+      var date = this.getMyDate()
+      date = '2019-05-27 13:09:39'
+      var url= "http://localhost:8014/sqlservice/v1/executeSql?sql=SELECT * FROM disposition_vehicle where appear_time > '"+date+"'"
+      console.log(url)
+      $.ajax({
+        url: url,
+        type:'GET',
+        success: function(data){
+          if (data.length > 0) {
+            for (var i = 0; i < data.length; i++) {
+              data[i].appear_time = self.getMyDate(new Date(data[i].appear_time))
+              data[i].target_image_uri = data[i].target_image_uri ? data[i].target_image_uri: 'image/default.png'
+              data[i].subimage_list = data[i].subimage_list ? data[i].subimage_list : ['image/big_c.png','image/small_c.png']
+              self.vehicleList.unshift(data[i])
+            }
+          }
+         
+        }
+      })
+    },
+    clickRow: function(data,type){
+      bt_Plug_Annotation.removeAnnotation('warnningPoi')
+      // var self = this
+      var id = data.device_id
+      // id = 'd0587e35-81c3-11e9-adf8-00163e068fd6'
+      var url = "http://localhost:8014/sqlservice/v1/executeSql?sql=SELECT longitude,latitude,name FROM ape WHERE id = '"+id +"'"
+      console.log(url)
+      $.ajax({
+        url: url,
+        type: 'GET',
+        success: function (device) {
+          if (device.length < 1) return
+          info_vm.close()
+          // lnglat.longitude = 114.12798298117886
+          // lnglat.latitude = 30.63994477868518
+          // data.device_name = device[0].name
+          // self.$set(data,'device_name',device[0].name)
+          var ll = LL2Geo(device[0].longitude,device[0].latitude)
+          bt_Util.executeScript('Render\\CameraControl\\FlyTo2 '+ll.x+' '+ll.y+' 0;');
+          bt_Plug_Annotation.setAnnotation('warnningPoi', ll.x, ll.y, 100, -8, -16, "<div style='background:url(image/DefaultIcon.png); background-position:center left; background-repeat: no-repeat;width:16px;height:16px;line-height:16px;'></div>", false);
+          // bt_Plug_Annotation.setAnnotation('warnningPoi2', ll.x, ll.y, 70, -8, -16, '<div>123</div>', false);
+          setTimeout(function(){
+            info_vm.showInfo(data,type,device[0].name)
+          },200)
+        }
+      })
+    }
+  }
+})
+
+var info_vm = new Vue({
+  el: '#infoBox',
+  data: {
+    title: null,
+    deviceName: null,
+    type: null,
+    info: null
+  },
+  filters: {
+    genderFilter :function (val){
+      switch (val) {
+        case '0':
+          return '未知性别'
+          break;
+        case '1':
+          return '男'
+          break;
+        case '2':
+          return '女'
+          break;
+        case '9':
+          return '未说明'
+          break;
+        default:
+          return '未说明'
+          break;
+      }
+    },
+    plate_colorFilter: function(val){//车牌颜色。1：黑；2：白；3：灰；4：红；5：蓝；6：黄；7：橙；8：棕；9：绿；10：紫；11：青；12：粉；13：透明；99：其他；
+      switch (val) {
+        case '1':
+          return '黑'
+          break;
+        case '2':
+          return '白'
+          break;
+        case '3':
+          return '灰'
+          break;
+        case '4':
+          return '红'
+          break;
+        case '5':
+          return '蓝'
+          break;
+        case '6':
+          return '黄'
+          break;
+        case '7':
+          return '橙'
+          break;
+        case '8':
+          return '棕'
+          break;
+        case '9':
+          return '绿'
+          break;
+        case '10':
+          return '紫'
+          break;
+        case '11':
+          return '青'
+          break;
+        case '12':
+          return '粉'
+          break;
+        case '13':
+          return '透明'
+          break;
+        case '99':
+          return '其他'
+          break;
+        default:
+          return '其他'
+          break;
+      }
+    }
+  },
+  methods: {
+    showInfo: function(data,type,deviceName) {
+      var self = this
+      this.$nextTick(function(){
+        $('#infoBox').addClass('animated slideInLeft').show()
+        self.type = type
+        if (type == 'face') {
+          self.title = '人脸识别报警'
+        } else {
+          self.title = '车辆识别报警'
+        }
+        self.deviceName = deviceName
+        self.info = data
+      })
+      
+    },
+    close: function() {
+      $('#infoBox').hide()
+      bt_Plug_Annotation.removeAnnotation('warnningPoi')
+    }
+  }
+})
