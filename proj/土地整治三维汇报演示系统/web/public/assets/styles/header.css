@@ -1,0 +1,20 @@
+header.header{    
+    position: fixed;
+    z-index: 5;
+    box-sizing: border-box;
+    width: 100%;
+    padding:10px;
+    background-color: #33586C;
+    color: #fff;
+    user-select: none;
+}
+/* header.header img{
+    vertical-align:middle;
+} */
+header.header>div.title{
+    font-size: 24px;
+    height: 34px;
+    line-height: 34px;
+    padding-left:44px;
+    background: url('/assets/images/visiontek.png') no-repeat; 
+}
