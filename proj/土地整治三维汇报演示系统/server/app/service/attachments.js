@@ -57,25 +57,53 @@ class AttachmentsService extends Service {
   // 保存附件
   async postAttachment(file_name, file_type, bufs, attach_to_id, attach_type) {
     const sequelize = this.app.Sequelize;
-    await this.ctx.model.Attachments.create({
-      file_name,
-      file_type,
-      attach_to_id,
-      blob_data: bufs,
-      attach_type,
-    });
-    await this.app.model.query(
-      `insert into country_village_tree ( from_table, id, parent)
-            (select  'attachments',
-            oa.gid,
-            oa.attach_to_id
-            from attachments oa
-            where not exists (select 1 from country_village_tree ct
-            where ct.parent = oa.attach_to_id and ct.id = oa.gid));`,
-      {
-        type: sequelize.QueryTypes.INSERT,
-      }
-    );
+    let list = [];
+    if (attach_type) {
+      list = await this.ctx.model.Attachments.findAll({
+        where: {
+          attach_to_id,
+          attach_type,
+        },
+        attributes: ['gid'],
+      });
+    }
+    if (list.length) {
+      await this.ctx.model.Attachments.update(
+        {
+          file_name,
+          file_type,
+          attach_to_id,
+          blob_data: bufs,
+          attach_type,
+        },
+        {
+          where: {
+            attach_to_id,
+            attach_type,
+          },
+        }
+      );
+    } else {
+      await this.ctx.model.Attachments.create({
+        file_name,
+        file_type,
+        attach_to_id,
+        blob_data: bufs,
+        attach_type,
+      });
+      await this.app.model.query(
+        `insert into country_village_tree ( from_table, id, parent)
+              (select  'attachments',
+              oa.gid,
+              oa.attach_to_id
+              from attachments oa
+              where not exists (select 1 from country_village_tree ct
+              where ct.parent = oa.attach_to_id and ct.id = oa.gid));`,
+        {
+          type: sequelize.QueryTypes.INSERT,
+        }
+      );
+    }
     return await this.getAttachmentListById(attach_to_id);
   }
   async getAttachmentById(id) {

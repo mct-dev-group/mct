@@ -36,12 +36,13 @@ class AttachmentsController extends Controller {
   async postAttachment() {
     const { ctx, service } = this;
     const helper = ctx.helper;
+    let stream = null;
     try {
       //获取FileStream
-      const stream = await ctx.getFileStream();
+      stream = await ctx.getFileStream();
       const bufs = [];
       const { file_name, file_type, attach_to_id, attach_type } = stream.fields;
-      ctx.body = stream.fields;
+      // ctx.body = stream.fields;
 
       stream.on('data', d => {
         bufs.push(d);
@@ -67,8 +68,9 @@ class AttachmentsController extends Controller {
       let result = await saveAndGetList();
       rb = helper.getSuccess(result);
     } catch (error) {
-      await sendToWormhole(stream);
       rb = helper.getFailed(error);
+      console.log(error);
+      await sendToWormhole(stream);
     } finally {
       ctx.body = rb;
     }
