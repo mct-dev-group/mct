@@ -49,8 +49,6 @@ class AttachmentsService extends Service {
         '县'
       end as label
       from country_village_tree cvt where not cvt.from_table = 'attachments'`;
-    // when cvt.from_table = 'attachments' then
-    //   (select concat(a.file_name,'.',a.file_type) as label from attachments a where a.gid = cvt.id and cvt.from_table = 'attachments')
     return await this.app.model.query(query, {
       type: sequelize.QueryTypes.SELECT,
     });
@@ -58,9 +56,7 @@ class AttachmentsService extends Service {
 
   // 保存附件
   async postAttachment(file_name, file_type, bufs, attach_to_id, attach_type) {
-    // console.log('server', file_name, file_type, bufs, attach_to_id);
     const sequelize = this.app.Sequelize;
-    // console.log('insert');
     await this.ctx.model.Attachments.create({
       file_name,
       file_type,
@@ -83,7 +79,6 @@ class AttachmentsService extends Service {
     return await this.getAttachmentListById(attach_to_id);
   }
   async getAttachmentById(id) {
-    const sequelize = this.app.Sequelize;
     return await this.ctx.model.Attachments.findAll({
       where: {
         gid: id,
@@ -97,13 +92,32 @@ class AttachmentsService extends Service {
       ],
     });
   }
-  async getAttachmentListById(id) {
+  async delAttachmentById(id) {
     const sequelize = this.app.Sequelize;
+    await this.app.model.query(
+      `delete from country_village_tree where id=${id} and from_table='attachments';`,
+      {
+        type: sequelize.QueryTypes.DELETE,
+      }
+    );
+    return await this.ctx.model.Attachments.destroy({
+      where: {
+        gid: id,
+      },
+    });
+  }
+  async getAttachmentListById(id) {
     return await this.ctx.model.Attachments.findAll({
       where: {
         attach_to_id: id,
       },
-      attributes: ['gid', 'attach_to_id', 'file_name', 'file_type'],
+      attributes: [
+        'gid',
+        'attach_to_id',
+        'file_name',
+        'file_type',
+        'attach_type',
+      ],
     });
   }
 }

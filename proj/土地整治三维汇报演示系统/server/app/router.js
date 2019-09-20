@@ -9,15 +9,19 @@ module.exports = app => {
   router.post('/attrs/getByParentId', controller.attrs.getByParentId);
   router.post('/attrs/getByLikeName', controller.attrs.getByLikeName);
   router.post('/attrs/getByPosition', controller.attrs.getByPosition);
-  router.post('/attrs/culcWithin', controller.attachments.culcWithin);
-  router.get('/attrs/getTree', controller.attachments.getTree);
-  router.post('/attrs/postAttachment', controller.attachments.postAttachment);
+  router.post('/attachs/culcWithin', controller.attachments.culcWithin);
+  router.get('/attachs/getTree', controller.attachments.getTree);
+  router.post('/attachs/postAttachment', controller.attachments.postAttachment);
   router.get(
-    '/attrs/getAttachmentById/:id',
+    '/attachs/getAttachmentById/:id',
     controller.attachments.getAttachmentById
   );
   router.get(
-    '/attrs/getAttachmentListById/:id',
+    '/attachs/getAttachmentListById/:id',
     controller.attachments.getAttachmentListById
+  );
+  router.delete(
+    '/attachs/delAttachmentById/:id',
+    controller.attachments.delAttachmentById
   );
 };

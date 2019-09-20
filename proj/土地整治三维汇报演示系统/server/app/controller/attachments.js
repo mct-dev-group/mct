@@ -14,8 +14,7 @@ class AttachmentsController extends Controller {
       const result = await service.attachments.getWithin();
       rb = helper.getSuccess(result);
     } catch (error) {
-      console.log(error);
-      rb = helper.getFailed();
+      rb = helper.getFailed(error);
     } finally {
       ctx.body = rb;
     }
@@ -28,8 +27,7 @@ class AttachmentsController extends Controller {
       const result = await service.attachments.getTree();
       rb = helper.getSuccess(result);
     } catch (error) {
-      console.log(error);
-      rb = helper.getFailed();
+      rb = helper.getFailed(error);
     } finally {
       ctx.body = rb;
     }
@@ -42,7 +40,6 @@ class AttachmentsController extends Controller {
       //获取FileStream
       const stream = await ctx.getFileStream();
       const bufs = [];
-      console.log(stream.fields);
       const { file_name, file_type, attach_to_id, attach_type } = stream.fields;
       ctx.body = stream.fields;
 
@@ -70,20 +67,17 @@ class AttachmentsController extends Controller {
       let result = await saveAndGetList();
       rb = helper.getSuccess(result);
     } catch (error) {
-      console.log(error);
       await sendToWormhole(stream);
-      rb = helper.getFailed();
+      rb = helper.getFailed(error);
     } finally {
       ctx.body = rb;
     }
   }
 
   async getAttachmentById() {
-    console.log('in');
     const { ctx, service } = this;
     const helper = ctx.helper;
     const id = this.ctx.params.id;
-    console.log(id);
     try {
       const result = await service.attachments.getAttachmentById(id);
       const { file_type, blob_data } = result[0];
@@ -93,8 +87,21 @@ class AttachmentsController extends Controller {
       result[0].blob_data = bufferBase64;
       rb = helper.getSuccess(result);
     } catch (error) {
-      console.log(error);
-      rb = helper.getFailed();
+      rb = helper.getFailed(error);
+    } finally {
+      ctx.body = rb;
+    }
+  }
+
+  async delAttachmentById() {
+    const { ctx, service } = this;
+    const helper = ctx.helper;
+    const id = this.ctx.params.id;
+    try {
+      const result = await service.attachments.delAttachmentById(id);
+      rb = helper.getSuccess(result);
+    } catch (error) {
+      rb = helper.getFailed(error);
     } finally {
       ctx.body = rb;
     }
@@ -104,13 +111,11 @@ class AttachmentsController extends Controller {
     const { ctx, service } = this;
     const helper = ctx.helper;
     const id = this.ctx.params.id;
-    console.log(id);
     try {
       const result = await service.attachments.getAttachmentListById(id);
       rb = helper.getSuccess(result);
     } catch (error) {
-      console.log(error);
-      rb = helper.getFailed();
+      rb = helper.getFailed(error);
     } finally {
       ctx.body = rb;
     }
