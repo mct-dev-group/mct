@@ -2,7 +2,7 @@
   <div class="layerControl">
     <h3 class="title">{{title}}</h3>
     <div class="main">
-      <el-checkbox-group class="checkBox" v-model="checkedLayers">
+      <el-checkbox-group class="checkBox" v-model="checkedLayers" text-color="#33586C"> 
         <el-checkbox
           class="checkItem"
           v-for="layer in layerList"
@@ -171,9 +171,10 @@ export default {
   right: 30px;
   top: 100px;
   border-radius: 5px;
+  z-index: 6;
 
   .title {
-    background: #409eff;
+    background: #33586C;
     text-align: center;
     padding: 8px;
     border-top-left-radius: 5px;

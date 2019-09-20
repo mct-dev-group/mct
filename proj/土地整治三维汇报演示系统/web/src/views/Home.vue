@@ -1,16 +1,14 @@
 <template>
   <div class="home">
+    <router-view />
+
     <leftTree/>
     <LayerControl/>
-    <router-view />
-    <rightContainer/>
     <Compass />
+    
     <PlugManager />
     <!-- 插件start -->
-    <PlugExample />
     <Measurement />
-    <WMS />
-    <BufferQuery />
     <PBFastReader />
     <!-- 插件end -->
   </div>
@@ -22,13 +20,9 @@ import PlugManager from '@/components/PlugManager.vue';
 import LayerControl from '@/components/ui/LayerControl.vue';
 
 // 插件
-import PlugExample from '@/components/plug/PlugExample.vue';
 import Measurement from '@/components/plug/Measurement.vue';
-import WMS from '@/components/plug/WMS.vue';
-import BufferQuery from '@/components/plug/BufferQuery.vue';
 import PBFastReader from '@/components/plug/PBFastReader.vue';
 import leftTree from '@/components/ui/leftTree.vue';
-import rightContainer from '@/components/ui/rightContainer.vue';
 
 export default {
   name: 'home',
@@ -37,13 +31,9 @@ export default {
     PlugManager,
     LayerControl,
     // 插件
-    PlugExample,
     Measurement,
-    WMS,
-    BufferQuery,
     PBFastReader,
     leftTree,
-    rightContainer,
   }
 }
 </script>
