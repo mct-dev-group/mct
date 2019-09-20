@@ -11,11 +11,12 @@
         </el-tab-pane>
         <el-tab-pane label="查看附件" name='2'>
           <checkFile/>
-        </el-tab-pane>        
-        <el-tab-pane label="图斑" name='3'>图斑</el-tab-pane>
-        <el-tab-pane label="上传附件" name='4'>
+        </el-tab-pane>
+        <el-tab-pane label="上传附件" name='3'>
           <uploadFile/>
         </el-tab-pane>
+        <el-tab-pane label="图斑" name='4'>图斑</el-tab-pane>
+        
       </el-tabs>
     </div>        
   </div>
