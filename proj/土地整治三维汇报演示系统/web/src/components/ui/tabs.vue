@@ -2,7 +2,7 @@
   <div class="tabsBox">
     <el-button size="mini" type='text' icon="el-icon-close" @click="closeTabsBox"></el-button>
     <div class="title">
-      {{title}}&nbsp;-&nbsp;整治详情
+      {{dataForTabs.title}}&nbsp;-&nbsp;整治详情
     </div>
     <div class="content">
       <el-tabs :value='activeTab' stretch :before-leave='handle'>
@@ -13,7 +13,7 @@
           <checkFile/>
         </el-tab-pane>
         <el-tab-pane label="上传附件" name='3'>
-          <uploadFile/>
+          <uploadFile :gid='dataForTabs.gid'/>
         </el-tab-pane>
         <el-tab-pane label="图斑" name='4'>图斑</el-tab-pane>
         
@@ -29,12 +29,11 @@ import  uploadFile from './uploadFile.vue';
 export default {
   name: 'tabs',
   data () {
-    return {
-      title:'01乡',      
+    return {         
       percentage:0
     }
   },
-  props:['activeTab'],
+  props:['activeTab','dataForTabs'],
   components:{
     checkFile,
     checkChart,

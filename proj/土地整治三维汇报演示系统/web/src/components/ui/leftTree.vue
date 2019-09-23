@@ -24,7 +24,7 @@
         </li>
       </ul>
     </el-card>
-    <tabs v-show='showTabs' :activeTab='activeTab' @update:showTabs='showTabs=false'/>
+    <tabs v-show='showTabs' :activeTab='activeTab' :dataForTabs='dataForTabs' @update:showTabs='showTabs=false'/>
   </div>
 </template>
 
@@ -35,25 +35,10 @@ export default {
   data () {
     return {
       searchText:'',
-      showTabs:true,
+      showTabs:false,
       activeTab:'',
-      menu:[
-        {
-          id:1,
-          icon:'fa fa-file',
-          content:'统计'
-        },
-        {
-          id:2,
-          icon:'fa fa-bar-chart',
-          content:'附件查看'
-        },
-        {
-          id:3,
-          icon:'el-icon-edit',
-          content:'修改图斑状态'
-        }
-      ],
+      dataForTabs:{},
+      menu:[],
       treeData:[{
           label: "一级 1",
           children: []
@@ -81,11 +66,15 @@ export default {
     handleContextmenu(evt,data,node){
       if(!data.from_table) return;
       this.$store.commit('setShowMenu', true);
+      this.showTabs=false;
       const menuDom=document.getElementById('menuCotainer');
       menuDom.style.left=evt.clientX+'px';
       menuDom.style.top=evt.clientY+'px';
-      
-      console.log(data.from_table);      
+
+      this.dataForTabs={
+        title:data.label,
+        gid:data.gid
+      };
 
       switch(data.from_table){
         case 'county' :
@@ -134,6 +123,7 @@ export default {
     menuMousedown(id){      
       this.showTabs=true;
       this.activeTab=id;
+      
     },
     filterNode(value, data) {
       if (!value) return true;
