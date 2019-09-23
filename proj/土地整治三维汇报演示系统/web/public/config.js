@@ -31,4 +31,5 @@ config.services = {
     ]
   }
 }
+//上传
 config.server='http://192.168.0.141:7001/';
