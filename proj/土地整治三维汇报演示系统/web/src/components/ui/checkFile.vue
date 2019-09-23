@@ -60,6 +60,8 @@ export default {
   },
   // props:['title'],
   methods: {
+    /* /attachs/getAttachmentById/:id */
+    /* /attachs/getAttachmentListById/:id */
   }
 }
 </script>
