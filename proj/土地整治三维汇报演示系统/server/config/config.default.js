@@ -29,6 +29,7 @@ module.exports = appInfo => {
   };
   config.multipart = {
     mode: 'stream',
+    fileExtensions: [ '.txt','.doc','.pdf','.docx','.xls','.xlsx','.ppt' ]
   };
   config.security = {
     csrf: {
