@@ -13,6 +13,7 @@
         :filter-node-method="filterNode"
         accordion
         @node-contextmenu='handleContextmenu'      
+        @node-click='handleClick'
         >
       </el-tree>
     </div>
@@ -29,6 +30,8 @@
 </template>
 
 <script>
+import turf from 'turf';
+import { getCurrentAreaInfo } from '@/api/api';
 import tabs from '@/components/ui/tabs.vue';
 export default {
   name: 'leftTree',
@@ -47,6 +50,8 @@ export default {
         children: "children",
         label: "label"
       },
+      // 高亮颜色
+      lightColor: '#189e08',
     }
   },
   watch: {
@@ -129,6 +134,53 @@ export default {
       if (!value) return true;
       return data.label.indexOf(value) !== -1;
     },
+    handleClick (obj) {
+      if (obj.from_table && obj.from_table != 'county') {
+        const parmas = {
+          id: obj.id,
+          table: obj.from_table
+        }
+        getCurrentAreaInfo(parmas).then( result => {
+          if (result.code && result.code == 1 && result.data && result.data.length > 0) { // 查询成功
+            const center = turf.center(result.data[0].geom);
+            // bt_Util.executeScript('Render\\CameraControl\\FlyTo2 '+ll.x+' '+ll.y+' 0;');
+					  bt_Util.executeScript(`Render\\CameraControl\\FlyTo ${center.geometry.coordinates[0]} ${center.geometry.coordinates[1]} 3000 ${center.geometry.coordinates[0]} ${center.geometry.coordinates[1]} 500;`);
+            this.setLight(result.data[0].geom);
+          }
+        }).catch( error => {
+          console.log(error);
+        })
+      } else {
+        this.setLight();
+      }
+    },
+    setLight (geojson) {
+      if (geojson) {
+        let allPointArr = []
+        let allPoint = ''
+        let len = 0
+        const coordinates = geojson.coordinates;
+
+        for (let i = 0; i < coordinates.length; i++ ) {
+          for (let j = 0; j < coordinates[i].length; j++) {
+            // 轮廓线点数
+            len += coordinates[i][j].length
+            for (let k = 0; k < coordinates[i][j].length; k++) {
+              allPointArr.push(coordinates[i][j][k][0])
+              allPointArr.push(coordinates[i][j][k][1])
+            }
+          }
+        }
+
+        allPoint = allPointArr.join(' ');
+        //执行单体化高亮命令
+        let str = `Render\\RenderDataContex\\SetOsgAttribBox -10 9999 ${this.lightColor} ${len} ${allPoint};`
+        bt_Util.executeScript(str);
+      } else {
+        bt_Util.executeScript("Render\\RenderDataContex\\SetOsgAttribBox 0;");
+      }
+      
+    }
   },
   mounted(){
     const th=this;
