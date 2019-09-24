@@ -12,17 +12,16 @@
         ref='activeTab'
         @tab-click='handleClick'
       >
-        <el-tab-pane label="统计" name='1'>
+        <el-tab-pane label="统计信息" name='1' v-if='dataForTabs.showType===1'>
           <checkChart :percentage='percentage'/>
         </el-tab-pane>
-        <el-tab-pane label="查看附件" name='2'>
+        <el-tab-pane label="附件查看" name='2' v-if='dataForTabs.showType!==2'>
           <checkFile v-loading='checkLoading' ref='checkFile' :files='dataForTabs.data' @updata-checkLoading='checkLoading=false'/>
         </el-tab-pane>
-        <el-tab-pane label="上传附件" name='3'>
+        <el-tab-pane label="附件上传" name='3' v-if='dataForTabs.showType!==2'>
           <uploadFile ref='uploadFile' :gid='dataForTabs.gid'/>
         </el-tab-pane>
-        <el-tab-pane label="图斑" name='4'>图斑</el-tab-pane>
-        
+        <el-tab-pane label="查看详情" name='4'>图斑</el-tab-pane>
       </el-tabs>
     </div>        
   </div>
@@ -67,11 +66,12 @@ export default {
     },
     closeTabsBox(){
       this.$emit('update:showTabs');
-      this.$emit('update:activeTab');
-      this.$refs.uploadFile.clearFileList();
+      this.$emit('update:activeTab');      
+      this.$refs.uploadFile&&this.$refs.uploadFile.clearFileList();
+      this.$refs.checkFile&&this.$refs.checkFile.clearFile();
     },
     handleClick(tab){
-      
+      console.log(tab);
     }
   }
 }

@@ -25,7 +25,14 @@
         </li>
       </ul>
     </el-card>
-    <tabs v-show='showTabs' :activeTab='activeTab' :dataForTabs='dataForTabs' @update:showTabs='showTabs=false' @update:activeTab='activeTab="0"'/>
+    <tabs 
+      v-show='showTabs'
+      ref='tabs'
+      :activeTab='activeTab' 
+      :dataForTabs='dataForTabs' 
+      @update:showTabs='showTabs=false' 
+      @update:activeTab='activeTab="0"'
+    />
   </div>
 </template>
 
@@ -33,6 +40,30 @@
 import turf from 'turf';
 import { getCurrentAreaInfo } from '@/api/api';
 import tabs from '@/components/ui/tabs.vue';
+
+const menu=[
+  {
+    id:'1',
+    icon:'fa fa-bar-chart',
+    content:'统计信息'
+  },
+  {
+    id:'2',
+    icon:'fa fa-file',
+    content:'附件查看'
+  },
+  {
+    id:'3',
+    icon:'el-icon-upload',
+    content:'附件上传'
+  },
+  {
+    id:'4',
+    icon:'fa fa-list',
+    content:'查看详情'
+  }
+];
+
 export default {
   name: 'leftTree',
   data () {
@@ -71,7 +102,9 @@ export default {
     handleContextmenu(evt,data,node){
       if(!data.from_table) return;
       this.$store.commit('setShowMenu', true);
-      this.showTabs=false;
+      // this.showTabs=false;
+      
+      this.$refs.tabs.closeTabsBox();
       const menuDom=document.getElementById('menuCotainer');
       menuDom.style.left=evt.clientX+'px';
       menuDom.style.top=evt.clientY+'px';
@@ -79,54 +112,24 @@ export default {
       this.dataForTabs={
         title:data.label,
         gid:data.gid
-      };
-
+      };      
       switch(data.from_table){
         case 'county' :
         case 'country' :
         case 'village' :
-          this.menu=[
-            {
-              id:'1',
-              icon:'fa fa-bar-chart',
-              content:'统计'
-            },
-            {
-              id:'2',
-              icon:'fa fa-file',
-              content:'附件查看'
-            },
-            {
-              id:'3',
-              icon:'el-icon-upload',
-              content:'附件上传'
-            }
-          ];
+          this.menu=menu.slice();
+          this.dataForTabs.showType=1;
           break;
         case 'spot' :
+          this.menu=[menu[3]];
+          this.dataForTabs.showType=2;
+          break;
         case  'plan' :
-          this.menu=[
-            {
-              id:'2',
-              icon:'fa fa-file',
-              content:'附件查看'
-            },
-            {
-              id:'3',
-              icon:'el-icon-upload',
-              content:'附件上传'
-            },
-            {
-              id:'4',
-              icon:'el-icon-edit',
-              content:'修改图斑状态'
-            }
-          ];
+          this.menu=menu.slice(1);          
           break;
       }      
     },
-    menuMousedown(id){      
-      
+    menuMousedown(id){
       let th = this;
       //附件查看
       const url ="http://" + location.hostname + ":7001/attachs/getAttachmentListById/" +this.dataForTabs.gid;
@@ -158,6 +161,7 @@ export default {
         getCurrentAreaInfo(parmas).then( result => {
           if (result.code && result.code == 1 && result.data && result.data.length > 0) { // 查询成功
             const center = turf.center(result.data[0].geom);
+            console.log(result.data[0]);
             // bt_Util.executeScript('Render\\CameraControl\\FlyTo2 '+ll.x+' '+ll.y+' 0;');
 					  bt_Util.executeScript(`Render\\CameraControl\\FlyTo ${center.geometry.coordinates[0]} ${center.geometry.coordinates[1]} 30000 ${center.geometry.coordinates[0]} ${center.geometry.coordinates[1]} 5000;`);
             this.setLight(result.data[0].geom);

@@ -38,8 +38,7 @@
               </el-card>
             </el-col>
           </el-row>
-        </div>
-        
+        </div>        
       </el-tab-pane>
       <el-tab-pane label='其他' style='height:100%;padding-right:10px;' name='2'>        
         <ul v-if='otherFiles' class='fileList'>
@@ -108,8 +107,8 @@ export default {
       if(aName==='1'){
         let map=new Map();
         const filterDatas=this.files.filter(file=>file.attach_type==='zzq_img'||file.attach_type==='zzh_img');
-        const gets=filterDatas.map(data=>get("http://" + location.hostname + ":7001/attachs/getAttachmentById/"+data.gid));     
-        Promise.all(gets).then(results=>{          
+        const gets=filterDatas.map(data=>get("http://" + location.hostname + ":7001/attachs/getAttachmentById/"+data.gid));
+        Promise.all(gets).then(results=>{
           results.forEach(result=>{
             const { mime_type, blob_data, attach_type} = result.data[0];
             const bolbUrl=`data:${mime_type};base64,` + blob_data;
@@ -117,11 +116,15 @@ export default {
               this.urlOfBefore=bolbUrl;
             }else if(attach_type==='zzh_img'){
               this.urlOfAfter=bolbUrl;
-            }           
+            }
           });          
           this.$emit('updata-checkLoading');
         });
       }
+    },
+    clearFile(){
+      this.urlOfBefore='';
+      this.urlOfAfter='';
     }
   }
 }

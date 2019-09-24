@@ -144,7 +144,11 @@ export default {
           data: data,
           processData: false,
           contentType: false,
-          success: ()=>{                        
+          success: ()=>{
+            th.$message({
+              message: '上传成功！',
+              type: 'success'
+            });
             th.clearFiles();
           },
           error: console.log
@@ -166,6 +170,7 @@ export default {
 .uploadImage{
   padding-right: 10px;
   text-align: center;
+  user-select: none;
 
   /deep/.el-upload--picture-card{
     border: none;
