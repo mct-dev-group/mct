@@ -117,6 +117,7 @@ class AttachmentsService extends Service {
         'file_name',
         'file_type',
         'blob_data',
+        'attach_type'
       ],
     });
   }
