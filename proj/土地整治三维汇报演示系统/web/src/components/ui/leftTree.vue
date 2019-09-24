@@ -12,8 +12,7 @@
         :default-expanded-keys="[0]"
         :filter-node-method="filterNode"
         accordion
-        @node-contextmenu='handleContextmenu'      
-        @node-click='handleClick'
+        @node-contextmenu='handleContextmenu'
         >
       </el-tree>
     </div>
@@ -101,6 +100,7 @@ export default {
   methods:{
     handleContextmenu(evt,data,node){
       if(!data.from_table) return;
+      this.getCurrentAreaInfo(data);
       this.$store.commit('setShowMenu', true);
       // this.showTabs=false;
       
@@ -152,7 +152,7 @@ export default {
       if (!value) return true;
       return data.label.indexOf(value) !== -1;
     },
-    handleClick (obj) {
+    getCurrentAreaInfo (obj) {
       if (obj.from_table && obj.from_table != 'county') {
         const parmas = {
           id: obj.id,
