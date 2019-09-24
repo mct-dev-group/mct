@@ -2,10 +2,10 @@
   <div class="uploadFile">
     <el-tabs tab-position='left' style="height: 340px;">
       <el-tab-pane label="前后对比">
-        <uploadImage :gid='gid' />
+        <uploadImage  ref='uploadImage' :gid='gid' />
       </el-tab-pane>
       <el-tab-pane label='其他' style='height:100%;padding-right:10px;'>
-        <uploadOther />
+        <uploadOther ref='uploadOther' :gid='gid'/>
       </el-tab-pane> 
     </el-tabs>
     <el-dialog :visible.sync="dialogVisible" :append-to-body='true'>
@@ -22,8 +22,7 @@ export default {
   data () {
     return {            
       dialogImageUrl:'',
-      dialogVisible:false,
-      fileList:[]
+      dialogVisible:false,      
     }
   },
   props:['gid'],
@@ -32,7 +31,10 @@ export default {
     uploadOther
   },
   methods: {
-        
+    clearFileList(){
+      this.$refs.uploadImage.clearFiles();
+      this.$refs.uploadOther.clearFiles();
+    }
   }
 }
 </script>

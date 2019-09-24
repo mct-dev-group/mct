@@ -25,7 +25,7 @@
         </li>
       </ul>
     </el-card>
-    <tabs v-show='showTabs' :activeTab='activeTab' :dataForTabs='dataForTabs' @update:showTabs='showTabs=false'/>
+    <tabs v-show='showTabs' :activeTab='activeTab' :dataForTabs='dataForTabs' @update:showTabs='showTabs=false' @update:activeTab='activeTab="0"'/>
   </div>
 </template>
 
@@ -126,9 +126,24 @@ export default {
       }      
     },
     menuMousedown(id){      
-      this.showTabs=true;
-      this.activeTab=id;
       
+      let th = this;
+      //附件查看
+      const url ="http://" + location.hostname + ":7001/attachs/getAttachmentListById/" +this.dataForTabs.gid;
+      getData(url);
+      
+      function getData(url = "") {
+        $.ajax({
+          type: "GET",
+          crossDomain: true,
+          url: url,
+          success: result => {
+            th.dataForTabs.data=result.data;
+            th.showTabs=true;
+            th.activeTab=id;
+          }
+        });
+      }
     },
     filterNode(value, data) {
       if (!value) return true;

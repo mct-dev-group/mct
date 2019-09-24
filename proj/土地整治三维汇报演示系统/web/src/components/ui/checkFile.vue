@@ -1,20 +1,38 @@
 <template>
   <div class="checkFile">
-    <el-tabs tab-position='left' style="height: 340px;">
-      <el-tab-pane label="前后对比">
+    <el-tabs 
+      tab-position='left'
+      :value='activeTab' 
+      style="height: 340px;"
+      @tab-click='handleClick'
+      :before-leave='handleBeforeLeave'
+    >
+      <el-tab-pane label="前后对比" name='1'>
         <div class="compareImage">
           <el-row>
             <el-col :span="12">
-              <el-card :body-style="{ padding: 0 }" shadow='hover'>
-                <img src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png" class="image">
+              <el-card :body-style="{ padding: '10px' }" shadow='hover'>              
+                <div class="image">
+                  <img v-if='urlOfBefore' :src='urlOfBefore' alt="">                  
+                  <div v-else>
+                    <i class="fa fa-picture-o"></i>
+                    <p>暂无图片，请先上传！</p>
+                  </div>                  
+                </div>
                 <div style="padding: 14px;text-align:center;">
                   整治前
                 </div>
               </el-card>
             </el-col>
             <el-col :span="12">
-              <el-card :body-style="{ padding: 0}" shadow='hover'>
-                <img src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png" class="image">
+              <el-card :body-style="{ padding: '10px'}" shadow='hover'>
+                <div class="image">
+                  <img v-if='urlOfAfter' :src='urlOfAfter' alt="">                  
+                  <div v-else>
+                    <i class="fa fa-picture-o"></i>
+                    <p>暂无图片，请先上传！</p>
+                  </div>
+                </div>                
                 <div style="padding: 14px;text-align:center;">
                   整治后
                 </div>
@@ -24,44 +42,57 @@
         </div>
         
       </el-tab-pane>
-      <el-tab-pane label='其他' style='height:100%;padding-right:10px;'>
-        <ul class='fileList'>
-          <li v-for='item in list' :key='item.name' >
-            <a :href="item.url" target="_blank"><i :class="item.icon"></i>{{item.name}}</a>
+      <el-tab-pane label='其他' style='height:100%;padding-right:10px;' name='2'>
+        <!-- <ul class='fileList'>
+          <li v-for='file in files' :key='file.gid' >            
+            {{file.file_name}}.{{file.file_type}}
           </li>
-        </ul>
+        </ul> -->
       </el-tab-pane> 
     </el-tabs>
   </div>
 </template>
 
 <script>
+import {get} from '@/utils/fetch';
 export default {
   name: 'checkFile',
   data () {
     return {
-      list:[
-        {name:'文件1',icon:'fa fa-file-excel-o',url:'https://www.baidu.com'},
-        {name:'文件2',icon:'fa fa-file-pdf-o',url:'https://www.baidu.com'},
-        {name:'文件3',icon:'fa fa-file-word-o',url:'https://www.baidu.com'},
-        {name:'文件4',icon:'fa fa-file-image-o',url:'https://www.baidu.com'},
-        {name:'文件5',icon:'fa fa-file-text',url:'https://www.baidu.com'},
-        {name:'文件6',icon:'fa fa-file-audio-o',url:'https://www.baidu.com'},
-        {name:'文件7',icon:'fa fa-file-powerpoint-o',url:'https://www.baidu.com'},
-        {name:'文件8',icon:'fa fa-file-video-o',url:'https://www.baidu.com'},
-        {name:'文件9',icon:'fa fa-file-excel-o',url:'https://www.baidu.com'},
-        {name:'文件10',icon:'fa fa-file-excel-o',url:'https://www.baidu.com'},
-        {name:'文件11',icon:'fa fa-file-excel-o',url:'https://www.baidu.com'},
-        {name:'文件12',icon:'fa fa-file-excel-o',url:'https://www.baidu.com'},
-        {name:'文件13',icon:'fa fa-file-excel-o',url:'https://www.baidu.com'},
-        {name:'文件14',icon:'fa fa-file-excel-o',url:'https://www.baidu.com'},
-      ]
+      activeTab:'',
+      urlOfBefore:'',
+      urlOfAfter:'',
+      urlOfOther:[]
     }
   },
-  // props:['title'],
+  props:['files'],
   methods: {
     /* /attachs/getAttachmentById/:id */
     /* /attachs/getAttachmentListById/:id */
+    handleClick(){
+
+    },
+    handleBeforeLeave(aName,oName){
+      if(aName==='1'){
+        let map=new Map();
+        const filterDatas=this.files.filter(file=>file.attach_type==='zzq_img'||file.attach_type==='zzh_img');
+        const gets=filterDatas.map(data=>get("http://" + location.hostname + ":7001/attachs/getAttachmentById/"+data.gid));
+     
+        Promise.all(gets).then(results=>{                 
+          results.forEach(result=>{
+            const { mime_type, blob_data, attach_type} = result.data[0];
+            const bolbUrl=`data:${mime_type};base64,` + blob_data;
+            if(attach_type==='zzq_img'){
+              this.urlOfBefore=bolbUrl;
+            }else if(attach_type==='zzh_img'){
+              this.urlOfAfter=bolbUrl;
+            }            
+           
+          });          
+          // this.$emit('updata-checkLoading');
+        });
+      }
+    }
   }
 }
 </script>
@@ -75,9 +106,25 @@ export default {
   .compareImage{
     padding-right: 10px;
 
-    .image {
-      width: 100%;
-      display: block;
+    .image {      
+      height: 180px;
+      text-align: center;      
+      border:1px dashed #d9d9d9;
+      box-sizing: border-box;
+
+      img{
+        width:100%;
+        height:100%;
+      }
+      i{
+        line-height: 2;
+        font-size:67px;
+        display: inline-block;
+        color:#C0C4CC !important;
+      }
+      p{
+        color:#606266;
+      }
     }
   }
   .fileList {

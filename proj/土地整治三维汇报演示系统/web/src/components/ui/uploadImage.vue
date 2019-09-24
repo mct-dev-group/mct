@@ -135,7 +135,7 @@ export default {
         return fd;
       });
       const url = config.server + "attachs/postAttachment";
-      fds.map(fd => postData(url, fd));
+      fds.forEach(fd => postData(url, fd));
       function postData(url = "", data = {}) {        
         $.ajax({
           type: "POST",
@@ -144,17 +144,20 @@ export default {
           data: data,
           processData: false,
           contentType: false,
-          success: ()=>{            
-            th.$refs.beforeImg.clearFiles();
-            th.$refs.afterImg.clearFiles();
-            document.querySelector('#beforeImgUpload div.el-upload.el-upload--picture-card').style.display='block';
-            document.querySelector('#afterImgUpload div.el-upload.el-upload--picture-card').style.display='block';
-            th.fileList=[];
+          success: ()=>{                        
+            th.clearFiles();
           },
           error: console.log
         });
       }
-    },    
+    },
+    clearFiles(){
+      this.$refs.beforeImg.clearFiles();
+      this.$refs.afterImg.clearFiles();
+      document.querySelector('#beforeImgUpload div.el-upload.el-upload--picture-card').style.display='block';
+      document.querySelector('#afterImgUpload div.el-upload.el-upload--picture-card').style.display='block';
+      this.fileList=[];
+    }
   }
 }
 </script>

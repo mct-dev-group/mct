@@ -5,15 +5,21 @@
       {{dataForTabs.title}}&nbsp;-&nbsp;整治详情
     </div>
     <div class="content">
-      <el-tabs :value='activeTab' stretch :before-leave='handle'>
+      <el-tabs 
+        :value='activeTab' 
+        stretch 
+        :before-leave='handle' 
+        ref='activeTab'
+        @tab-click='handleClick'
+      >
         <el-tab-pane label="统计" name='1'>
           <checkChart :percentage='percentage'/>
         </el-tab-pane>
         <el-tab-pane label="查看附件" name='2'>
-          <checkFile/>
+          <checkFile v-loading='checkLoading' ref='checkFile' :files='dataForTabs.data' @updata-checkLoading='checkLoading=false'/>
         </el-tab-pane>
         <el-tab-pane label="上传附件" name='3'>
-          <uploadFile :gid='dataForTabs.gid'/>
+          <uploadFile ref='uploadFile' :gid='dataForTabs.gid'/>
         </el-tab-pane>
         <el-tab-pane label="图斑" name='4'>图斑</el-tab-pane>
         
@@ -26,11 +32,13 @@
 import  checkFile from './checkFile.vue';
 import  checkChart from './checkChart.vue';
 import  uploadFile from './uploadFile.vue';
+import {get} from '@/utils/fetch';
 export default {
   name: 'tabs',
   data () {
     return {         
-      percentage:0
+      percentage:0,
+      checkLoading:false,
     }
   },
   props:['activeTab','dataForTabs'],
@@ -40,8 +48,7 @@ export default {
     uploadFile
   },
   methods: {
-    handle(activeName,oldActiveName){
-      console.log(activeName,oldActiveName);
+    handle(activeName,oldActiveName){      
       if(activeName==='1'){
         setTimeout(()=>{
           this.percentage=80;
@@ -49,10 +56,22 @@ export default {
       }
       if(oldActiveName==='1'){
         this.percentage=0;
-      }      
+      }
+      if(oldActiveName==='2'){
+        this.$refs.checkFile.activeTab='0';
+      }
+      if(activeName==='2'){
+        this.$refs.checkFile.activeTab='1';
+        // this.checkLoading=true;
+      }
     },
     closeTabsBox(){
       this.$emit('update:showTabs');
+      this.$emit('update:activeTab');
+      this.$refs.uploadFile.clearFileList();
+    },
+    handleClick(tab){
+      
     }
   }
 }
