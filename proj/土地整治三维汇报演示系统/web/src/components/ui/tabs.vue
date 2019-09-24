@@ -62,7 +62,7 @@ export default {
       }
       if(activeName==='2'){
         this.$refs.checkFile.activeTab='1';
-        // this.checkLoading=true;
+        this.checkLoading=true;
       }
     },
     closeTabsBox(){

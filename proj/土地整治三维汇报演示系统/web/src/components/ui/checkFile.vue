@@ -3,8 +3,7 @@
     <el-tabs 
       tab-position='left'
       :value='activeTab' 
-      style="height: 340px;"
-      @tab-click='handleClick'
+      style="height: 340px;"      
       :before-leave='handleBeforeLeave'
     >
       <el-tab-pane label="前后对比" name='1'>
@@ -42,12 +41,13 @@
         </div>
         
       </el-tab-pane>
-      <el-tab-pane label='其他' style='height:100%;padding-right:10px;' name='2'>
-        <!-- <ul class='fileList'>
-          <li v-for='file in files' :key='file.gid' >            
-            {{file.file_name}}.{{file.file_type}}
+      <el-tab-pane label='其他' style='height:100%;padding-right:10px;' name='2'>        
+        <ul v-if='otherFiles' class='fileList'>
+          <li v-for='file in otherFiles' :key='file.gid' @click="handleFileClick(file.gid,$event)" title='点击查看'>            
+            <i :class='file.icon'></i>{{file.file_name}}.{{file.file_type}}
           </li>
-        </ul> -->
+        </ul>
+        <p v-else>暂无其他附件</p>
       </el-tab-pane> 
     </el-tabs>
   </div>
@@ -60,25 +60,56 @@ export default {
   data () {
     return {
       activeTab:'',
-      urlOfBefore:'',
-      urlOfAfter:'',
-      urlOfOther:[]
+      urlOfBefore:'',      
+      urlOfAfter:''
     }
   },
   props:['files'],
+  computed:{
+    otherFiles:function(){
+      if(this.files){
+        let files=this.files.filter(file=>file.attach_type!=='zzq_img'&&file.attach_type!=='zzh_img');
+        files.forEach(file=>{
+          switch(file.file_type){
+            case 'jpg':
+            case 'png':
+            case 'gif':
+              file.icon='fa fa-file-image-o';
+              break;
+            case 'xls':
+            case 'xlsx':
+              file.icon='fa fa-file-excel-o';
+              break;
+            case 'doc':
+            case 'docx':
+              file.icon='fa fa-file-word-o';
+              break;
+            case 'zip':
+            case 'rar':
+              file.icon='fa fa-file-archive-o';
+              break;
+            default :
+              file.icon='fa fa-file-o';
+          }
+        });
+        return files;
+      }            
+    }
+  },
   methods: {
-    /* /attachs/getAttachmentById/:id */
-    /* /attachs/getAttachmentListById/:id */
-    handleClick(){
-
+    handleFileClick(gid,evt){
+      get("http://" + location.hostname + ":7001/attachs/getAttachmentById/"+gid).then(res=>{
+        const {mime_type, blob_data} = res.data[0];
+        const bolbUrl=`data:${mime_type};base64,` + blob_data;
+        openInNewtab(bolbUrl);
+      });
     },
     handleBeforeLeave(aName,oName){
       if(aName==='1'){
         let map=new Map();
         const filterDatas=this.files.filter(file=>file.attach_type==='zzq_img'||file.attach_type==='zzh_img');
-        const gets=filterDatas.map(data=>get("http://" + location.hostname + ":7001/attachs/getAttachmentById/"+data.gid));
-     
-        Promise.all(gets).then(results=>{                 
+        const gets=filterDatas.map(data=>get("http://" + location.hostname + ":7001/attachs/getAttachmentById/"+data.gid));     
+        Promise.all(gets).then(results=>{          
           results.forEach(result=>{
             const { mime_type, blob_data, attach_type} = result.data[0];
             const bolbUrl=`data:${mime_type};base64,` + blob_data;
@@ -86,14 +117,23 @@ export default {
               this.urlOfBefore=bolbUrl;
             }else if(attach_type==='zzh_img'){
               this.urlOfAfter=bolbUrl;
-            }            
-           
+            }           
           });          
-          // this.$emit('updata-checkLoading');
+          this.$emit('updata-checkLoading');
         });
       }
     }
   }
+}
+function openInNewtab(dataURL) {
+  var iframe =
+    "<iframe width='100%' height='100%' style='border:none;' src='" + dataURL + "'></iframe>";
+  var x = window.open();
+  
+  x.document.open();
+  x.document.write(iframe);  
+  x.document.body.style.margin=0;
+  x.document.close();
 }
 </script>
 
@@ -134,8 +174,9 @@ export default {
 
     >li{
       margin-bottom:10px;
-      padding:5px 0;
+      padding:8px 5px;
       cursor: pointer;
+      user-select:none;
     }
     >li:hover{
       background-color: #f5f7fa;      
