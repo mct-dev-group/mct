@@ -10,6 +10,7 @@ class GeomService extends Service {
    */
   async getCurrentAreaInfo (gid , table) {
     const sequelize = this.app.Sequelize;
+    console.log(sequelize);
     const sql = `select * from ${table} where gid = ${gid};`;
     return await this.ctx.model.query(sql, {
       type: sequelize.QueryTypes.SELECT,
