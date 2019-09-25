@@ -117,6 +117,10 @@ export default {
       bt_event.addEventListener("GUIEvent\\KM\\OnMouseClick", this.onClick);
     },
     deactivate () {
+      // 移除鼠标移动和双击事件
+      bt_event.removeEventListener("GUIEvent\\KM\\OnMouseClick", this.onClick);
+      bt_event.removeEventListener("GUIEvent\\KM\\OnMouseDbClick", this.onDbClick);
+      bt_event.removeEventListener("GUIEvent\\KM\\OnMouseMove", this.onMouseMove);
       this.removePos();
       this.removeLine();
       bt_Util.executeScript(`Render\\ForceRedraw;`);

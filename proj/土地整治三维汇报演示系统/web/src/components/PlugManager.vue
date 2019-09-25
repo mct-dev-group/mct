@@ -42,6 +42,7 @@ export default {
         plug.value.activate();
       }
       this.$forceUpdate();
+      this.setPlugStatus();
     },
     handleCommand (command) {
       const {plug, type} = command;
@@ -63,6 +64,7 @@ export default {
         }
       }
       this.$forceUpdate();
+      this.setPlugStatus();
     },
     /**
      * @method deactivateOtherPlug 失活除去当前插件的其他互斥插件
@@ -101,6 +103,20 @@ export default {
         plug.value.deactivate();
       }
       this.$forceUpdate();
+      this.setPlugStatus();
+    },
+    /**
+     * @method setPlugStatus isPlugDeactivateAll
+     * @description 判断是否存在已激活的插件
+     */
+    setPlugStatus () {
+      let isPlugDeactivateAll = true;
+      for (const plug of this.plugList) {
+        if (plug.isActive) { // 激活
+            isPlugDeactivateAll = false;
+        }
+      }
+      this.$store.commit('setPlugStatus', isPlugDeactivateAll);
     }
   }
 }

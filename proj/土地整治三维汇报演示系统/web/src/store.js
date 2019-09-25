@@ -5,6 +5,7 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
+    isPlugDeactivateAll: true,
     plugList: [],
     showMenu:false
   },
@@ -24,6 +25,9 @@ export default new Vuex.Store({
     },
     setShowMenu(state,flag){
       state.showMenu=flag;
+    },
+    setPlugStatus(state,isPlugDeactivateAll) {
+      state.isPlugDeactivateAll = isPlugDeactivateAll;
     }
   },
   actions: {
