@@ -15,6 +15,7 @@
 </template>
 
 <script>
+import evenBus from '@/utils/event_bus';
 import WMSHelper from "@/utils/wms_helper";
 export default {
   name: "layercontrol",
@@ -54,6 +55,9 @@ export default {
   },
   mounted() {
     this.init();
+    evenBus.$on('layerControl_requestImage', () => {
+      this.requestImage();
+    });
   },
   methods: {
     init() {

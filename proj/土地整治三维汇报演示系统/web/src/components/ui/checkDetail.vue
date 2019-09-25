@@ -18,6 +18,7 @@
 </template>
 
 <script>
+import evenBus from '@/utils/event_bus';
 import { setStatus } from '@/api/api';
 
 
@@ -49,7 +50,9 @@ export default {
       this.disabled=false;
     },
     saveStatus(){
-      setStatus({id:this.details.gid,status:this.status});
+      setStatus({id:this.details.gid,status:this.status}).then( () => {
+        evenBus.$emit('layerControl_requestImage');
+      });
     }
   },  
 }
