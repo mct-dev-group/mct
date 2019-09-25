@@ -117,7 +117,7 @@ class AttachmentsService extends Service {
         'file_name',
         'file_type',
         'blob_data',
-        'attach_type'
+        'attach_type',
       ],
     });
   }
@@ -148,6 +148,16 @@ class AttachmentsService extends Service {
         'attach_type',
       ],
     });
+  }
+  async query(queryStr, queryType) {
+    const sequelize = this.app.Sequelize;
+    console.log(queryStr);
+    return await this.app.model.query(
+      queryStr
+      //   {
+      //   type: sequelize.QueryTypes[queryType],
+      // }
+    );
   }
 }
 

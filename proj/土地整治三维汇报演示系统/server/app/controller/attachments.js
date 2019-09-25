@@ -122,6 +122,22 @@ class AttachmentsController extends Controller {
       ctx.body = rb;
     }
   }
+  async query() {
+    const { ctx, service } = this;
+    const helper = ctx.helper;
+    console.log(this.ctx.request.body);
+    const { sql } = this.ctx.request.body;
+    console.log(sql);
+    try {
+      const result = await service.attachments.query(sql);
+      rb = helper.getSuccess(result);
+    } catch (error) {
+      console.log(error);
+      rb = helper.getFailed(error);
+    } finally {
+      ctx.body = rb;
+    }
+  }
 }
 
 module.exports = AttachmentsController;
