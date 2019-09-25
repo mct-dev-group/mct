@@ -25,4 +25,8 @@ module.exports = app => {
     controller.attachments.delAttachmentById
   );
   router.get('/attachs/query', controller.attachments.query);
+
+  
+  router.get(`/geom/getCurrentAreaInfo/:id/:table`, controller.geom.getCurrentAreaInfo);
+  router.get(`/geom/setStatus/:id/:status`, controller.geom.setStatus);
 };
