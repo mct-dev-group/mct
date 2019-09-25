@@ -21,7 +21,9 @@
         <el-tab-pane label="附件上传" name='3' v-if='dataForTabs.showType!==2'>
           <uploadFile ref='uploadFile' :gid='dataForTabs.gid'/>
         </el-tab-pane>
-        <el-tab-pane label="查看详情" name='4'>图斑</el-tab-pane>
+        <el-tab-pane label="查看详情" name='4'>
+          <checkDetail :details='dataForTabs.details'/>
+        </el-tab-pane>
       </el-tabs>
     </div>        
   </div>
@@ -31,6 +33,7 @@
 import  checkFile from './checkFile.vue';
 import  checkChart from './checkChart.vue';
 import  uploadFile from './uploadFile.vue';
+import  checkDetail from './checkDetail.vue';
 import {get} from '@/utils/fetch';
 export default {
   name: 'tabs',
@@ -44,7 +47,8 @@ export default {
   components:{
     checkFile,
     checkChart,
-    uploadFile
+    uploadFile,
+    checkDetail
   },
   methods: {
     handle(activeName,oldActiveName){      
@@ -71,7 +75,7 @@ export default {
       this.$refs.checkFile&&this.$refs.checkFile.clearFile();
     },
     handleClick(tab){
-      console.log(tab);
+      // console.log(tab);
     }
   }
 }

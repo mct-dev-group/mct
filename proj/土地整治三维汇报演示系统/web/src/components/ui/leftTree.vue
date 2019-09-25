@@ -160,11 +160,12 @@ export default {
         }
         getCurrentAreaInfo(parmas).then( result => {
           if (result.code && result.code == 1 && result.data && result.data.length > 0) { // 查询成功
-            const center = turf.center(result.data[0].geom);
-            console.log(result.data[0]);
+            const center = turf.center(result.data[0].geom);            
             // bt_Util.executeScript('Render\\CameraControl\\FlyTo2 '+ll.x+' '+ll.y+' 0;');
 					  bt_Util.executeScript(`Render\\CameraControl\\FlyTo ${center.geometry.coordinates[0]} ${center.geometry.coordinates[1]} 30000 ${center.geometry.coordinates[0]} ${center.geometry.coordinates[1]} 5000;`);
             this.setLight(result.data[0].geom);
+
+            this.dataForTabs.details=result.data[0];
           }
         }).catch( error => {
           console.log(error);
