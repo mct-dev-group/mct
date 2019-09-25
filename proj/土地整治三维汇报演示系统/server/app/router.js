@@ -24,7 +24,5 @@ module.exports = app => {
     '/attachs/delAttachmentById/:id',
     controller.attachments.delAttachmentById
   );
-
-  // 地区详细查询
-  router.get('/geom/getCurrentAreaInfo/:id/:table', controller.geom.getCurrentAreaInfo);
+  router.get('/attachs/query', controller.attachments.query);
 };
