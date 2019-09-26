@@ -6,7 +6,7 @@
       style="height: 340px;"      
       :before-leave='handleBeforeLeave'
     >
-      <el-tab-pane label="前后对比" name='1'>
+      <el-tab-pane label="前后对比" name='1' v-if='showType===2'>
         <div class="compareImage">
           <el-row>
             <el-col :span="12">
@@ -60,13 +60,13 @@ export default {
     return {
       activeTab:'',
       urlOfBefore:'',      
-      urlOfAfter:''
+      urlOfAfter:'',         
     }
   },
-  props:['files'],
+  props:['showType','gid','files'],
   computed:{
     otherFiles:function(){
-      if(this.files){
+      if(this.files){        
         let files=this.files.filter(file=>file.attach_type!=='zzq_img'&&file.attach_type!=='zzh_img');
         files.forEach(file=>{
           switch(file.file_type){
@@ -103,9 +103,8 @@ export default {
         openInNewtab(bolbUrl);
       });
     },
-    handleBeforeLeave(aName,oName){
-      if(aName==='1'){
-        let map=new Map();
+    handleBeforeLeave(aName,oName){      
+      if(aName==='1'){        
         const filterDatas=this.files.filter(file=>file.attach_type==='zzq_img'||file.attach_type==='zzh_img');
         const gets=filterDatas.map(data=>get("http://" + location.hostname + ":7001/attachs/getAttachmentById/"+data.gid));
         Promise.all(gets).then(results=>{
@@ -120,7 +119,12 @@ export default {
           });          
           this.$emit('updata-checkLoading');
         });
+      }else if(aName==='2'){
+        this.$emit('updata-checkLoading');
       }
+    },
+    getOtherFiles(otherFiles){
+      
     },
     clearFile(){
       this.urlOfBefore='';

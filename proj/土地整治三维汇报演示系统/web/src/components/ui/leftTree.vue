@@ -28,10 +28,10 @@
     <tabs
       v-show='showTabs'
       ref='tabs'
-      :activeTab='activeTab'
-      :dataForTabs='dataForTabs'
-      @update:showTabs='showTabs=false'
-      @update:activeTab='activeTab="0"'
+      :activeTab='activeTab' 
+      :dataForTabs='dataForTabs' 
+      @update:showTabs='showTabs=false' 
+      @update:activeTab='activeTab="0"'      
     />
   </div>
 </template>
@@ -40,6 +40,8 @@
 import turf from 'turf';
 import { getCurrentAreaInfo } from '@/api/api';
 import tabs from '@/components/ui/tabs.vue';
+import {get} from '@/utils/fetch';
+import func from '../../../vue-temp/vue-editor-bridge';
 
 const menu=[
   {
@@ -106,7 +108,7 @@ export default {
     tabs
   },
   methods:{
-    handleContextmenu(evt,data,node){
+    handleContextmenu(evt,data,node){      
       if(!data.from_table) return;
       this.getCurrentAreaInfo(data);
       this.$store.commit('setShowMenu', true);
@@ -128,34 +130,35 @@ export default {
           this.menu=menu.slice();
           this.dataForTabs.showType=1;
           break;
-        case 'spot' :
-          this.menu=[menu[3]];
-          this.dataForTabs.showType=2;
-          break;
         case  'plan' :
           this.menu=menu.slice(1);
+          this.dataForTabs.showType=2;
           break;
+        case 'spot' :
+          this.menu=[menu[3]];
+          this.dataForTabs.showType=3;
+          break;
+        
       }
+      // let arr=[];
+      // getNode(data);
+      // console.log(arr);
+      // function getNode(data){
+      //   const children=data.children;
+      //   if(children){
+      //     children.forEach(child=>{
+      //       getNode(child);
+      //     })
+      //   }else{
+      //     arr.push(data);
+      //   }
+      // }
     },
+    
     menuMousedown(id){
-      let th = this;
-      //附件查看
-      const url ="http://" + location.hostname + ":7001/attachs/getAttachmentListById/" +this.dataForTabs.gid;
-      getData(url);
-
-      function getData(url = "") {
-        $.ajax({
-          type: "GET",
-          crossDomain: true,
-          url: url,
-          success: result => {
-            th.dataForTabs.data=result.data;
-            th.showTabs=true;
-            th.activeTab=id;
-          }
-        });
-      }
-    },
+      this.showTabs=true;
+      this.activeTab=id;
+    },    
     filterNode(value, data) {
       if (!value) return true;
       return data.label.indexOf(value) !== -1;

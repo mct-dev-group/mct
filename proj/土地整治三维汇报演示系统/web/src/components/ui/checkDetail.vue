@@ -1,19 +1,22 @@
 <template>
   <div class="checkDetail">
     <div v-for='(val,key) in details' :key='key' v-if='key!=="geom"'>
-      <span>{{key}}</span>
+      <span>{{key}}：</span>
       <div v-if='key!=="status"' class='test'>{{val}}</div>
-      <el-select v-else v-model="status" placeholder="请选择" :disabled='disabled'>
-        <el-option
-          v-for="item in options"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value">
-        </el-option>
-      </el-select>
-    </div>
-    <el-button type="danger" round  v-if='disabled' class="btn" @click="editStatus">修改图斑状态</el-button>
-    <el-button type="primary" round  v-else class="btn" @click="saveStatus">提交更改</el-button>
+      <div v-else class='select'>
+        <el-select v-model="status" placeholder="请选择" :disabled='disabled'>
+          <el-option
+            v-for="item in options"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value">
+          </el-option>
+        </el-select>
+        <i class='el-icon-edit icon' v-if='disabled' @click="editStatus" ></i>
+        <i class='el-icon-upload2 icon' v-else  @click="saveStatus" ></i>
+      </div>
+      
+    </div>  
   </div>
 </template>
 
@@ -21,30 +24,36 @@
 import evenBus from '@/utils/event_bus';
 import { setStatus } from '@/api/api';
 
-
 export default {
   name: 'checkDetail',
   data () {
     return {
       options:[{
         value: '1',
-        label: '审批中'
+        label: '图斑筛查'
       },{
         value: '2',
-        label: '施工中'
+        label: '设计规划'
       },{
         value:'3',
-        label: '验收中'
+        label: '施工整治'
       },{
         value:'4',
-        label: '已完成'
+        label: '竣工验收'
       }
       ],
       disabled:true,
-      status:this.details.status
+      status:this.details?this.details.status:''
     }
   },
   props:['details'],
+  watch:{
+    details:function(){
+      if(this.details){
+        this.status=this.details.status;
+      }      
+    }
+  },
   methods: {
     editStatus(){
       this.disabled=false;
@@ -52,7 +61,12 @@ export default {
     saveStatus(){
       setStatus({id:this.details.gid,status:this.status}).then( () => {
         evenBus.$emit('layerControl_requestImage');
+        this.disabled=true;
       });
+    },
+    clear(){
+      this.disabled=true;
+      this.status='';
     }
   },  
 }
@@ -73,36 +87,45 @@ div{
 
   >div{
     width:50%;
-    // height:40px;
-    // line-height: 40px;
     overflow: hidden;
-    // text-align: center;
     padding-bottom:10px;
 
     >span{
-      width: 120px;      
+      width: 100px;      
       line-height: 40px;
       display: inline-block;
-      padding-right:12px;
+      padding-right:5px;
       font-size: 18px;
       text-align:right;      
     }
     >div.test{      
       display: inline-block;
       height:40px;
+      line-height: 20px;
       width: 150px;      
       padding:8px;
-      border: 1px solid #dcdfe6;      
-      vertical-align: bottom;
+      vertical-align: middle;
 
     }
     .el-select{
-      width: 150px;
+      width: 120px;
+      margin-right:3px;
+    }
+    >div.select{
+      display: inline-block;      
+    }
+    i.icon{
+      font-size: 25px;
+      vertical-align: middle;
+      cursor: pointer;
+    }
+    i.el-icon-edit{
+      color:#409EFF;
+    }
+    i.el-icon-upload2{
+      color:#67C23A;
     }
   }
-  .btn{
-    width: 50%;
-    margin: 0 auto;
-  }
+
 }
 </style>
