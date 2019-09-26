@@ -5,6 +5,7 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
+    dbClickedLayer:'',
     isPlugDeactivateAll: true,
     plugList: [],
     showMenu:false
@@ -28,6 +29,9 @@ export default new Vuex.Store({
     },
     setPlugStatus(state,isPlugDeactivateAll) {
       state.isPlugDeactivateAll = isPlugDeactivateAll;
+    },
+    setdbClickedLayer(state,dbClickedLayer) {
+        state.dbClickedLayer = dbClickedLayer;
     }
   },
   actions: {

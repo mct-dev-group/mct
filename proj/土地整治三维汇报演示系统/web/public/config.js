@@ -29,6 +29,12 @@ config.services = {
         value: 'qibin:plan'
       }
     ]
+  },
+  wfs: {
+    url: 'http://192.168.0.250:8888/geoserver/qibin/wfs',
+    version: '1.0.0',
+    typenames: 'plan,spot,village,country',
+    serverType: 'geoserver'
   }
 }
 //上传

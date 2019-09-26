@@ -3,13 +3,14 @@
     <router-view />
 
     <leftTree/>
-    <LayerControl/>    
+    <LayerControl/>
     <Compass />
-    
+
     <PlugManager />
     <!-- 插件start -->
     <Measurement />
     <PBFastReader />
+    <searchWMSdb />
     <!-- 插件end -->
   </div>
 </template>
@@ -23,6 +24,7 @@ import LayerControl from '@/components/ui/LayerControl.vue';
 import Measurement from '@/components/plug/Measurement.vue';
 import PBFastReader from '@/components/plug/PBFastReader.vue';
 import leftTree from '@/components/ui/leftTree.vue';
+import searchWMSdb from '@/components/plug/searchWMSdb.vue';
 
 export default {
   name: 'home',
@@ -30,11 +32,12 @@ export default {
     Compass,
     leftTree,
     LayerControl,
-    
+
     PlugManager,
     // 插件
     Measurement,
     PBFastReader,
+    searchWMSdb
   }
 }
 </script>
