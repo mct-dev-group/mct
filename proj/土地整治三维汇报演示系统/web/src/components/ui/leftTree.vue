@@ -41,7 +41,7 @@ import turf from 'turf';
 import { getCurrentAreaInfo } from '@/api/api';
 import tabs from '@/components/ui/tabs.vue';
 import {get} from '@/utils/fetch';
-import func from '../../../vue-temp/vue-editor-bridge';
+
 
 const menu=[
   {
