@@ -13,7 +13,7 @@
         @tab-click='handleClick'
       >
         <el-tab-pane label="统计信息" name='1' v-if='dataForTabs.showType===1'>
-          <checkChart :percentage='percentage' ref='checkChart' />
+          <checkChart v-loading='chartLoading' :chartData='chartData' ref='checkChart' />
         </el-tab-pane>
         <el-tab-pane label="附件查看" name='2' v-if='dataForTabs.showType!==3'>
           <checkFile v-loading='checkLoading' ref='checkFile' :gid='dataForTabs.gid' :showType='dataForTabs.showType' :files='files' @updata-checkLoading='checkLoading=false'/>
@@ -39,8 +39,12 @@ export default {
   name: 'tabs',
   data () {
     return {
-      percentage:0,
+      chartData:{
+        count:0,
+        statusMap:null
+      },      
       checkLoading:false,
+      chartLoading:false,
       files:''
     }
   },
@@ -55,10 +59,24 @@ export default {
     handle(aName,oName){
       switch(aName){
         case '1':
-          this.$refs.checkChart.draw();
+          this.chartLoading=true;
+          const plan=this.dataForTabs.plan;
+          this.chartData.count=plan.length;
+          let promises=plan.map(v=>get('http://'+location.hostname+':7001/attachs/query',{"sql":"select p.status from plan p where p.gid="+v.id, "db":"qibin"}));
+          Promise.all(promises).then(res=>{
+            const statusArr=res.map(s=>s.data[0].status);
+            let statusMap=new Map();
+            statusMap.set('1',statusArr.filter(s=>s==='1').length);
+            statusMap.set('2',statusArr.filter(s=>s==='2').length);
+            statusMap.set('3',statusArr.filter(s=>s==='3').length);
+            statusMap.set('4',statusArr.filter(s=>s==='4').length);
+            this.chartData.statusMap=statusMap;
+            this.$refs.checkChart.draw();  
+            this.chartLoading=false;
+          });
+          
           break;
-        case '2':
-          console.log(this.dataForTabs);
+        case '2':          
           get("http://" + location.hostname + ":7001/attachs/getAttachmentListById/" +this.dataForTabs.gid).then(res=>{
             this.files=res.data;
             this.$refs.checkFile.activeTab=this.dataForTabs.showType===2?'1':'2';
@@ -68,7 +86,7 @@ export default {
       };
       switch(oName){
         case '1':
-          this.percentage=0;
+          // this.percentage=0;
           break;
         case '2':
           this.$refs.checkFile.activeTab='0';
@@ -81,7 +99,7 @@ export default {
       this.$refs.uploadFile&&this.$refs.uploadFile.clearFileList();
       this.$refs.checkFile&&this.$refs.checkFile.clearFile();
       this.$refs.checkDetail.clear();
-
+      this.$refs.checkChart&&this.$refs.checkChart.clearChart();
     },
     handleClick(tab){
       // console.log(tab);

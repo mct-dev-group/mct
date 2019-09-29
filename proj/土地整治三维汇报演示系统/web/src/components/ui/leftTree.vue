@@ -12,7 +12,7 @@
         :default-expanded-keys="defArr"
         :filter-node-method="filterNode"
         accordion
-         highlight-current
+        highlight-current
         @node-contextmenu='handleContextmenu'
         >
       </el-tree>
@@ -70,7 +70,7 @@ export default {
   name: 'leftTree',
   data () {
     return {
-      defArr:[0],
+      defArr:['county.0'],
       searchText:'',
       showTabs:false,
       activeTab:'',
@@ -140,19 +140,21 @@ export default {
           break;
         
       }
-      // let arr=[];
-      // getNode(data);
-      // console.log(arr);
-      // function getNode(data){
-      //   const children=data.children;
-      //   if(children){
-      //     children.forEach(child=>{
-      //       getNode(child);
-      //     })
-      //   }else{
-      //     arr.push(data);
-      //   }
-      // }
+      let arr=[];
+      getNode(data);
+      let plan=arr.filter(v=>v.from_table==='plan');
+      this.dataForTabs.plan=plan;
+      
+      function getNode(data){        
+        const children=data.children;
+        if(children){
+          for (const child of children) {
+            getNode(child);
+          }
+        }else{
+          arr.push(data);
+        }        
+      }
     },
     
     menuMousedown(id){
