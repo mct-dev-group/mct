@@ -19,7 +19,7 @@
           <checkFile v-loading='checkLoading' ref='checkFile' :gid='dataForTabs.gid' :showType='dataForTabs.showType' :files='files' @updata-checkLoading='checkLoading=false'/>
         </el-tab-pane>
         <el-tab-pane label="附件上传" name='3' v-if='dataForTabs.showType!==3'>
-          <uploadFile ref='uploadFile' :gid='dataForTabs.gid'/>
+          <uploadFile ref='uploadFile' :gid='dataForTabs.gid' :showType='dataForTabs.showType'/>
         </el-tab-pane>
         <el-tab-pane label="查看详情" name='4'>
           <checkDetail ref='checkDetail' :details='dataForTabs.details'/>

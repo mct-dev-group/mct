@@ -1,16 +1,13 @@
 <template>
   <div class="uploadFile">
-    <el-tabs tab-position='left' style="height: 340px;">
-      <el-tab-pane label="前后对比">
-        <uploadImage  ref='uploadImage' :gid='gid' />
+    <el-tabs tab-position='left' style="height: 340px;" value='1'>
+      <el-tab-pane label="前后对比" v-if='showType===2' name='1'>
+        <uploadImage  ref='uploadImage' :gid='gid'/>
       </el-tab-pane>
-      <el-tab-pane label='其他' style='height:100%;padding-right:10px;'>
+      <el-tab-pane label='其他' style='height:100%;padding-right:10px;' name='2'>
         <uploadOther ref='uploadOther' :gid='gid'/>
       </el-tab-pane> 
-    </el-tabs>
-    <el-dialog :visible.sync="dialogVisible" :append-to-body='true'>
-      <img width="100%" :src="dialogImageUrl" alt="">
-    </el-dialog>
+    </el-tabs>    
   </div>
 </template>
 
@@ -19,20 +16,14 @@ import uploadImage from '@/components/ui/uploadImage.vue';
 import uploadOther from '@/components/ui/uploadOther.vue';
 export default {
   name: 'uploadFile',
-  data () {
-    return {            
-      dialogImageUrl:'',
-      dialogVisible:false,      
-    }
-  },
-  props:['gid'],
+  props:['gid','showType'],
   components:{
     uploadImage,
     uploadOther
   },
   methods: {
     clearFileList(){
-      this.$refs.uploadImage.clearFiles();
+      this.$refs.uploadImage&&this.$refs.uploadImage.clearFiles();
       this.$refs.uploadOther.clearFiles();
     }
   }
