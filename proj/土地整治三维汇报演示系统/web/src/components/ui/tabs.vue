@@ -40,7 +40,7 @@ export default {
   data () {
     return {
       chartData:{
-        count:0,
+        total:0,
         statusMap:null
       },      
       checkLoading:false,
@@ -61,17 +61,23 @@ export default {
         case '1':
           this.chartLoading=true;
           const plan=this.dataForTabs.plan;
-          this.chartData.count=plan.length;
-          let promises=plan.map(v=>get('http://'+location.hostname+':7001/attachs/query',{"sql":"select p.status from plan p where p.gid="+v.id, "db":"qibin"}));
-          Promise.all(promises).then(res=>{
-            const statusArr=res.map(s=>s.data[0].status);
+          this.chartData.total=plan.length;          
+
+          let promises=plan.map(v=>get('http://'+location.hostname+':7001/attachs/query',{"sql":"select p.status,p.shape_area from plan p where p.gid="+v.id, "db":"qibin"}));
+          Promise.all(promises).then(res=>{            
+            const statusArr=res.map(s=>({status:s.data[0].status,area:s.data[0].shape_area*1}));
             let statusMap=new Map();
-            statusMap.set('1',statusArr.filter(s=>s==='1').length);
-            statusMap.set('2',statusArr.filter(s=>s==='2').length);
-            statusMap.set('3',statusArr.filter(s=>s==='3').length);
-            statusMap.set('4',statusArr.filter(s=>s==='4').length);
+            //状态
+            const status=['1','2','3','4'];            
+            status.forEach(v=>{
+              let sArr=statusArr.filter(s=>s.status===v);
+              statusMap.set(v,{
+                count:sArr.length,
+                area:sArr.reduce((accumulator, currentValue) => accumulator + currentValue.area,0)
+              });
+            });            
             this.chartData.statusMap=statusMap;
-            this.$refs.checkChart.draw();  
+            this.$refs.checkChart.draw();
             this.chartLoading=false;
           });
           
@@ -86,7 +92,7 @@ export default {
       };
       switch(oName){
         case '1':
-          // this.percentage=0;
+          this.$refs.checkChart.clearChart();    
           break;
         case '2':
           this.$refs.checkFile.activeTab='0';
