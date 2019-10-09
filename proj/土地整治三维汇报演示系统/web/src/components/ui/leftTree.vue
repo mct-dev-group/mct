@@ -38,7 +38,7 @@
 
 <script>
 import turf from 'turf';
-import { getCurrentAreaInfo } from '@/api/api';
+import { getCurrentAreaInfo,getLeafNodeList } from '@/api/api';
 import tabs from '@/components/ui/tabs.vue';
 import {get} from '@/utils/fetch';
 
@@ -140,21 +140,9 @@ export default {
           break;
         
       }
-      let arr=[];
-      getNode(data);
-      let plan=arr.filter(v=>v.from_table==='plan');
-      this.dataForTabs.plan=plan;
-      
-      function getNode(data){        
-        const children=data.children;
-        if(children){
-          for (const child of children) {
-            getNode(child);
-          }
-        }else{
-          arr.push(data);
-        }        
-      }
+      let leafNodeList=getLeafNodeList(data);      
+      let plan=leafNodeList.filter(v=>v.from_table==='plan');
+      this.dataForTabs.plan=plan;      
     },
     
     menuMousedown(id){
