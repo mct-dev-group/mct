@@ -11,7 +11,7 @@
           <el-row>
             <el-col :span="12">
               <el-card :body-style="{ padding: '10px' }" shadow='hover'>              
-                <div class="image">
+                <div class="image" @click="previewImg(urlOfBefore)">
                   <img v-if='urlOfBefore' :src='urlOfBefore' alt="">                  
                   <div v-else>
                     <i class="fa fa-picture-o"></i>
@@ -25,7 +25,7 @@
             </el-col>
             <el-col :span="12">
               <el-card :body-style="{ padding: '10px'}" shadow='hover'>
-                <div class="image">
+                <div class="image" @click="previewImg(urlOfAfter)">
                   <img v-if='urlOfAfter' :src='urlOfAfter' alt="">                  
                   <div v-else>
                     <i class="fa fa-picture-o"></i>
@@ -49,6 +49,9 @@
         <p v-else>暂无其他附件</p>
       </el-tab-pane> 
     </el-tabs>
+    <el-dialog :visible.sync="dialogVisible" :append-to-body='true'>
+      <img width="100%" :src="dialogImageUrl" alt="">
+    </el-dialog>
   </div>
 </template>
 
@@ -60,7 +63,9 @@ export default {
     return {
       activeTab:'',
       urlOfBefore:'',      
-      urlOfAfter:'',         
+      urlOfAfter:'',
+      dialogImageUrl:'',
+      dialogVisible:false
     }
   },
   props:['showType','gid','files'],
@@ -123,8 +128,11 @@ export default {
         this.$emit('updata-checkLoading');
       }
     },
-    getOtherFiles(otherFiles){
-      
+    previewImg(url){
+      if(url){
+        this.dialogImageUrl=url;
+        this.dialogVisible=true;
+      }
     },
     clearFile(){
       this.urlOfBefore='';
@@ -158,6 +166,7 @@ function openInNewtab(dataURL) {
       text-align: center;      
       border:1px dashed #d9d9d9;
       box-sizing: border-box;
+      cursor:pointer;
 
       img{
         width:100%;
