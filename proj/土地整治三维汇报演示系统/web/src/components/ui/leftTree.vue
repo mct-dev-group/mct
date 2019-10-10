@@ -12,7 +12,7 @@
         :default-expanded-keys="defArr"
         :filter-node-method="filterNode"
         accordion
-         highlight-current
+        highlight-current
         @node-contextmenu='handleContextmenu'
         >
       </el-tree>
@@ -38,8 +38,10 @@
 
 <script>
 import turf from 'turf';
-import { getCurrentAreaInfo } from '@/api/api';
+import { getCurrentAreaInfo,getLeafNodeList } from '@/api/api';
 import tabs from '@/components/ui/tabs.vue';
+import {get} from '@/utils/fetch';
+
 
 const menu=[
   {
@@ -68,7 +70,7 @@ export default {
   name: 'leftTree',
   data () {
     return {
-      defArr:[0],
+      defArr:['county.0'],
       searchText:'',
       showTabs:false,
       activeTab:'',
@@ -128,15 +130,21 @@ export default {
           this.menu=menu.slice();
           this.dataForTabs.showType=1;
           break;
-        case 'spot' :
-          this.menu=[menu[3]];
-          this.dataForTabs.showType=2;
-          break;
         case  'plan' :
           this.menu=menu.slice(1);
+          this.dataForTabs.showType=2;
           break;
+        case 'spot' :
+          this.menu=[menu[3]];
+          this.dataForTabs.showType=3;
+          break;
+
       }
+      let leafNodeList=getLeafNodeList(data);
+      let plan=leafNodeList.filter(v=>v.from_table==='plan');
+      this.dataForTabs.plan=plan;
     },
+
     menuMousedown(id){
       let th = this;
       //附件查看
