@@ -42,22 +42,47 @@ module.exports = appInfo => {
     origin: '*',
     allowMethods: 'GET,HEAD,PUT,POST,DELETE,PATCH',
   };
-  config.sequelize = {
-    dialect: 'postgres',
-    host: '192.168.0.250',
-    port: 8083,
-    database: 'qibin',
-    username: 'postgres',
-    password: 'admin',
-    define: {
-      timestamps: false,
-    },
-    pool: {
-      max: 50,
-      min: 0,
-      idle: 30000,
-    },
-  };
+  config.sequelize ={
+    datasources:[{
+      delegate:'qibin',
+      baseDir: 'model',
+      dialect: 'postgres',
+      host: '192.168.0.250',
+      port: 8083,
+      database: 'qibin',
+      username: 'postgres',
+      password: 'admin',
+      logging: false,
+      define: {
+        timestamps: false,
+      },
+      pool: {
+        max: 50,
+        min: 0,
+        idle: 30000,
+      },
+    }
+    ,{
+      delegate:'test',
+      baseDir: 'model',
+      dialect: 'postgres',
+      host: '192.168.0.250',
+      port: 8083,
+      database: 'multidbtest',
+      username: 'postgres',
+      password: 'admin',
+      logging: false,
+      define: {
+        timestamps: false,
+      },
+      pool: {
+        max: 50,
+        min: 0,
+        idle: 30000,
+      },
+    }
+  ]
+  }
 
   // add your user config here
   const userConfig = {

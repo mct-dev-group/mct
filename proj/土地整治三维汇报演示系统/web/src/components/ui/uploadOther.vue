@@ -1,15 +1,15 @@
 <template>
   <div class="uploadOther">
-    <el-upload      
+    <el-upload
       ref="uploadOther"
       action
       multiple
       :auto-upload="false"
-      :on-remove="handleRemove"      
+      :on-remove="handleRemove"
       :on-change='handleChange'
     >
       <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
-      <el-button style="margin-left: 10px;" size="small" type="success" @click="handleUpload">上传到服务器</el-button>      
+      <el-button style="margin-left: 10px;" size="small" type="success" @click="handleUpload">上传到服务器</el-button>
     </el-upload>
   </div>
 </template>
@@ -35,16 +35,17 @@ export default {
         this.$message.error('上传文件列表为空！');
         return;
       }
-      const fileArr=[...this.fileList.values()];      
-      const th=this;      
-      const fds = fileArr.map(f => {        
+      const fileArr=[...this.fileList.values()];
+      const th=this;
+      const fds = fileArr.map(f => {
         const fileInfo = f.name.split(".");
         const file_type = fileInfo.pop();
         const file_name = fileInfo.join(".");
         const fd = new FormData();
         fd.append("file_name", file_name);
-        fd.append("file_type", file_type);        
-        fd.append("attach_to_id", th.gid);        
+        fd.append("file_type", file_type);
+        fd.append("attach_to_id", th.gid);
+        fd.append("DB", "qibin");
         fd.append("blob_data", f);
         return fd;
       });
@@ -52,7 +53,7 @@ export default {
       fds.forEach(fd => {
         postData(url,fd);
       });
-      function postData(url = "", data = {}) {        
+      function postData(url = "", data = {}) {
         $.ajax({
           type: "POST",
           crossDomain: true,

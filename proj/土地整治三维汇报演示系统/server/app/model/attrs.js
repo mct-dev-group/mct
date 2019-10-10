@@ -3,7 +3,7 @@
 module.exports = app => {
   const { INTEGER, FLOAT, STRING, JSONB } = app.Sequelize;
 
-  const Attrs = app.model.define(
+  const Attrs = app.qibin.define(
     'attrs',
     {
       id: {

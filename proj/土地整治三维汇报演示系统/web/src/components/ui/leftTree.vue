@@ -140,7 +140,7 @@ export default {
     menuMousedown(id){
       let th = this;
       //附件查看
-      const url ="http://" + location.hostname + ":7001/attachs/getAttachmentListById/" +this.dataForTabs.gid;
+      const url ="http://" + location.hostname + ":7001/attachs/getAttachmentListById/" +this.dataForTabs.gid + "/qibin";
       getData(url);
 
       function getData(url = "") {
@@ -221,7 +221,7 @@ export default {
     $.ajax({
       type: "GET",
       crossDomain: true,
-      url: config.server + "attachs/getTree",
+      url: config.server + "attachs/getTree/qibin",
       success: data => {
         //计算目录树
         th.treeData = makeTree(diffQLGH(data.data));
