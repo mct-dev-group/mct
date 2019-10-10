@@ -53,6 +53,9 @@
       </el-col>
     </el-row>
     <el-button type="primary" round @click="handleUpload">确认上传</el-button>
+    <el-dialog :visible.sync="dialogVisible" :append-to-body='true'>
+      <img width="100%" :src="dialogImageUrl" alt="">
+    </el-dialog>
   </div>
 </template>
 
