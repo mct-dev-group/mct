@@ -10,7 +10,7 @@ config.services = {
     url: 'http://192.168.0.250:8888/geoserver/qibin/wms',
     version: '1.1.1',
     format: 'image/png',
-    srs: 'EPSG:4546',
+    srs: 'EPSG:4547',
     layers: [
       {
         title: '行政乡',
