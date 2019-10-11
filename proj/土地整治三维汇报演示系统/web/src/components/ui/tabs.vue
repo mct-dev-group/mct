@@ -63,7 +63,7 @@ export default {
           const plan=this.dataForTabs.plan;
           this.chartData.total=plan.length;
 
-          let promises=plan.map(v=>get('http://'+location.hostname+':7001/attachs/query',{"sql":"select p.status,p.shape_area from plan p where p.gid="+v.id, "db":"qibin"}));
+          let promises=plan.map(v=>get('/attachs/query',{"sql":"select p.status,p.shape_area from plan p where p.gid="+v.id, "DB":"qibin"}));
           Promise.all(promises).then(res=>{
             const statusArr=res.map(s=>({status:s.data[0].status,area:s.data[0].shape_area*1}));
             let statusMap=new Map();
@@ -83,11 +83,14 @@ export default {
 
           break;
         case '2':
-          get("http://" + location.hostname + ":7001/attachs/getAttachmentListById/" +this.dataForTabs.gid+'/qibin').then(res=>{
+          get("/attachs/getAttachmentListById/" +this.dataForTabs.gid+'/qibin').then(res=>{
             this.files=res.data;
             this.$refs.checkFile.activeTab=this.dataForTabs.showType===2?'1':'2';
             this.checkLoading=true;
           });
+          break;
+        case '3':
+          this.$refs.uploadFile.activeTab=this.dataForTabs.showType===2?'1':'2';
           break;
       };
       switch(oName){
@@ -96,6 +99,9 @@ export default {
           break;
         case '2':
           this.$refs.checkFile.activeTab='0';
+          break;
+        case '3':
+          // this.$refs.uploadFile.activeTab='0';
           break;
       }
     },

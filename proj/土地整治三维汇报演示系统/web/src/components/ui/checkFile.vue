@@ -102,7 +102,7 @@ export default {
   },
   methods: {
     handleFileClick(gid,evt){
-      get("http://" + location.hostname + ":7001/attachs/getAttachmentById/"+gid+"/qibin").then(res=>{
+      get("/attachs/getAttachmentById/"+gid+"/qibin").then(res=>{
         const {mime_type, blob_data} = res.data[0];
         const bolbUrl=`data:${mime_type};base64,` + blob_data;
         openInNewtab(bolbUrl);
@@ -111,7 +111,7 @@ export default {
     handleBeforeLeave(aName,oName){
       if(aName==='1'){
         const filterDatas=this.files.filter(file=>file.attach_type==='zzq_img'||file.attach_type==='zzh_img');
-        const gets=filterDatas.map(data=>get("http://" + location.hostname + ":7001/attachs/getAttachmentById/"+data.gid+"/qibin"));
+        const gets=filterDatas.map(data=>get("/attachs/getAttachmentById/"+data.gid+"/qibin"));
         Promise.all(gets).then(results=>{
           results.forEach(result=>{
             const { mime_type, blob_data, attach_type} = result.data[0];
