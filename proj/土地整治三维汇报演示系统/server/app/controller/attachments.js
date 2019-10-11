@@ -9,11 +9,13 @@ class AttachmentsController extends Controller {
   async culcWithin() {
     const { ctx, service } = this;
     const helper = ctx.helper;
-
+    const DB = this.ctx.params.DB;
+    console.log(DB)
     try {
-      const result = await service.attachments.getWithin();
+      const result = await service.attachments.culcWithin(DB);
       rb = helper.getSuccess(result);
     } catch (error) {
+      // console.log(error)
       rb = helper.getFailed(error);
     } finally {
       ctx.body = rb;
@@ -44,7 +46,6 @@ class AttachmentsController extends Controller {
       const bufs = [];
       const { file_name, file_type, attach_to_id, attach_type, DB } = stream.fields;
       // ctx.body = stream.fields;
-
       stream.on('data', d => {
         bufs.push(d);
       });
@@ -52,7 +53,7 @@ class AttachmentsController extends Controller {
       const end = new Promise((resolve, reject) => {
         stream.on('end', () =>
           resolve(async () => {
-            let buf = Buffer.from(bufs,'binary');
+            const buf = Buffer.concat(bufs);
             const result = await service.attachments.postAttachment(
               file_name,
               file_type,
@@ -71,7 +72,7 @@ class AttachmentsController extends Controller {
       rb = helper.getSuccess(result);
     } catch (error) {
       rb = helper.getFailed(error);
-      console.log(error);
+      // console.log(error);
       await sendToWormhole(stream);
     } finally {
       ctx.body = rb;
@@ -86,17 +87,17 @@ class AttachmentsController extends Controller {
     console.log(id, DB)
     try {
       let result = await service.attachments.getAttachmentById(id, DB);
-       result = result[0][0];
-      console.log(result)
-      const { file_type, blob_data } = result;
+      // result = result[0];
+      const { file_type, blob_data } = result[0];
       var buffer = Buffer.from(blob_data, 'binary');
       var bufferBase64 = buffer.toString('base64');
       // result.setDataValue('mime_type', mime.lookup(file_type));
-      result['mime_type'] = mime.lookup(file_type);
-      result.blob_data = bufferBase64;
+      result[0]['mime_type'] = mime.lookup(file_type);
+      result[0].blob_data = bufferBase64;
+      // console.log(result)
       rb = helper.getSuccess(result);
     } catch (error) {
-      console.log(error)
+      // console.log(error)
       rb = helper.getFailed([error]);
     } finally {
       ctx.body = rb;
@@ -127,7 +128,7 @@ class AttachmentsController extends Controller {
       const result = await service.attachments.getAttachmentListById(id, DB);
       rb = helper.getSuccess(result);
     } catch (error) {
-      console.log(error)
+      // console.log(error)
       rb = helper.getFailed(error);
     } finally {
       ctx.body = rb;
@@ -142,7 +143,7 @@ class AttachmentsController extends Controller {
       const result = await service.attachments.query(sql, DB);
       rb = helper.getSuccess(result[0]);
     } catch (error) {
-      console.log(error);
+      // console.log(error);
       rb = helper.getFailed(error);
     } finally {
       ctx.body = rb;

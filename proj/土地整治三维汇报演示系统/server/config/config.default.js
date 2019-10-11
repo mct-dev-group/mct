@@ -29,7 +29,8 @@ module.exports = appInfo => {
   };
   config.multipart = {
     mode: 'stream',
-    fileExtensions: [ '.txt','.doc','.pdf','.docx','.xls','.xlsx','.ppt' ]
+    fileSize:'1000mb',
+    fileExtensions: [ '.txt','.doc','.pdf','.docx','.xls','.xlsx','.ppt','.msi','.rar','.exe' ]
   };
   config.security = {
     csrf: {
@@ -52,7 +53,9 @@ module.exports = appInfo => {
       database: 'qibin',
       username: 'postgres',
       password: 'admin',
-      logging: false,
+      logging(...args){
+
+      },
       define: {
         timestamps: false,
       },
@@ -63,15 +66,17 @@ module.exports = appInfo => {
       },
     }
     ,{
-      delegate:'test',
+      delegate:'qibin_db',
       baseDir: 'model',
       dialect: 'postgres',
       host: '192.168.0.250',
       port: 8083,
-      database: 'multidbtest',
+      database: 'qibin_db',
       username: 'postgres',
       password: 'admin',
-      logging: false,
+      logging(...args){
+
+      },
       define: {
         timestamps: false,
       },

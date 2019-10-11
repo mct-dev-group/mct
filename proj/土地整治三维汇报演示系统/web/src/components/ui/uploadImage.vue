@@ -2,7 +2,7 @@
   <div class="uploadImage">
     <el-row>
       <el-col :span="12">
-        <el-card :body-style="{ padding: '10px' }" shadow='hover'>                
+        <el-card :body-style="{ padding: '10px' }" shadow='hover'>
           <el-upload
             id='beforeImgUpload'
             action
@@ -11,12 +11,12 @@
             drag
             list-type="picture-card"
             ref='beforeImg'
-            :limit='1'            
+            :limit='1'
             :on-preview="handlePreview"
-            :on-remove='handleBeforeImgRemove'                  
+            :on-remove='handleBeforeImgRemove'
             :on-change='handleBeforeImgChange'
             :on-exceed='handleExceed'
-          >                               
+          >
             <i class="el-icon-upload"></i>
             <div class='el-upload__text'>将文件拖到此处，或<em>点击上传</em></div>
             <div  class='el-upload__tip'>*只能上传图片文件</div>
@@ -36,12 +36,12 @@
             drag
             list-type="picture-card"
             ref='afterImg'
-            :limit='1'                  
+            :limit='1'
             :on-preview="handlePreview"
             :on-remove='handleAfterImgRemove'
             :on-change='handleAfterImgChange'
             :on-exceed='handleExceed'
-          >                  
+          >
             <i class="el-icon-upload"></i>
             <div class='el-upload__text'>将文件拖到此处，或<em>点击上传</em></div>
             <div  class='el-upload__tip'>*只能上传图片文件</div>
@@ -63,7 +63,7 @@
 export default {
   name: 'uploadImage',
   data () {
-    return {            
+    return {
       dialogImageUrl:'',
       dialogVisible:false,
       fileList:[]
@@ -72,7 +72,7 @@ export default {
   props:['gid'],
   methods: {
     //查看
-    handlePreview(file){         
+    handlePreview(file){
       this.dialogImageUrl = file.url;
       this.dialogVisible = true;
     },
@@ -82,7 +82,7 @@ export default {
     },
     //整治前
     handleBeforeImgChange(file){
-      if(/^image\//.test(file.raw.type)){        
+      if(/^image\//.test(file.raw.type)){
         this.fileList[0]={
           attach_type:'zzq_img',
           file:file.raw
@@ -92,24 +92,24 @@ export default {
         this.$message.error('请选择图片上传！');
         this.$refs.beforeImg.clearFiles();
       }
-    },    
+    },
     handleBeforeImgRemove(file){
       document.querySelector('#beforeImgUpload div.el-upload.el-upload--picture-card').style.display='block';
       this.fileList.shift();
-    },    
+    },
     //整治后
     handleAfterImgChange(file){
       if(/^image\//.test(file.raw.type)){
         this.fileList[1]={
           attach_type:'zzh_img',
           file:file.raw
-        };  
+        };
         document.querySelector('#afterImgUpload div.el-upload.el-upload--picture-card').style.display='none';
       }else{
         this.$message.error('请选择图片上传！');
         this.$refs.afterImg.clearFiles();
       }
-    },    
+    },
     handleAfterImgRemove(file){
       document.querySelector('#afterImgUpload div.el-upload.el-upload--picture-card').style.display='block';
       this.fileList.pop();
@@ -121,15 +121,16 @@ export default {
         return;
       }
       const th=this;
-      const fds = this.fileList.map(f => {        
+      const fds = this.fileList.map(f => {
         const fileInfo = f.file.name.split(".");
         const file_type = fileInfo.pop();
         const file_name = fileInfo.join(".");
         const fd = new FormData();
         const attach_type = f.attach_type;
         fd.append("file_name", file_name);
-        fd.append("file_type", file_type);        
-        fd.append("attach_to_id", th.gid);        
+        fd.append("file_type", file_type);
+        fd.append("DB", "qibin");
+        fd.append("attach_to_id", th.gid);
         if (attach_type) {
           //不是指定附件类型就不添加
           fd.append("attach_type", attach_type);
@@ -139,7 +140,7 @@ export default {
       });
       const url = config.server + "attachs/postAttachment";
       fds.forEach(fd => postData(url, fd));
-      function postData(url = "", data = {}) {        
+      function postData(url = "", data = {}) {
         $.ajax({
           type: "POST",
           crossDomain: true,
@@ -191,13 +192,13 @@ export default {
     width: 100%;
   }
   /deep/.el-upload-dragger{
-    width: 100%;          
+    width: 100%;
   }
-  /deep/.el-upload__tip{      
+  /deep/.el-upload__tip{
     color:#e4393c;
   }
   .el-button{
-    margin-top:10px; 
+    margin-top:10px;
   }
   .previewImg{
     width: 100%;
