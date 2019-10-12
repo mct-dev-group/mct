@@ -44,28 +44,30 @@ module.exports = appInfo => {
     allowMethods: 'GET,HEAD,PUT,POST,DELETE,PATCH',
   };
   config.sequelize ={
-    datasources:[{
-      delegate:'qibin',
-      baseDir: 'model',
-      dialect: 'postgres',
-      host: '192.168.0.250',
-      port: 8083,
-      database: 'qibin',
-      username: 'postgres',
-      password: 'admin',
-      logging(...args){
+    datasources:[
+    //   {
+    //   delegate:'qibin',
+    //   baseDir: 'model',
+    //   dialect: 'postgres',
+    //   host: '192.168.0.250',
+    //   port: 8083,
+    //   database: 'qibin',
+    //   username: 'postgres',
+    //   password: 'admin',
+    //   logging(...args){
 
-      },
-      define: {
-        timestamps: false,
-      },
-      pool: {
-        max: 50,
-        min: 0,
-        idle: 30000,
-      },
-    }
-    ,{
+    //   },
+    //   define: {
+    //     timestamps: false,
+    //   },
+    //   pool: {
+    //     max: 50,
+    //     min: 0,
+    //     idle: 30000,
+    //   },
+    // }
+    // ,
+    {
       delegate:'qibin_db',
       baseDir: 'model',
       dialect: 'postgres',
