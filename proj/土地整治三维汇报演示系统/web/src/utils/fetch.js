@@ -8,8 +8,7 @@ axios.defaults.baseURL = 'http://localhost:7001'
 // 拦截器
 axios.interceptors.request.use(
   config => {
-    console.log(config.method);
-    if(config.method==='post'){
+    if(config.url==='/attachs/postAttachment'){
       config.headers = {
         'Content-Type': 'multipart/form-data'
       }
