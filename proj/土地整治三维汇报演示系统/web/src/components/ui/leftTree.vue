@@ -148,21 +148,11 @@ export default {
     menuMousedown(id){
       let th = this;
       //附件查看
-      const url ="http://" + location.hostname + ":7001/attachs/getAttachmentListById/" +this.dataForTabs.gid + "/qibin_db";
-      getData(url);
-
-      function getData(url = "") {
-        $.ajax({
-          type: "GET",
-          crossDomain: true,
-          url: url,
-          success: result => {
-            th.dataForTabs.data=result.data;
-            th.showTabs=true;
-            th.activeTab=id;
-          }
-        });
-      }
+      get("/attachs/getAttachmentListById/" +this.dataForTabs.gid + "/qibin").then(res=>{
+        th.dataForTabs.data=res.data;
+        th.showTabs=true;
+        th.activeTab=id;
+      });
     },
     filterNode(value, data) {
       if (!value) return true;
@@ -226,14 +216,10 @@ export default {
     document.body.addEventListener('contextmenu',function(evt){
       evt.preventDefault();
     },true);
-    $.ajax({
-      type: "GET",
-      crossDomain: true,
-      url: config.server + "attachs/getTree/qibin_db",
-      success: data => {
-        //计算目录树
-        th.treeData = makeTree(diffQLGH(data.data));
-      }
+
+    get("/attachs/getTree/qibin").then(res=>{
+      //计算目录树
+      th.treeData = makeTree(diffQLGH(res.data));
     });
     function diffQLGH(data) {
       const QLGH = [];
