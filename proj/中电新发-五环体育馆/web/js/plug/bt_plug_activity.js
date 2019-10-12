@@ -187,7 +187,13 @@ let bt_activity = {
     // bt_activity.commandSelect = plug_activity.plug_commands;
     bt_PlugManager.insert_plug(plug_activity);
     plug_activity.plug_activate();
-
+    if(!localStorage.getItem("activity_command_id")){
+      bt_activity.commandSelected = plug_activity.plug_commands[0].command_id;
+      console.log(plug_activity.plug_commands[0]);
+      plug_activity.command_activate(
+        bt_activity.commandSelected
+      );
+    }
     // console.log(plug_activity.plug_commands);
   },
   addPolicePOI: function() {
@@ -461,7 +467,7 @@ let bt_activity = {
       </div>
       <div class="tContainer-content">
 
-       <el-tabs type="border-card" class="box-card" @tab-click="showPOIs" stretch="" v-cloak="">       
+       <el-tabs type="border-card" class="box-card" @tab-click="showPOIs" stretch="" v-cloak="">
 
         <el-tab-pane label="全部">
          <el-form label-position="left" label-width="80px">

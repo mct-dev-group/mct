@@ -28,10 +28,10 @@
     <tabs
       v-show='showTabs'
       ref='tabs'
-      :activeTab='activeTab' 
-      :dataForTabs='dataForTabs' 
-      @update:showTabs='showTabs=false' 
-      @update:activeTab='activeTab="0"'      
+      :activeTab='activeTab'
+      :dataForTabs='dataForTabs'
+      @update:showTabs='showTabs=false'
+      @update:activeTab='activeTab="0"'
     />
   </div>
 </template>
@@ -108,7 +108,7 @@ export default {
     tabs
   },
   methods:{
-    handleContextmenu(evt,data,node){      
+    handleContextmenu(evt,data,node){
       if(!data.from_table) return;
       this.getCurrentAreaInfo(data);
       this.$store.commit('setShowMenu', true);
@@ -138,17 +138,22 @@ export default {
           this.menu=[menu[3]];
           this.dataForTabs.showType=3;
           break;
-        
+
       }
-      let leafNodeList=getLeafNodeList(data);      
+      let leafNodeList=getLeafNodeList(data);
       let plan=leafNodeList.filter(v=>v.from_table==='plan');
-      this.dataForTabs.plan=plan;      
+      this.dataForTabs.plan=plan;
     },
-    
+
     menuMousedown(id){
-      this.showTabs=true;
-      this.activeTab=id;
-    },    
+      let th = this;
+      //附件查看
+      get("/attachs/getAttachmentListById/" +this.dataForTabs.gid + "/qibin").then(res=>{
+        th.dataForTabs.data=res.data;
+        th.showTabs=true;
+        th.activeTab=id;
+      });
+    },
     filterNode(value, data) {
       if (!value) return true;
       return data.label.indexOf(value) !== -1;
@@ -211,14 +216,10 @@ export default {
     document.body.addEventListener('contextmenu',function(evt){
       evt.preventDefault();
     },true);
-    $.ajax({
-      type: "GET",
-      crossDomain: true,
-      url: config.server + "attachs/getTree",
-      success: data => {
-        //计算目录树
-        th.treeData = makeTree(diffQLGH(data.data));
-      }
+
+    get("/attachs/getTree/qibin").then(res=>{
+      //计算目录树
+      th.treeData = makeTree(diffQLGH(res.data));
     });
     function diffQLGH(data) {
       const QLGH = [];

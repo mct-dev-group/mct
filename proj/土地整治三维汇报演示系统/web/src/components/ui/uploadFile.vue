@@ -1,6 +1,6 @@
 <template>
   <div class="uploadFile">
-    <el-tabs tab-position='left' style="height: 340px;" value='1'>
+    <el-tabs tab-position='left' style="height: 340px;" :value='activeTab'>
       <el-tab-pane label="前后对比" v-if='showType===2' name='1'>
         <uploadImage  ref='uploadImage' :gid='gid'/>
       </el-tab-pane>
@@ -16,6 +16,11 @@ import uploadImage from '@/components/ui/uploadImage.vue';
 import uploadOther from '@/components/ui/uploadOther.vue';
 export default {
   name: 'uploadFile',
+  data(){
+    return {
+      activeTab:''
+    }
+  },
   props:['gid','showType'],
   components:{
     uploadImage,

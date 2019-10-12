@@ -1,22 +1,22 @@
 <template>
   <div class="checkFile">
-    <el-tabs 
+    <el-tabs
       tab-position='left'
-      :value='activeTab' 
-      style="height: 340px;"      
+      :value='activeTab'
+      style="height: 340px;"
       :before-leave='handleBeforeLeave'
     >
       <el-tab-pane label="前后对比" name='1' v-if='showType===2'>
         <div class="compareImage">
           <el-row>
             <el-col :span="12">
-              <el-card :body-style="{ padding: '10px' }" shadow='hover'>              
+              <el-card :body-style="{ padding: '10px' }" shadow='hover'>
                 <div class="image" @click="previewImg(urlOfBefore)">
-                  <img v-if='urlOfBefore' :src='urlOfBefore' alt="">                  
+                  <img v-if='urlOfBefore' :src='urlOfBefore' alt="">
                   <div v-else>
                     <i class="fa fa-picture-o"></i>
                     <p>暂无图片，请先上传！</p>
-                  </div>                  
+                  </div>
                 </div>
                 <div style="padding: 14px;text-align:center;">
                   整治前
@@ -26,28 +26,28 @@
             <el-col :span="12">
               <el-card :body-style="{ padding: '10px'}" shadow='hover'>
                 <div class="image" @click="previewImg(urlOfAfter)">
-                  <img v-if='urlOfAfter' :src='urlOfAfter' alt="">                  
+                  <img v-if='urlOfAfter' :src='urlOfAfter' alt="">
                   <div v-else>
                     <i class="fa fa-picture-o"></i>
                     <p>暂无图片，请先上传！</p>
                   </div>
-                </div>                
+                </div>
                 <div style="padding: 14px;text-align:center;">
                   整治后
                 </div>
               </el-card>
             </el-col>
           </el-row>
-        </div>        
+        </div>
       </el-tab-pane>
-      <el-tab-pane label='其他' style='height:100%;padding-right:10px;' name='2'>        
+      <el-tab-pane label='其他' style='height:100%;padding-right:10px;' name='2'>
         <ul v-if='otherFiles' class='fileList'>
-          <li v-for='file in otherFiles' :key='file.gid' @click="handleFileClick(file.gid,$event)" title='点击查看'>            
+          <li v-for='file in otherFiles' :key='file.gid' @click="handleFileClick(file.gid,$event)" title='点击查看'>
             <i :class='file.icon'></i>{{file.file_name}}.{{file.file_type}}
           </li>
         </ul>
         <p v-else>暂无其他附件</p>
-      </el-tab-pane> 
+      </el-tab-pane>
     </el-tabs>
     <el-dialog :visible.sync="dialogVisible" :append-to-body='true'>
       <img width="100%" :src="dialogImageUrl" alt="">
@@ -62,7 +62,7 @@ export default {
   data () {
     return {
       activeTab:'',
-      urlOfBefore:'',      
+      urlOfBefore:'',
       urlOfAfter:'',
       dialogImageUrl:'',
       dialogVisible:false
@@ -71,7 +71,7 @@ export default {
   props:['showType','gid','files'],
   computed:{
     otherFiles:function(){
-      if(this.files){        
+      if(this.files){
         let files=this.files.filter(file=>file.attach_type!=='zzq_img'&&file.attach_type!=='zzh_img');
         files.forEach(file=>{
           switch(file.file_type){
@@ -97,21 +97,21 @@ export default {
           }
         });
         return files;
-      }            
+      }
     }
   },
   methods: {
     handleFileClick(gid,evt){
-      get("http://" + location.hostname + ":7001/attachs/getAttachmentById/"+gid).then(res=>{
+      get("/attachs/getAttachmentById/"+gid+"/qibin").then(res=>{
         const {mime_type, blob_data} = res.data[0];
         const bolbUrl=`data:${mime_type};base64,` + blob_data;
         openInNewtab(bolbUrl);
       });
     },
-    handleBeforeLeave(aName,oName){      
-      if(aName==='1'){        
+    handleBeforeLeave(aName,oName){
+      if(aName==='1'){
         const filterDatas=this.files.filter(file=>file.attach_type==='zzq_img'||file.attach_type==='zzh_img');
-        const gets=filterDatas.map(data=>get("http://" + location.hostname + ":7001/attachs/getAttachmentById/"+data.gid));
+        const gets=filterDatas.map(data=>get("/attachs/getAttachmentById/"+data.gid+"/qibin"));
         Promise.all(gets).then(results=>{
           results.forEach(result=>{
             const { mime_type, blob_data, attach_type} = result.data[0];
@@ -121,7 +121,7 @@ export default {
             }else if(attach_type==='zzh_img'){
               this.urlOfAfter=bolbUrl;
             }
-          });          
+          });
           this.$emit('updata-checkLoading');
         });
       }else if(aName==='2'){
@@ -144,26 +144,26 @@ function openInNewtab(dataURL) {
   var iframe =
     "<iframe width='100%' height='100%' style='border:none;' src='" + dataURL + "'></iframe>";
   var x = window.open();
-  
+
   x.document.open();
-  x.document.write(iframe);  
+  x.document.write(iframe);
   x.document.body.style.margin=0;
   x.document.close();
 }
 </script>
 
 <style lang="scss" scoped>
- 
-.checkFile{  
+
+.checkFile{
   /deep/.el-tabs__content{
     height: 100%;
   }
   .compareImage{
     padding-right: 10px;
 
-    .image {      
+    .image {
       height: 180px;
-      text-align: center;      
+      text-align: center;
       border:1px dashed #d9d9d9;
       box-sizing: border-box;
       cursor:pointer;
@@ -185,8 +185,8 @@ function openInNewtab(dataURL) {
   }
   .fileList {
     list-style: none;
-    height: 100%;    
-    overflow-y: auto; 
+    height: 100%;
+    overflow-y: auto;
 
     >li{
       margin-bottom:10px;
@@ -195,7 +195,7 @@ function openInNewtab(dataURL) {
       user-select:none;
     }
     >li:hover{
-      background-color: #f5f7fa;      
+      background-color: #f5f7fa;
     }
     >li:last-child{
       margin-bottom:0;

@@ -5,10 +5,10 @@
       {{dataForTabs.title}}&nbsp;-&nbsp;整治详情
     </div>
     <div class="content">
-      <el-tabs 
-        :value='activeTab' 
-        stretch 
-        :before-leave='handle' 
+      <el-tabs
+        :value='activeTab'
+        stretch
+        :before-leave='handle'
         ref='activeTab'
         @tab-click='handleClick'
       >
@@ -25,7 +25,7 @@
           <checkDetail ref='checkDetail' :details='dataForTabs.details'/>
         </el-tab-pane>
       </el-tabs>
-    </div>        
+    </div>
   </div>
 </template>
 
@@ -42,7 +42,7 @@ export default {
       chartData:{
         total:0,
         statusMap:null
-      },      
+      },
       checkLoading:false,
       chartLoading:false,
       files:''
@@ -61,47 +61,53 @@ export default {
         case '1':
           this.chartLoading=true;
           const plan=this.dataForTabs.plan;
-          this.chartData.total=plan.length;          
+          this.chartData.total=plan.length;
 
-          let promises=plan.map(v=>get('http://'+location.hostname+':7001/attachs/query',{"sql":"select p.status,p.shape_area from plan p where p.gid="+v.id, "db":"qibin"}));
-          Promise.all(promises).then(res=>{            
+          let promises=plan.map(v=>get('/attachs/query',{"sql":"select p.status,p.shape_area from plan p where p.gid="+v.id, "DB":"qibin"}));
+          Promise.all(promises).then(res=>{
             const statusArr=res.map(s=>({status:s.data[0].status,area:s.data[0].shape_area*1}));
             let statusMap=new Map();
             //状态
-            const status=['1','2','3','4'];            
+            const status=['1','2','3','4'];
             status.forEach(v=>{
               let sArr=statusArr.filter(s=>s.status===v);
               statusMap.set(v,{
                 count:sArr.length,
                 area:sArr.reduce((accumulator, currentValue) => accumulator + currentValue.area,0)
               });
-            });            
+            });
             this.chartData.statusMap=statusMap;
             this.$refs.checkChart.draw();
             this.chartLoading=false;
           });
-          
+
           break;
-        case '2':          
-          get("http://" + location.hostname + ":7001/attachs/getAttachmentListById/" +this.dataForTabs.gid).then(res=>{
+        case '2':
+          get("/attachs/getAttachmentListById/" +this.dataForTabs.gid+'/qibin').then(res=>{
             this.files=res.data;
             this.$refs.checkFile.activeTab=this.dataForTabs.showType===2?'1':'2';
             this.checkLoading=true;
           });
           break;
+        case '3':
+          this.$refs.uploadFile.activeTab=this.dataForTabs.showType===2?'1':'2';
+          break;
       };
       switch(oName){
         case '1':
-          this.$refs.checkChart.clearChart();    
+          this.$refs.checkChart.clearChart();
           break;
         case '2':
           this.$refs.checkFile.activeTab='0';
+          break;
+        case '3':
+          // this.$refs.uploadFile.activeTab='0';
           break;
       }
     },
     closeTabsBox(){
       this.$emit('update:showTabs');
-      this.$emit('update:activeTab');      
+      this.$emit('update:activeTab');
       this.$refs.uploadFile&&this.$refs.uploadFile.clearFileList();
       this.$refs.checkFile&&this.$refs.checkFile.clearFile();
       this.$refs.checkDetail.clear();
@@ -124,7 +130,7 @@ export default {
   left:50%;
   transform: translateX(-50%);
   width: 600px;
-  
+
   background-color: #fff;
   border-radius: 8px;
 
@@ -136,13 +142,13 @@ export default {
     font-size:16px;
   }
   .el-icon-close{
-    
+
   }
 
   .title{
     padding:10px;
     font-size: 18px;
-    font-weight: bold;    
+    font-weight: bold;
   }
   .content{
     height: 400px;
