@@ -9,7 +9,7 @@ module.exports = app => {
   router.post('/attrs/getByParentId', controller.attrs.getByParentId);
   router.post('/attrs/getByLikeName', controller.attrs.getByLikeName);
   router.post('/attrs/getByPosition', controller.attrs.getByPosition);
-  router.post('/attachs/culcWithin/:DB', controller.attachments.culcWithin);
+  router.get('/attachs/culcWithin/:DB', controller.attachments.culcWithin);
   router.get('/attachs/getTree/:DB', controller.attachments.getTree);
   router.post('/attachs/postAttachment', controller.attachments.postAttachment);
   router.get(

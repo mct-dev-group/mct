@@ -7,6 +7,7 @@ class AttachmentsService extends Service {
   async culcWithin(DB) {
     const sequelize = this.app.Sequelize;
     const truncate = `truncate table country_village_tree;`;
+    const seq_restart = `alter sequence cvt_gid_seq restart with 1;`;
     const insert_county = `insert into country_village_tree ( from_table, id, parent) values ('county',0,0);`;
     const insert_country = `insert into country_village_tree ( from_table, id, parent)
       (select  'country', gid, (select x.gid from country_village_tree x where parent=0) from country c
@@ -16,7 +17,7 @@ class AttachmentsService extends Service {
       (select  'village',
       ov.gid,
       (select cv.gid from country c,village v,country_village_tree cv
-      where ST_Contains(c.geom,v.geom)
+      where ST_Area(ST_Intersection(c.geom,v.geom)) > (ST_Area(v.geom)/2)
       and v.gid = ov.gid
       and cv.from_table = 'country'
       and cv.id = c.gid)
@@ -27,7 +28,7 @@ class AttachmentsService extends Service {
       (select  'plan',
       op.gid,
       (select cv.gid from village v, plan p, country_village_tree cv
-      where ST_Contains(v.geom, p.geom)
+      where ST_Area(ST_Intersection(v.geom,p.geom)) > (ST_Area(p.geom)/2)
       and p.gid = op.gid
       and cv.from_table = 'village'
       and cv.id = v.gid)
@@ -38,7 +39,7 @@ class AttachmentsService extends Service {
       (select  'spot',
       os.gid,
       (select cv.gid from village v, spot s, country_village_tree cv
-      where ST_Contains(v.geom, s.geom)
+      where ST_Area(ST_Intersection(v.geom,s.geom)) > (ST_Area(s.geom)/2)
       and s.gid = os.gid
       and cv.from_table = 'village'
       and cv.id = v.gid)
@@ -48,6 +49,9 @@ class AttachmentsService extends Service {
 
     await this.app[DB].query(truncate, {
       type: sequelize.QueryTypes.TRUNCATE,
+    });
+    await this.app[DB].query(seq_restart, {
+      type: sequelize.QueryTypes.ALTER,
     });
     await this.app[DB].query(insert_county, {
       type: sequelize.QueryTypes.INSERT,
@@ -75,9 +79,9 @@ class AttachmentsService extends Service {
     select cvt.parent, cvt.gid, cvt.id, cvt.from_table,
     case
     when cvt.from_table = 'country' then
-      (select c.name as label from country c where c.gid = cvt.id and cvt.from_table = 'country')
+      (select c.xzqmc as label from country c where c.gid = cvt.id and cvt.from_table = 'country')
     when cvt.from_table = 'village' then
-      (select v.name as label from village v where v.gid = cvt.id and cvt.from_table = 'village')
+      (select v.xzqmc as label from village v where v.gid = cvt.id and cvt.from_table = 'village')
     when cvt.from_table = 'spot' then
       (select (cast (s.objectid as text)) as label from spot s where s.gid = cvt.id and cvt.from_table = 'spot')
     when cvt.from_table = 'plan' then
