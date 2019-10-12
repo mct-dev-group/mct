@@ -86,6 +86,7 @@ export default {
       },
       // 高亮颜色
       lightColor: '#189e08',
+      DB:''
     }
   },
   watch: {
@@ -113,7 +114,7 @@ export default {
       this.getCurrentAreaInfo(data);
       this.$store.commit('setShowMenu', true);
       // this.showTabs=false;
-
+      console.log(data);
       this.$refs.tabs.closeTabsBox();
       const menuDom=document.getElementById('menuCotainer');
       menuDom.style.left=evt.clientX+'px';
@@ -143,12 +144,16 @@ export default {
       let leafNodeList=getLeafNodeList(data);
       let plan=leafNodeList.filter(v=>v.from_table==='plan');
       this.dataForTabs.plan=plan;
+      if(plan.length===0){
+        this.menu=menu.slice(1);
+        this.dataForTabs.showType=2;
+      }
     },
 
     menuMousedown(id){
       let th = this;
       //附件查看
-      get("/attachs/getAttachmentListById/" +this.dataForTabs.gid + "/qibin").then(res=>{
+      get("/attachs/getAttachmentListById/" +this.dataForTabs.gid + "/"+this.DB).then(res=>{
         th.dataForTabs.data=res.data;
         th.showTabs=true;
         th.activeTab=id;
@@ -209,6 +214,7 @@ export default {
     }
   },
   mounted(){
+    this.DB=this.$store.state.db;
     const th=this;
     document.body.addEventListener('mousedown',function(evt){
       th.$store.commit('setShowMenu', false);
@@ -217,7 +223,7 @@ export default {
       evt.preventDefault();
     },true);
 
-    get("/attachs/getTree/qibin").then(res=>{
+    get("/attachs/getTree/"+this.DB).then(res=>{
       //计算目录树
       th.treeData = makeTree(diffQLGH(res.data));
     });

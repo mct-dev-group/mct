@@ -8,10 +8,18 @@ axios.defaults.baseURL = 'http://localhost:7001'
 // 拦截器
 axios.interceptors.request.use(
   config => {
-    config.data = qs.stringify(config.data)
-    config.headers = {
-      'Content-Type': 'application/x-www-form-urlencoded'
+    console.log(config.method);
+    if(config.method==='post'){
+      config.headers = {
+        'Content-Type': 'multipart/form-data'
+      }
+    }else{
+      config.data = qs.stringify(config.data)
+      config.headers = {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      }
     }
+    
     return config
   },
   error => {

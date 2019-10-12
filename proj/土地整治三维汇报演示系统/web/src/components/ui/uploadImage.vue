@@ -66,10 +66,14 @@ export default {
     return {
       dialogImageUrl:'',
       dialogVisible:false,
-      fileList:[]
+      fileList:[],
+      DB:''
     }
   },
   props:['gid'],
+  mounted(){
+    this.DB=this.$store.state.db;
+  },
   methods: {
     //查看
     handlePreview(file){
@@ -129,7 +133,7 @@ export default {
         const attach_type = f.attach_type;
         fd.append("file_name", file_name);
         fd.append("file_type", file_type);
-        fd.append("DB", "qibin");
+        fd.append("DB", this.DB);
         fd.append("attach_to_id", th.gid);
         if (attach_type) {
           //不是指定附件类型就不添加
