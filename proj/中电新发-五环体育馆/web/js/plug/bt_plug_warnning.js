@@ -307,6 +307,8 @@ var warnning_vm = new Vue({
 		startDate:null
   },
   mounted () {
+		// 页面打开时获取最近的一条记录
+		this.getLatestData();
 		// 获取启动时系统时间
 		// this.startDate  = new Date('2019-08-06 19:19:12');
 		this.startDate  = new Date();
@@ -338,6 +340,82 @@ var warnning_vm = new Vue({
     })
   },
   methods: {
+		getLatestData () {
+			var self = this;
+			// 人脸
+			var sql = `SELECT df.*, a.NAME as diviceName, gt.GenderTypeExplain, lt.listTypeExplain FROM disposition_face df 
+					RIGHT JOIN ape a ON df.device_id = a.id 
+					left join genderType gt on df.gender_code = gt.GenderTypeNum 
+					left join listType lt on df.list_type = lt.ListTypeNum 
+					WHERE df.face_appear_time IS NOT NULL ORDER BY df.face_appear_time DESC LIMIT 1`; 
+			var url= "http://"+location.hostname+":8014/sqlservice/v1/executeSql?sql="+sql;
+			$.ajax({
+				url: url,
+				type:'GET',
+				success: function(data){
+					if (data.length > 0) {
+						for (var i = 0; i < data.length; i++) {
+							data[i].face_appear_time_format = self.getMyDate2(new Date(data[i].face_appear_time));
+							data[i].similaritydegree = Number(data[i].similaritydegree).toFixed(2);
+							data[i].target_image_uri = data[i].target_image_uri ? data[i].target_image_uri: 'image/default.png'
+							let subimage_list = [
+								{	
+									"StoragePath":"image/default_big.png",
+									"DeviceID":""
+								},
+								{
+									"StoragePath":"image/default_small.png",
+									"DeviceID":"",
+									"Height":206,
+									"Width":172
+								}
+							]
+							data[i].subimage_list = data[i].subimage_list ? JSON.parse(data[i].subimage_list) : subimage_list;
+							self.faceList.unshift(data[i])
+						}
+					}
+				}
+			})
+			// 车辆
+			var sql = `SELECT dv.*,a.NAME as diviceName, pct.PlateClassTypeExplain,vct.VehicleClassTypeExplain,vbt.VehicleBrandTypeExplain, vmt.Name AS VehicleModelName
+			 FROM disposition_vehicle dv 
+				right join ape a on dv.device_id = a.id 
+				left join plateClassType pct on dv.plate_class = pct.PlateClassTypeNum 
+				left join vehicleClassType vct on dv.vehicle_class = vct.VehicleClassTypeNum 
+				left join vehicleBrandType vbt on dv.vehicle_brand = vbt.VehicleBrandTypeNum 
+				left join vehicleModelType vmt on dv.vehicle_model = vmt.VehicleModelID 
+				where dv.appear_time IS NOT NULL ORDER BY appear_time DESC  LIMIT 1`;
+			var url= "http://"+location.hostname+":8014/sqlservice/v1/executeSql?sql="+sql;
+			console.log(url)
+			$.ajax({
+			  url: url,
+			  type:'GET',
+			  success: function(data){
+			    if (data.length > 0) {
+			      for (var i = 0; i < data.length; i++) {
+							data[i].appear_time_format = self.getMyDate2(new Date(data[i].appear_time));
+							data[i].similaritydegree = Number(data[i].similaritydegree).toFixed(2);
+			        data[i].target_image_uri = data[i].target_image_uri ? data[i].target_image_uri: 'image/default.png'
+							let subimage_list = [
+								{	
+									"StoragePath":"image/default_big.png",
+									"DeviceID":""
+								},
+								{
+									"StoragePath":"image/default_small.png",
+									"DeviceID":"",
+									"Height":206,
+									"Width":172
+								}
+							]
+							data[i].subimage_list = data[i].subimage_list ? JSON.parse(data[i].subimage_list) : subimage_list;
+			        self.vehicleList.unshift(data[i])
+			      }
+			    }
+			   
+			  }
+			})
+		},
     clickBtn: function (type) {
       this.activeName = type
     },
