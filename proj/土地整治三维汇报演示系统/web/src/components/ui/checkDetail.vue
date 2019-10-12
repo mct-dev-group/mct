@@ -59,7 +59,7 @@ export default {
       this.disabled=false;
     },
     saveStatus(){
-      setStatus({id:this.details.gid,status:this.status}).then( () => {
+      setStatus({id:this.details.gid,status:this.status,DB: this.$store.state.db}).then( () => {
         evenBus.$emit('layerControl_requestImage');
         this.disabled=true;
       });

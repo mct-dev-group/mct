@@ -42,7 +42,7 @@ export default {
     searchWMSdb
   },
   created () {
-    const db = this.$route.params.db;
+    const db = this.$route.params.db ? this.$route.params.db : 'qibin_db';
     this.$store.commit('setCurrentDB', db);
   }
 }

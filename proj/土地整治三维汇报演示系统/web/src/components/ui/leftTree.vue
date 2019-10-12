@@ -167,7 +167,8 @@ export default {
       if (obj.from_table && obj.from_table != 'county') {
         const parmas = {
           id: obj.id,
-          table: obj.from_table
+          table: obj.from_table,
+          DB: this.DB
         }
         getCurrentAreaInfo(parmas).then( result => {
           if (result.code && result.code == 1 && result.data && result.data.length > 0) { // 查询成功

@@ -1,13 +1,13 @@
 import {get} from '@/utils/fetch';
 
 export function getCurrentAreaInfo (parmas) {
-  const { id, table } = parmas;
-  return get(`/geom/getCurrentAreaInfo/${id}/${table}`);
+  const { id, table, DB } = parmas;
+  return get(`/geom/getCurrentAreaInfo/${id}/${table}/${DB}`);
 }
 
 export function setStatus (parmas) {
-  const { id, status } = parmas;
-  return get(`/geom/setStatus/${id}/${status}`);
+  const { id, status, DB } = parmas;
+  return get(`/geom/setStatus/${id}/${status}/${DB}`);
 }
 export function getLeafNodeList(data){
 	let result=[];
