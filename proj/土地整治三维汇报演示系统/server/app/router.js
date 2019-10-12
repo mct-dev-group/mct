@@ -5,10 +5,6 @@
  */
 module.exports = app => {
   const { router, controller } = app;
-  router.get('/attrs/getById/:id', controller.attrs.getById);
-  router.post('/attrs/getByParentId', controller.attrs.getByParentId);
-  router.post('/attrs/getByLikeName', controller.attrs.getByLikeName);
-  router.post('/attrs/getByPosition', controller.attrs.getByPosition);
   router.get('/attachs/culcWithin/:DB', controller.attachments.culcWithin);
   router.get('/attachs/getTree/:DB', controller.attachments.getTree);
   router.post('/attachs/postAttachment', controller.attachments.postAttachment);
@@ -27,6 +23,6 @@ module.exports = app => {
   router.get('/attachs/query', controller.attachments.query);
 
 
-  router.get(`/geom/getCurrentAreaInfo/:id/:table`, controller.geom.getCurrentAreaInfo);
-  router.get(`/geom/setStatus/:id/:status`, controller.geom.setStatus);
+  router.get(`/geom/getCurrentAreaInfo/:id/:table/:DB`, controller.geom.getCurrentAreaInfo);
+  router.get(`/geom/setStatus/:id/:status/:DB`, controller.geom.setStatus);
 };
