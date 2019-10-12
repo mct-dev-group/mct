@@ -14,6 +14,7 @@
         accordion
         highlight-current
         @node-contextmenu='handleContextmenu'
+        @node-click="clickRow"
         >
       </el-tree>
     </div>
@@ -109,9 +110,11 @@ export default {
     tabs
   },
   methods:{
+    clickRow (data) {
+      this.getCurrentAreaInfo(data);
+    },
     handleContextmenu(evt,data,node){
       if(!data.from_table) return;
-      this.getCurrentAreaInfo(data);
       this.$store.commit('setShowMenu', true);
       // this.showTabs=false;
 
