@@ -8,12 +8,15 @@ export default new Vuex.Store({
     dbClickedLayer:'',
     isPlugDeactivateAll: true,
     plugList: [],
-    showMenu:false
+    showMenu:false,
+    db: 'qibin_db'
   },
   mutations: {
+    // 添加插件
     addPlug (state, plug) {
       state.plugList.push(plug);
     },
+    // 移除插件
     removePlug (state, name) {
       let plugList = state.plugList;
       for (let i = 0; i < plugList.length; i++) {
@@ -23,6 +26,10 @@ export default new Vuex.Store({
           break;
         }
       }
+    },
+    // 设置数据库
+    setCurrentDB(state, db) {
+      state.db = db;
     },
     setShowMenu(state,flag){
       state.showMenu=flag;
