@@ -89,7 +89,8 @@ export default {
       },
       // 高亮颜色
       lightColor: '#189e08',
-      DB:''
+      DB:'',
+      lastLayer:'',
     }
   },
   watch: {
@@ -102,18 +103,22 @@ export default {
           }
           bt_Plug_Annotation.removeAnnotation(this.AnnoId);
           this.defArr = [this.$store.state.dbClickedLayer];
-          this.treeData = [...this.treeData]
-          console.log(this.$store.state.dbClickedLayer,this.$store.state.dbClickedPosition);
+          this.treeData = [...this.treeData]          
           this.$refs.tree.setCurrentKey(this.$store.state.dbClickedLayer);
+          this.lastLayer=this.$store.state.dbClickedLayer;
           const data = this.$refs.tree.getCurrentNode();
-          const {x,y,z} = this.$store.state.dbClickedPosition;
-          console.log('dsfd',this.$refs.tree.getCurrentNode());
+          const {x,y,z} = this.$store.state.dbClickedPosition;          
           $Vue.openDetails = () => this.openDetails(data)
           this.AnnoId = Math.random().toString(36).substring(7)
           bt_Plug_Annotation.setAnnotation(this.AnnoId, x, y, z, -8, -16, "<div class='pop-card pop-card-2'><div style='background-color:#33586c;border-top-left-radius: 4px;border-top-right-radius: 4px;'><span style='color:white;font-size:14px;line-height:25px;'>"+ data.label +"</span></div><hr><a style='color:#2196f3;cursor:pointer;padding-top:10px;line-height:33px;' onclick='$Vue.openDetails()'>查看详情</a></div>", false);
           this.AnnoTimeout = setTimeout(()=>{
             bt_Plug_Annotation.removeAnnotation(this.AnnoId);
-          }, 5000)
+          }, 2000)
+    },
+    lastLayer(val){
+      const arr=val.split('_');
+      const data=this.$refs.tree.getNode(arr[0]).data;
+      this.getCurrentAreaInfo(data,arr[1]);
     }
   },
   computed:{
@@ -125,11 +130,9 @@ export default {
     tabs
   },
   methods:{
-    openDetails(data){
-      this.dataForTabs={
-        title:data.label,
-        gid:data.gid
-      };
+    openDetails(data){ 
+      this.dataForTabs.title=data.label;
+      this.dataForTabs.gid=data.gid;       
       switch(data.from_table){
         case 'county' :
         case 'country' :
@@ -148,11 +151,15 @@ export default {
       }
       let leafNodeList=getLeafNodeList(data);
       let plan=leafNodeList.filter(v=>v.from_table==='plan');
-      this.dataForTabs.plan=plan;
+      this.dataForTabs.plan=plan;      
+      if(plan.length===0){
+        this.menu=menu.slice(1);
+        this.dataForTabs.showType=2;
+      }
       this.menuMousedown('4');
     },
-    clickRow (data) {
-      this.getCurrentAreaInfo(data);
+    clickRow (data,node) {      
+      this.lastLayer=node.key+'_true';
     },
     handleContextmenu(evt,data,node){
       console.log(data);
@@ -160,15 +167,15 @@ export default {
       this.$store.commit('setShowMenu', true);
       // this.showTabs=false;
 
+      this.lastLayer=node.key+'_true';
+
       this.$refs.tabs.closeTabsBox();
       const menuDom=document.getElementById('menuCotainer');
       menuDom.style.left=evt.clientX+'px';
       menuDom.style.top=evt.clientY+'px';
 
-      this.dataForTabs={
-        title:data.label,
-        gid:data.gid
-      };
+      this.dataForTabs.title=data.label;
+      this.dataForTabs.gid=data.gid; 
       switch(data.from_table){
         case 'county' :
         case 'country' :
@@ -208,7 +215,7 @@ export default {
       if (!value) return true;
       return data.label.indexOf(value) !== -1;
     },
-    getCurrentAreaInfo (obj) {
+    getCurrentAreaInfo (obj,canFly='false') {
       if (obj.from_table && obj.from_table != 'county') {
         const parmas = {
           id: obj.id,
@@ -220,7 +227,7 @@ export default {
             const center = turf.center(result.data[0].geom);
             console.log();
             const z=bt_Util.getCameraParam().lookatPt.z;
-            bt_Util.executeScript('Render\\CameraControl\\FlyTo2 '+center.geometry.coordinates[0]+' '+center.geometry.coordinates[1]+' '+z+';');
+            canFly==='true'&&bt_Util.executeScript('Render\\CameraControl\\FlyTo2 '+center.geometry.coordinates[0]+' '+center.geometry.coordinates[1]+' '+z+';');
 					  // bt_Util.executeScript(`Render\\CameraControl\\FlyTo ${center.geometry.coordinates[0]} ${center.geometry.coordinates[1]} 30000 ${center.geometry.coordinates[0]} ${center.geometry.coordinates[1]} 5000;`);
             this.setLight(result.data[0].geom);
 
