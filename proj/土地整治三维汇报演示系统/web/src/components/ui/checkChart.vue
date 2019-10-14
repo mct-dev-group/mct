@@ -31,7 +31,7 @@ export default {
     chartData:{
       handler(){
         if(this.chartData.statusMap){
-          this.percentage=this.chartData.statusMap.get('4').count*100/this.chartData.total;
+          this.percentage=(this.chartData.statusMap.get('4').count*100/this.chartData.total).toFixed(2);
           this.text=this.chartData.statusMap.get('4').count+'/'+this.chartData.total;
         }
       },      
@@ -95,8 +95,8 @@ export default {
         },
         grid:{
           show:true,
-          width:430,
-          left :'135px',
+          width:400,
+          left :'160px',
           bottom:30
         },
         xAxis:  {
@@ -319,8 +319,8 @@ export default {
         },
         grid:{
           show:true,
-          width:430,
-          left :'135px',
+          width:400,
+          left :'160px',
           bottom:30
         },
         xAxis:  {
