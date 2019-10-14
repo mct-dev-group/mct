@@ -6,6 +6,7 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     dbClickedLayer:'',
+    dbClickedPosition:{},
     isPlugDeactivateAll: true,
     plugList: [],
     showMenu:false
@@ -32,6 +33,10 @@ export default new Vuex.Store({
     },
     setdbClickedLayer(state,dbClickedLayer) {
         state.dbClickedLayer = dbClickedLayer;
+    },
+    setdbClickedPosition(state,Position) {
+      console.log(Position)
+        state.dbClickedPosition = Position;
     }
   },
   actions: {

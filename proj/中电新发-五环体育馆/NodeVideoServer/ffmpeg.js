@@ -117,13 +117,13 @@ const ffmpeg = {
     conn_need_to_end.forEach(c => {
       ffmpeg.conn_pool.delete(c.id);
       child_process.spawn("taskkill", ["/pid", c.handle.pid, "/f", "/t"]);
-      try {
-        fse.remove(path.join(__dirname, `public/video/${c.id}`), () => {
-          console.log(`${c.id} removed`);
-        });
-      } catch (err) {
-        console.log(err);
-      }
+      // try {
+      //   fse.remove(path.join(__dirname, `public/video/${c.id}`), () => {
+      //     console.log(`${c.id} removed`);
+      //   });
+      // } catch (err) {
+      //   console.log(err);
+      // }
     });
   },
   hasEffectiveConnItem(ID){

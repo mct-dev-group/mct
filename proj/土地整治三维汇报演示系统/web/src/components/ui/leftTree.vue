@@ -70,6 +70,8 @@ export default {
   name: 'leftTree',
   data () {
     return {
+      AnnoId:'',
+      AnnoTimeout:null,
       defArr:['county.0'],
       searchText:'',
       showTabs:false,
@@ -92,11 +94,24 @@ export default {
     searchText(val) {
       this.$refs.tree.filter(val);
     },
-    '$store.state.dbClickedLayer'(){
+    '$store.state.dbClickedPosition'(){
+          if(this.AnnoTimeout){
+            clearTimeout(this.AnnoTimeout)
+          }
+          bt_Plug_Annotation.removeAnnotation(this.AnnoId);
           this.defArr = [this.$store.state.dbClickedLayer];
           this.treeData = [...this.treeData]
+          console.log(this.$store.state.dbClickedLayer,this.$store.state.dbClickedPosition);
           this.$refs.tree.setCurrentKey(this.$store.state.dbClickedLayer);
-          this.$forceUpdate();
+          const data = this.$refs.tree.getCurrentNode();
+          const {x,y,z} = this.$store.state.dbClickedPosition;
+          console.log('dsfd',this.$refs.tree.getCurrentNode());
+          $Vue.openDetails = () => this.openDetails(data)
+          this.AnnoId = Math.random().toString(36).substring(7)
+          bt_Plug_Annotation.setAnnotation(this.AnnoId, x, y, z, -8, -16, "<div class='pop-card pop-card-2'><div style='background-color:#33586c;border-top-left-radius: 4px;border-top-right-radius: 4px;'><span style='color:white;font-size:14px;line-height:25px;'>"+ data.label +"</span></div><hr><a style='color:#2196f3;cursor:pointer;padding-top:10px;line-height:33px;' onclick='$Vue.openDetails()'>查看详情</a></div>", false);
+          this.AnnoTimeout = setTimeout(()=>{
+            bt_Plug_Annotation.removeAnnotation(this.AnnoId);
+          }, 5000)
     }
   },
   computed:{
@@ -108,7 +123,34 @@ export default {
     tabs
   },
   methods:{
+    openDetails(data){
+      this.dataForTabs={
+        title:data.label,
+        gid:data.gid
+      };
+      switch(data.from_table){
+        case 'county' :
+        case 'country' :
+        case 'village' :
+          this.menu=menu.slice();
+          this.dataForTabs.showType=1;
+          break;
+        case  'plan' :
+          this.menu=menu.slice(1);
+          this.dataForTabs.showType=2;
+          break;
+        case 'spot' :
+          this.menu=[menu[3]];
+          this.dataForTabs.showType=3;
+          break;
+      }
+      let leafNodeList=getLeafNodeList(data);
+      let plan=leafNodeList.filter(v=>v.from_table==='plan');
+      this.dataForTabs.plan=plan;
+      this.menuMousedown('4');
+    },
     handleContextmenu(evt,data,node){
+      console.log(data);
       if(!data.from_table) return;
       this.getCurrentAreaInfo(data);
       this.$store.commit('setShowMenu', true);
@@ -217,7 +259,7 @@ export default {
       evt.preventDefault();
     },true);
 
-    get("/attachs/getTree/qibin").then(res=>{
+    get("/attachs/getTree/qibin_db").then(res=>{
       //计算目录树
       th.treeData = makeTree(diffQLGH(res.data));
     });
@@ -317,6 +359,7 @@ export default {
     font-size: 18px;
     margin-right: 12px;
   }
+
 }
 
 

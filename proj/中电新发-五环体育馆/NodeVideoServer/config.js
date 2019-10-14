@@ -15,7 +15,7 @@ module.exports = {
     "-f",
     "hls",
     "-hls_list_size",
-    "3",
+    "2",
     "-hls_time",
     "1",
     "-hls_wrap",
