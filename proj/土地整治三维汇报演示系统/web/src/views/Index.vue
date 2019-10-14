@@ -25,10 +25,10 @@ export default {
       this.qhList = [
         {
           title: '淇滨',
-          value: 'qibin'
+          value: 'qibin_db'
         },{
           title: '测试',
-          value: 'qibin2'
+          value: 'qibin'
         },{
           title: '其他',
           value: 'qibin2'

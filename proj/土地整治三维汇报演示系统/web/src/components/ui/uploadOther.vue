@@ -15,14 +15,19 @@
 </template>
 
 <script>
+import {post} from '@/utils/fetch';
 export default {
   name: 'uploadOther',
   data () {
     return {
       fileList:new Map(),
+      DB:''
     }
   },
   props:['gid'],
+  mounted(){
+    this.DB=this.$store.state.db;
+  },
   methods: {
     handleChange(file){
       this.fileList.set(file.uid,file.raw);
@@ -45,32 +50,18 @@ export default {
         fd.append("file_name", file_name);
         fd.append("file_type", file_type);
         fd.append("attach_to_id", th.gid);
-        fd.append("DB", "qibin");
+        fd.append("DB", this.DB);
         fd.append("blob_data", f);
         return fd;
-      });
-      const url = config.server + "attachs/postAttachment";
-      fds.forEach(fd => {
-        postData(url,fd);
-      });
-      function postData(url = "", data = {}) {
-        $.ajax({
-          type: "POST",
-          crossDomain: true,
-          url: url,
-          data: data,
-          processData: false,
-          contentType: false,
-          success: (result)=>{
-            th.$message({
-              message: result.msg,
-              type: 'success'
-            });
-            th.clearFiles();
-          },
-          error: console.log
+      });      
+      let promises=fds.map(fd =>post("/attachs/postAttachment",fd));
+      Promise.all(promises).then(res=>{        
+        this.$message({
+          message: res[0].msg,
+          type: 'success'
         });
-      }
+        this.clearFiles();
+      });
     },
     clearFiles(){
       this.$refs.uploadOther.clearFiles();
@@ -81,7 +72,5 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.uploadOther{
 
-}
 </style>

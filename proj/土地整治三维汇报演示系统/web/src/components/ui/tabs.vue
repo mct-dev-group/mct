@@ -45,7 +45,8 @@ export default {
       },
       checkLoading:false,
       chartLoading:false,
-      files:''
+      files:'',
+      DB:''
     }
   },
   props:['activeTab','dataForTabs'],
@@ -55,6 +56,9 @@ export default {
     uploadFile,
     checkDetail
   },
+  mounted(){
+    this.DB=this.$store.state.db;
+  },
   methods: {
     handle(aName,oName){
       switch(aName){
@@ -63,9 +67,9 @@ export default {
           const plan=this.dataForTabs.plan;
           this.chartData.total=plan.length;
 
-          let promises=plan.map(v=>get('/attachs/query',{"sql":"select p.status,p.shape_area from plan p where p.gid="+v.id, "DB":"qibin"}));
+          let promises=plan.map(v=>get('/attachs/query',{"sql":"select p.status,p.shape_area from plan p where p.gid="+v.id, "DB":this.DB}));
           Promise.all(promises).then(res=>{
-            const statusArr=res.map(s=>({status:s.data[0].status,area:s.data[0].shape_area*1}));
+            const statusArr=res.map(s=>({status:s.data[0].status+'',area:s.data[0].shape_area*1}));
             let statusMap=new Map();
             //状态
             const status=['1','2','3','4'];
@@ -83,7 +87,7 @@ export default {
 
           break;
         case '2':
-          get("/attachs/getAttachmentListById/" +this.dataForTabs.gid+'/qibin').then(res=>{
+          get("/attachs/getAttachmentListById/" +this.dataForTabs.gid+'/'+this.DB).then(res=>{
             this.files=res.data;
             this.$refs.checkFile.activeTab=this.dataForTabs.showType===2?'1':'2';
             this.checkLoading=true;

@@ -60,16 +60,21 @@
 </template>
 
 <script>
+import {post} from '@/utils/fetch';
 export default {
   name: 'uploadImage',
   data () {
     return {
       dialogImageUrl:'',
       dialogVisible:false,
-      fileList:[]
+      fileList:[],
+      DB:''
     }
   },
   props:['gid'],
+  mounted(){
+    this.DB=this.$store.state.db;
+  },
   methods: {
     //查看
     handlePreview(file){
@@ -129,7 +134,7 @@ export default {
         const attach_type = f.attach_type;
         fd.append("file_name", file_name);
         fd.append("file_type", file_type);
-        fd.append("DB", "qibin");
+        fd.append("DB", this.DB);
         fd.append("attach_to_id", th.gid);
         if (attach_type) {
           //不是指定附件类型就不添加
@@ -138,26 +143,14 @@ export default {
         fd.append("blob_data", f.file);
         return fd;
       });
-      const url = config.server + "attachs/postAttachment";
-      fds.forEach(fd => postData(url, fd));
-      function postData(url = "", data = {}) {
-        $.ajax({
-          type: "POST",
-          crossDomain: true,
-          url: url,
-          data: data,
-          processData: false,
-          contentType: false,
-          success: ()=>{
-            th.$message({
-              message: '上传成功！',
-              type: 'success'
-            });
-            th.clearFiles();
-          },
-          error: console.log
+      let promises=fds.map(fd =>post("/attachs/postAttachment",fd));
+      Promise.all(promises).then(res=>{        
+        this.$message({
+          message: res[0].msg,
+          type: 'success'
         });
-      }
+        this.clearFiles();
+      });      
     },
     clearFiles(){
       this.$refs.beforeImg.clearFiles();

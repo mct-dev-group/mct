@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-    <router-view />
+    <Matrix />
 
     <leftTree/>
     <LayerControl/>
@@ -16,6 +16,7 @@
 </template>
 
 <script>
+import Matrix from '@/components/Matrix.vue';
 import Compass from '@/components/ui/Compass.vue';
 import PlugManager from '@/components/PlugManager.vue';
 import LayerControl from '@/components/ui/LayerControl.vue';
@@ -29,6 +30,7 @@ import searchWMSdb from '@/components/plug/searchWMSdb.vue';
 export default {
   name: 'home',
   components: {
+    Matrix,
     Compass,
     leftTree,
     LayerControl,
@@ -38,6 +40,10 @@ export default {
     Measurement,
     PBFastReader,
     searchWMSdb
+  },
+  created () {
+    const db = this.$route.params.db ? this.$route.params.db : 'qibin_db';
+    this.$store.commit('setCurrentDB', db);
   }
 }
 </script>

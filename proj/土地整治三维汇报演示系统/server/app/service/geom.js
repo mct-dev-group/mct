@@ -8,11 +8,10 @@ class GeomService extends Service {
    * @param {Number} gid - 对应表字段gid
    * @param {String} table - 对应表名
    */
-  async getCurrentAreaInfo (gid , table) {
+  async getCurrentAreaInfo (gid , table, DB) {
     const sequelize = this.app.Sequelize;
-    console.log(sequelize);
     const sql = `select * from ${table} where gid = ${gid};`;
-    return await this.ctx.model.query(sql, {
+    return await this.ctx[DB].query(sql, {
       type: sequelize.QueryTypes.SELECT,
     });
   }
@@ -22,10 +21,10 @@ class GeomService extends Service {
    * @param {Number} gid 
    * @param {String} status - 状态 1，2，3，4
    */
-  async setStatus (gid, status) {
+  async setStatus (gid, status, DB) {
     const sequelize = this.app.Sequelize;
     const sql = `update plan set status = ${status} where gid = ${gid}`;
-    return await this.ctx.model.query(sql, {
+    return await this.ctx[DB].query(sql, {
       type: sequelize.QueryTypes.SELECT
     });
   }

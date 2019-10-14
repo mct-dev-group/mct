@@ -14,6 +14,7 @@
         accordion
         highlight-current
         @node-contextmenu='handleContextmenu'
+        @node-click="clickRow"
         >
       </el-tree>
     </div>
@@ -88,6 +89,7 @@ export default {
       },
       // 高亮颜色
       lightColor: '#189e08',
+      DB:''
     }
   },
   watch: {
@@ -149,10 +151,12 @@ export default {
       this.dataForTabs.plan=plan;
       this.menuMousedown('4');
     },
+    clickRow (data) {
+      this.getCurrentAreaInfo(data);
+    },
     handleContextmenu(evt,data,node){
       console.log(data);
       if(!data.from_table) return;
-      this.getCurrentAreaInfo(data);
       this.$store.commit('setShowMenu', true);
       // this.showTabs=false;
 
@@ -185,12 +189,16 @@ export default {
       let leafNodeList=getLeafNodeList(data);
       let plan=leafNodeList.filter(v=>v.from_table==='plan');
       this.dataForTabs.plan=plan;
+      if(plan.length===0){
+        this.menu=menu.slice(1);
+        this.dataForTabs.showType=2;
+      }
     },
 
     menuMousedown(id){
       let th = this;
       //附件查看
-      get("/attachs/getAttachmentListById/" +this.dataForTabs.gid + "/qibin").then(res=>{
+      get("/attachs/getAttachmentListById/" +this.dataForTabs.gid + "/"+this.DB).then(res=>{
         th.dataForTabs.data=res.data;
         th.showTabs=true;
         th.activeTab=id;
@@ -204,13 +212,16 @@ export default {
       if (obj.from_table && obj.from_table != 'county') {
         const parmas = {
           id: obj.id,
-          table: obj.from_table
+          table: obj.from_table,
+          DB: this.DB
         }
         getCurrentAreaInfo(parmas).then( result => {
           if (result.code && result.code == 1 && result.data && result.data.length > 0) { // 查询成功
             const center = turf.center(result.data[0].geom);
-            // bt_Util.executeScript('Render\\CameraControl\\FlyTo2 '+ll.x+' '+ll.y+' 0;');
-					  bt_Util.executeScript(`Render\\CameraControl\\FlyTo ${center.geometry.coordinates[0]} ${center.geometry.coordinates[1]} 30000 ${center.geometry.coordinates[0]} ${center.geometry.coordinates[1]} 5000;`);
+            console.log();
+            const z=bt_Util.getCameraParam().lookatPt.z;
+            bt_Util.executeScript('Render\\CameraControl\\FlyTo2 '+center.geometry.coordinates[0]+' '+center.geometry.coordinates[1]+' '+z+';');
+					  // bt_Util.executeScript(`Render\\CameraControl\\FlyTo ${center.geometry.coordinates[0]} ${center.geometry.coordinates[1]} 30000 ${center.geometry.coordinates[0]} ${center.geometry.coordinates[1]} 5000;`);
             this.setLight(result.data[0].geom);
 
             this.dataForTabs.details=result.data[0];
@@ -251,6 +262,7 @@ export default {
     }
   },
   mounted(){
+    this.DB=this.$store.state.db;
     const th=this;
     document.body.addEventListener('mousedown',function(evt){
       th.$store.commit('setShowMenu', false);
@@ -259,7 +271,11 @@ export default {
       evt.preventDefault();
     },true);
 
+<<<<<<< HEAD
     get("/attachs/getTree/qibin_db").then(res=>{
+=======
+    get("/attachs/getTree/"+this.DB).then(res=>{
+>>>>>>> d7b4ae821560acd93b25ac3695cf02563e03577d
       //计算目录树
       th.treeData = makeTree(diffQLGH(res.data));
     });
