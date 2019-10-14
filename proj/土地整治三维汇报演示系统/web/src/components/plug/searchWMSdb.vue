@@ -28,7 +28,6 @@ export default {
 
       // 得到世界坐标系
       const { x, y, z } = bt_Util.screenToWorld(e[1], e[2]);
-      this.$store.commit('setdbClickedPosition',{x,y,z});
       let bbox = x - res * 2;
       bbox += "," + (y - res * 2);
       bbox += "," + (x + res * 2);
@@ -76,9 +75,8 @@ export default {
         for (let data of dataArr) {
           if (data.crs) {
             console.log(data.features[0].id);
-            // this.$store.state.dbClickedLayer = data.features[0].id
-            this.$store.commit('setdbClickedLayer', '');
             this.$store.commit('setdbClickedLayer', data.features[0].id);
+            this.$store.commit('setdbClickedPosition',{x,y,z});
             return;
           }
         }
