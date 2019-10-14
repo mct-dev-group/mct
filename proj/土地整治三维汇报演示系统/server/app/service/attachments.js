@@ -109,7 +109,7 @@ class AttachmentsService extends Service {
     }
     if (list.length) {
       await this.app[DB].query(
-        `update attachments set file_name=${file_name}, file_type=${file_type}, attach_to_id=${attach_to_id}, blob_data= ?, attach_type=${attach_type}, where attach_to_id = '${attach_to_id}'' and attach_type = '${attach_type}'';`,
+        `update attachments set file_name='${file_name}', file_type='${file_type}', attach_to_id='${attach_to_id}', blob_data= (?), attach_type='${attach_type}' where attach_to_id = '${attach_to_id}' and attach_type = '${attach_type}';`,
         {
           replacements: [bufs],
           type: sequelize.QueryTypes.UPDATE,
