@@ -25,4 +25,5 @@ module.exports = app => {
 
   router.get(`/geom/getCurrentAreaInfo/:id/:table/:DB`, controller.geom.getCurrentAreaInfo);
   router.get(`/geom/setStatus/:id/:status/:DB`, controller.geom.setStatus);
+  router.get(`/geom/getLayer/:x/:y/:DB`, controller.geom.getLayer);
 };
