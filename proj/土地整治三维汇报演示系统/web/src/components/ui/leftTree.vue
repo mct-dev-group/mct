@@ -271,11 +271,7 @@ export default {
       evt.preventDefault();
     },true);
 
-<<<<<<< HEAD
-    get("/attachs/getTree/qibin_db").then(res=>{
-=======
     get("/attachs/getTree/"+this.DB).then(res=>{
->>>>>>> d7b4ae821560acd93b25ac3695cf02563e03577d
       //计算目录树
       th.treeData = makeTree(diffQLGH(res.data));
     });
