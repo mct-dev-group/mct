@@ -281,6 +281,8 @@ export default {
     get("/attachs/getTree/"+this.DB).then(res=>{
       //计算目录树
       th.treeData = makeTree(diffQLGH(res.data));
+    }).catch(error=>{
+      console.error('树生成错误！',error);
     });
     function diffQLGH(data) {
       const QLGH = [];
