@@ -29,8 +29,8 @@ module.exports = appInfo => {
   };
   config.multipart = {
     mode: 'stream',
-    fileSize:'1000mb',
-    fileExtensions: [ '.txt','.doc','.pdf','.docx','.xls','.xlsx','.ppt','.msi','.rar','.exe' ]
+    fileSize:'50mb',
+    fileExtensions: [ '.txt','.doc','.pdf','.docx','.xls','.xlsx','.ppt' ]
   };
   config.security = {
     csrf: {
