@@ -158,11 +158,11 @@ export default {
       }
       this.menuMousedown('4');
     },
-    clickRow (data,node) {      
+    clickRow (data,node) {
+      if(!data.from_table) return;
       this.lastLayer=node.key+'_true';
     },
-    handleContextmenu(evt,data,node){
-      console.log(data);
+    handleContextmenu(evt,data,node){      
       if(!data.from_table) return;
       this.$store.commit('setShowMenu', true);
       // this.showTabs=false;
