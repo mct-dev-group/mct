@@ -2,7 +2,7 @@
   <div class="checkDetail">
     <div v-for='(val,key) in details' :key='key' v-if='key!=="geom"'>
       <span>{{key}}：</span>
-      <div v-if='key!=="status"' class='test'>{{val}}</div>
+      <div v-if='key!=="status"' class='status'>{{val}}</div>
       <div v-else class='select'>
         <el-select v-model="status" placeholder="请选择" :disabled='disabled'>
           <el-option
@@ -43,7 +43,7 @@ export default {
       }
       ],
       disabled:true,
-      status:this.details?this.details.status:''
+      status:this.details?this.details.status+'':''
     }
   },
   props:['details'],
@@ -98,7 +98,7 @@ div{
       font-size: 18px;
       text-align:right;      
     }
-    >div.test{      
+    >div.status{      
       display: inline-block;
       height:40px;
       line-height: 20px;
