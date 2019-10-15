@@ -31,7 +31,8 @@ export default {
     chartData:{
       handler(){
         if(this.chartData.statusMap){
-          this.percentage=(this.chartData.statusMap.get('4').count*100/this.chartData.total).toFixed(2);
+          const percentage=this.chartData.statusMap.get('4').count*100/this.chartData.total;
+          this.percentage=percentage===0?0:percentage.toFixed(2);
           this.text=this.chartData.statusMap.get('4').count+'/'+this.chartData.total;
         }
       },      
