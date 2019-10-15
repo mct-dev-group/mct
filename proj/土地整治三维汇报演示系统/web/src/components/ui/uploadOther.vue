@@ -39,10 +39,9 @@ export default {
       if(this.fileList.size===0){
         this.$message.error('上传文件列表为空！');
         return;
-      }
-      const fileArr=[...this.fileList.values()];
+      }      
       const th=this;
-      const fds = fileArr.map(f => {
+      const fds = [...this.fileList.values()].map(f => {
         const fileInfo = f.name.split(".");
         const file_type = fileInfo.pop();
         const file_name = fileInfo.join(".");
@@ -55,12 +54,23 @@ export default {
         return fd;
       });      
       let promises=fds.map(fd =>post("/attachs/postAttachment",fd));
-      Promise.all(promises).then(res=>{        
-        this.$message({
-          message: res[0].msg,
-          type: 'success'
-        });
+      Promise.all(promises).then(res=>{
+        if(res.every(r=>r.code===1)){
+          this.$message.success('上传成功!');
+        }else if(res.every(r=>r.code!==1)){
+          this.$message.error('上传失败!');
+        }else{
+          const errorArr=res.filter(r=>r.code!==1);
+          let msg='';
+          errorArr.forEach(v=>{
+           msg+=`${v.data.file_name}.${v.data.file_type} `
+          });
+          msg+='上传失败！';
+          this.$message.error(msg);
+        }
         this.clearFiles();
+      }).catch(error=>{
+        console.error('上传附件错误!',error);
       });
     },
     clearFiles(){

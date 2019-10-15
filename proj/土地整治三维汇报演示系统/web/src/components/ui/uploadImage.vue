@@ -67,7 +67,7 @@ export default {
     return {
       dialogImageUrl:'',
       dialogVisible:false,
-      fileList:[],
+      fileMap:new Map(),
       DB:''
     }
   },
@@ -88,10 +88,10 @@ export default {
     //整治前
     handleBeforeImgChange(file){
       if(/^image\//.test(file.raw.type)){
-        this.fileList[0]={
+        this.fileMap.set('zzq',{
           attach_type:'zzq_img',
           file:file.raw
-        };
+        });
         document.querySelector('#beforeImgUpload div.el-upload.el-upload--picture-card').style.display='none';
       }else{
         this.$message.error('请选择图片上传！');
@@ -100,15 +100,15 @@ export default {
     },
     handleBeforeImgRemove(file){
       document.querySelector('#beforeImgUpload div.el-upload.el-upload--picture-card').style.display='block';
-      this.fileList.shift();
+      this.fileMap.delete('zzq');
     },
     //整治后
     handleAfterImgChange(file){
       if(/^image\//.test(file.raw.type)){
-        this.fileList[1]={
+        this.fileMap.set('zzh',{
           attach_type:'zzh_img',
           file:file.raw
-        };
+        });
         document.querySelector('#afterImgUpload div.el-upload.el-upload--picture-card').style.display='none';
       }else{
         this.$message.error('请选择图片上传！');
@@ -117,16 +117,16 @@ export default {
     },
     handleAfterImgRemove(file){
       document.querySelector('#afterImgUpload div.el-upload.el-upload--picture-card').style.display='block';
-      this.fileList.pop();
+      this.fileMap.delete('zzh');
     },
     //确认上传
     handleUpload(){
-      if(this.fileList.length<1){
+      if(this.fileMap.length<1){
         this.$message.error('请至少上传一张图片！');
         return;
       }
       const th=this;
-      const fds = this.fileList.map(f => {
+      const fds = [...this.fileMap.values()].map(f => {
         const fileInfo = f.file.name.split(".");
         const file_type = fileInfo.pop();
         const file_name = fileInfo.join(".");
@@ -142,22 +142,33 @@ export default {
         }
         fd.append("blob_data", f.file);
         return fd;
-      });
+      });      
       let promises=fds.map(fd =>post("/attachs/postAttachment",fd));
       Promise.all(promises).then(res=>{        
-        this.$message({
-          message: res[0].msg,
-          type: 'success'
-        });
+        if(res.every(r=>r.code===1)){
+          this.$message.success('上传成功!');
+        }else if(res.every(r=>r.code!==1)){
+          this.$message.error('上传失败!');
+        }else{
+          const errorArr=res.filter(r=>r.code!==1);
+          let msg='';
+          errorArr.forEach(v=>{
+           msg+=`${v.data.file_name}.${v.data.file_type} `
+          });
+          msg+='上传失败！';
+          this.$message.error(msg);
+        }
         this.clearFiles();
-      });      
+      }).catch(error=>{
+        console.error('上传文件错误!',error);
+      });
     },
     clearFiles(){
       this.$refs.beforeImg.clearFiles();
       this.$refs.afterImg.clearFiles();
       document.querySelector('#beforeImgUpload div.el-upload.el-upload--picture-card').style.display='block';
       document.querySelector('#afterImgUpload div.el-upload.el-upload--picture-card').style.display='block';
-      this.fileList=[];
+      this.fileMap.clear();
     }
   }
 }
