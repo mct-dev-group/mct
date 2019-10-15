@@ -127,6 +127,8 @@ export default {
             }
           });
           this.$emit('updata-checkLoading');
+        }).catch(errpr=>{
+          console.error('获取文件错误!',error);
         });
       }else if(aName==='2'){
         this.$emit('updata-checkLoading');
