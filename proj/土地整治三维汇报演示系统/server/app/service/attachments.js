@@ -142,7 +142,7 @@ class AttachmentsService extends Service {
         }
       );
     }
-    return await this.getAttachmentListById(attach_to_id,DB);
+    return {file_name, file_type, attach_to_id, attach_type, DB};
   }
   async getAttachmentById(id, DB) {
     const sequelize = this.app.Sequelize;

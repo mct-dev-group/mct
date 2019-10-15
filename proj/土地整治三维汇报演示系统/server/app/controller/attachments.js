@@ -45,7 +45,6 @@ class AttachmentsController extends Controller {
       stream = await ctx.getFileStream();
       const bufs = [];
       const { file_name, file_type, attach_to_id, attach_type, DB } = stream.fields;
-      // ctx.body = stream.fields;
       stream.on('data', d => {
         bufs.push(d);
       });
@@ -87,18 +86,16 @@ class AttachmentsController extends Controller {
     console.log(id, DB)
     try {
       let result = await service.attachments.getAttachmentById(id, DB);
-      // result = result[0];
       const { file_type, blob_data } = result[0];
       var buffer = Buffer.from(blob_data, 'binary');
       var bufferBase64 = buffer.toString('base64');
       // result.setDataValue('mime_type', mime.lookup(file_type));
       result[0]['mime_type'] = mime.lookup(file_type);
       result[0].blob_data = bufferBase64;
-      // console.log(result)
       rb = helper.getSuccess(result);
     } catch (error) {
       // console.log(error)
-      rb = helper.getFailed([error]);
+      rb = helper.getFailed(error);
     } finally {
       ctx.body = rb;
     }
